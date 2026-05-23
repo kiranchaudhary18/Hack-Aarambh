@@ -1,0 +1,96 @@
+openapi: 3.0.0
+info:
+  title: Fake Job Offer Detector API
+  version: 0.1.0
+paths:
+  /auth/register:
+    post:
+      summary: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Registered
+  /auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Token
+  /analysis/text:
+    post:
+      summary: Analyze text
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+      responses:
+        '200':
+          description: Analysis result
+  /analysis/pdf:
+    post:
+      summary: Analyze PDF synchronously
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Analysis result
+  /analysis/pdf-async:
+    post:
+      summary: Upload PDF for background processing
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Job queued
+  /admin/stats:
+    get:
+      summary: Admin stats (admin only)
+      responses:
+        '200':
+          description: Stats
+  /admin/flagged:
+    get:
+      summary: Flagged cases (admin only)
+      responses:
+        '200':
+          description: Flagged list
