@@ -1,0 +1,14 @@
+import { Module } from '@nestjs/common';
+import { AnalysisService } from './analysis.service';
+import { AnalysisController } from './analysis.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { History } from '../history/history.entity';
+import { JobQueueService } from '../queue/job-queue.service';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([History])],
+  providers: [AnalysisService, JobQueueService],
+  controllers: [AnalysisController],
+  exports: [AnalysisService, JobQueueService],
+})
+export class AnalysisModule {}
