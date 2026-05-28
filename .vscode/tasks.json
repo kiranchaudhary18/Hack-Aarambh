@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Setup Frontend with Vite + React",
+			"type": "shell",
+			"command": "cd c:\\Users\\kiran\\Hack-Aarambh && npm create vite@latest frontend -- --template react",
+			"group": "build"
+		}
+	]
+}
