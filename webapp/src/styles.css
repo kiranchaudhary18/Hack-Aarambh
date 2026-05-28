@@ -45,6 +45,7 @@
 
   --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-space: "Space Grotesk", sans-serif;
 }
 
 :root {
@@ -59,14 +60,16 @@
   --popover: oklch(0.985 0.012 95);
   --popover-foreground: oklch(0.24 0.04 270);
 
-  --primary: oklch(0.62 0.18 295);          /* clay purple */
+  --primary: oklch(0.62 0.18 295);
+  /* clay purple */
   --primary-foreground: oklch(0.99 0.005 95);
   --secondary: oklch(0.92 0.04 95);
   --secondary-foreground: oklch(0.3 0.04 270);
 
   --muted: oklch(0.94 0.02 95);
   --muted-foreground: oklch(0.5 0.03 270);
-  --accent: oklch(0.85 0.12 70);             /* clay peach */
+  --accent: oklch(0.85 0.12 70);
+  /* clay peach */
   --accent-foreground: oklch(0.24 0.04 270);
 
   --destructive: oklch(0.66 0.22 22);
@@ -176,22 +179,38 @@
     min-height: 100vh;
   }
 
-  h1, h2, h3, h4, h5 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
     font-weight: 600;
   }
 
   /* Custom scrollbar */
-  ::-webkit-scrollbar { width: 12px; height: 12px; }
-  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   ::-webkit-scrollbar-thumb {
     background: var(--color-muted);
     border-radius: 999px;
     border: 3px solid transparent;
     background-clip: padding-box;
   }
-  ::-webkit-scrollbar-thumb:hover { background: var(--color-primary); background-clip: padding-box; border: 3px solid transparent; }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+    background-clip: padding-box;
+    border: 3px solid transparent;
+  }
 }
 
 @layer components {
@@ -200,32 +219,41 @@
     box-shadow: var(--shadow-clay);
     border-radius: var(--radius);
   }
+
   .clay-sm {
     background: var(--card);
     box-shadow: var(--shadow-clay-sm);
     border-radius: calc(var(--radius) - 0.5rem);
   }
+
   .clay-lg {
     background: var(--card);
     box-shadow: var(--shadow-clay-lg);
     border-radius: calc(var(--radius) + 0.5rem);
   }
+
   .clay-inset {
     background: var(--muted);
     box-shadow: var(--shadow-clay-inset);
     border-radius: calc(var(--radius) - 0.5rem);
   }
+
   .clay-btn {
     background: var(--card);
     box-shadow: var(--shadow-clay-sm);
     border-radius: 999px;
     transition: transform 180ms ease, box-shadow 180ms ease;
   }
-  .clay-btn:hover { transform: translateY(-2px); }
+
+  .clay-btn:hover {
+    transform: translateY(-2px);
+  }
+
   .clay-btn:active {
     box-shadow: var(--shadow-clay-inset);
     transform: translateY(1px);
   }
+
   .clay-primary {
     background: linear-gradient(145deg, oklch(0.72 0.18 295), oklch(0.55 0.2 305));
     color: var(--primary-foreground);
@@ -237,8 +265,14 @@
     border-radius: 999px;
     transition: transform 180ms ease;
   }
-  .clay-primary:hover { transform: translateY(-2px); }
-  .clay-primary:active { transform: translateY(1px); }
+
+  .clay-primary:hover {
+    transform: translateY(-2px);
+  }
+
+  .clay-primary:active {
+    transform: translateY(1px);
+  }
 
   .clay-pill {
     border-radius: 999px;
@@ -256,6 +290,7 @@
     background-clip: text;
     color: transparent;
   }
+
   .blob {
     filter: blur(60px);
     opacity: 0.6;
@@ -267,13 +302,12 @@
 }
 
 @layer utilities {
-  .hide-scrollbar::-webkit-scrollbar { width: 8px; }
-  .hide-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  .hide-scrollbar::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, var(--muted-foreground) 25%, transparent);
-    border-radius: 999px;
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
-  .hide-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in oklab, var(--muted-foreground) 45%, transparent);
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
 }
