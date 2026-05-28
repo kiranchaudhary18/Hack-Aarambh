@@ -1,0 +1,64 @@
+{
+  "payment_keywords": [
+    "pay",
+    "fees",
+    "charges",
+    "registration",
+    "training fee",
+    "deposit",
+    "investment",
+    "amount",
+    "transfer",
+    "paytm",
+    "upi",
+    "bank",
+    "card"
+  ],
+  "urgency_keywords": [
+    "urgent",
+    "limited time",
+    "immediately",
+    "asap",
+    "within 24 hours",
+    "apply now",
+    "hurry",
+    "quick",
+    "expire",
+    "deadline"
+  ],
+  "salary_keywords": [
+    "salary",
+    "month",
+    "per",
+    "₹",
+    "rupees",
+    "inr",
+    "annual",
+    "ctc",
+    "package",
+    "earning",
+    "income"
+  ],
+  "suspicious_phrases": [
+    "work from home",
+    "part time",
+    "easy money",
+    "passive income",
+    "no experience",
+    "beginner friendly",
+    "simple job",
+    "data entry"
+  ],
+  "official_domains": [
+    "google.com",
+    "microsoft.com",
+    "amazon.com",
+    "tcs.com",
+    "infosys.com",
+    "wipro.com",
+    "cognizant.com",
+    "accenture.com",
+    "ibm.com",
+    "linkedin.com"
+  ]
+}
