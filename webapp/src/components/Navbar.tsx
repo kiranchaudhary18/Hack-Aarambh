@@ -33,7 +33,9 @@ export function Navbar() {
                 <Link
                   to={l.to}
                   className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                    active ? "clay-inset text-foreground" : "text-muted-foreground hover:text-foreground"
+                    active
+                      ? "clay-inset text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {l.label}
@@ -44,13 +46,20 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
-          <Link to="/login" className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground sm:inline-block">
+          <Link
+            to="/login"
+            className="hidden rounded-full px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground sm:inline-block"
+          >
             Login
           </Link>
           <Link to="/signup" className="clay-primary px-5 py-2.5 text-sm font-semibold">
             Get Started
           </Link>
-          <button onClick={() => setOpen(!open)} className="clay-btn grid h-10 w-10 place-items-center lg:hidden" aria-label="menu">
+          <button
+            onClick={() => setOpen(!open)}
+            className="clay-btn grid h-10 w-10 place-items-center lg:hidden"
+            aria-label="menu"
+          >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
@@ -59,7 +68,12 @@ export function Navbar() {
       {open && (
         <div className="clay mt-2 grid gap-1 p-3 lg:hidden">
           {links.map((l) => (
-            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-[color:var(--muted)]">
+            <Link
+              key={l.to}
+              to={l.to}
+              onClick={() => setOpen(false)}
+              className="rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-[color:var(--muted)]"
+            >
               {l.label}
             </Link>
           ))}

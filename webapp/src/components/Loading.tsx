@@ -2,13 +2,38 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScanSearch, ShieldCheck, Sparkles } from "lucide-react";
 
-export function LoadingScreen({ label = "Analyzing job offer…", hint = "Scanning red flags, sender domain, urgency, and 30+ signals." }: { label?: string; hint?: string }) {
+export function LoadingScreen({
+  label = "Analyzing job offer…",
+  hint = "Scanning red flags, sender domain, urgency, and 30+ signals.",
+}: {
+  label?: string;
+  hint?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.to(".lp-ring", { rotate: 360, duration: 2.4, ease: "none", repeat: -1, transformOrigin: "50% 50%" });
-      gsap.to(".lp-pulse", { scale: 1.08, duration: 1.2, ease: "sine.inOut", repeat: -1, yoyo: true });
-      gsap.from(".lp-dot", { y: -6, duration: 0.6, ease: "sine.inOut", repeat: -1, yoyo: true, stagger: 0.15 });
+      gsap.to(".lp-ring", {
+        rotate: 360,
+        duration: 2.4,
+        ease: "none",
+        repeat: -1,
+        transformOrigin: "50% 50%",
+      });
+      gsap.to(".lp-pulse", {
+        scale: 1.08,
+        duration: 1.2,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+      });
+      gsap.from(".lp-dot", {
+        y: -6,
+        duration: 0.6,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+        stagger: 0.15,
+      });
     }, ref);
     return () => ctx.revert();
   }, []);
