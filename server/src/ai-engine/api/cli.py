@@ -24,12 +24,12 @@ def analyze_job_text(text: str) -> dict:
 if __name__ == '__main__':
     # Read input from stdin
     input_data = sys.stdin.read()
-    
+
     try:
         data = json.loads(input_data)
         text = data.get('text', '')
     except:
         text = input_data
-    
+
     result = analyze_job_text(text)
     print(json.dumps(result))
