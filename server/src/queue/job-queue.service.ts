@@ -1,11 +1,16 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
-import { AnalysisService } from '../analysis/analysis.service';
+import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+  Logger,
+} from "@nestjs/common";
+import { AnalysisService } from "../analysis/analysis.service";
 
 type Job = { id: string; buffer: Buffer; userId?: string };
 
 @Injectable()
 export class JobQueueService implements OnModuleInit, OnModuleDestroy {
-  private logger = new Logger('JobQueue');
+  private logger = new Logger("JobQueue");
   private queue: Job[] = [];
   private timer: NodeJS.Timeout;
 
