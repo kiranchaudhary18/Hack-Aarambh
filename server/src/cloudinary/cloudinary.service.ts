@@ -24,6 +24,8 @@ export class CloudinaryService {
           (error, result) => {
             if (error) {
               reject(error);
+            } else if (!result) {
+              reject(new Error('Upload failed: result is undefined'));
             } else {
               resolve(result.secure_url);
             }
@@ -46,6 +48,8 @@ export class CloudinaryService {
           (error, result) => {
             if (error) {
               reject(error);
+            } else if (!result) {
+              reject(new Error('Upload failed: result is undefined'));
             } else {
               resolve(result.secure_url);
             }

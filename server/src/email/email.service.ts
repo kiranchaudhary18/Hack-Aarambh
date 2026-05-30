@@ -75,6 +75,10 @@ export class EmailService {
       return { success: true };
     } catch (error) {
       console.error("Error sending email:", error);
+      if (this.useEthereal) {
+        console.warn("[EMAIL SERVICE] Failed to send Ethereal email, but continuing in dev mode. Verification URL:", verificationUrl);
+        return { success: true };
+      }
       throw new Error("Failed to send email");
     }
   }
@@ -123,6 +127,10 @@ export class EmailService {
       return { success: true };
     } catch (error) {
       console.error("Error sending email:", error);
+      if (this.useEthereal) {
+        console.warn(`[EMAIL SERVICE] Failed to send Ethereal email, but continuing in dev mode. Reset Code: ${code}`);
+        return { success: true };
+      }
       throw new Error("Failed to send email");
     }
   }
@@ -170,6 +178,10 @@ export class EmailService {
       return { success: true };
     } catch (error) {
       console.error("Error sending email:", error);
+      if (this.useEthereal) {
+        console.warn("[EMAIL SERVICE] Failed to send Ethereal email, but continuing in dev mode. Verification URL:", verificationUrl);
+        return { success: true };
+      }
       throw new Error("Failed to send email");
     }
   }
