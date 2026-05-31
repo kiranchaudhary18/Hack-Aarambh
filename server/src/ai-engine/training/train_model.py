@@ -1,11 +1,15 @@
 import os
 import pickle
+import sys
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
+
+# Add parent directory to path to import training module
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from training.preprocess import TextPreprocessor
 
 
@@ -28,6 +32,8 @@ class ModelTrainer:
         """Load training dataset"""
         try:
             df = pd.read_csv(self.dataset_path)
+            # Drop rows with NaN values in label column
+            df = df.dropna(subset=['label'])
             print(f"Loaded {len(df)} samples")
             return df
         except Exception as e:
@@ -114,10 +120,9 @@ class ModelTrainer:
             with open(vectorizer_path, "rb") as f:
                 self.vectorizer = pickle.load(f)
 
-            print("Model loaded successfully")
             return True
         except Exception as e:
-            print(f"Error loading model: {e}")
+            print(f"Error loading model: {e}", file=sys.stderr)
             return False
 
     def predict_proba(self, text: str) -> float:
