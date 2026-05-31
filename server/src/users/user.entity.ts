@@ -9,35 +9,35 @@ import {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
-  id: string;
+  id!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column({ default: "user" })
-  role: string;
+  role!: string;
 
   @Column({ nullable: true })
-  name: string;
+  name!: string;
 
   @Column({ nullable: true })
-  avatar: string;
+  avatar!: string;
 
   @Column({ default: 0 })
-  scansUsed: number;
+  scansUsed!: number;
 
   @Column({ default: 20 })
-  scansLimit: number;
+  scansLimit!: number;
 
   @Column({ default: "free" })
-  plan: string;
+  plan!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }
