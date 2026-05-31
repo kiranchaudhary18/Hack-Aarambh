@@ -12,7 +12,7 @@ type Job = { id: string; buffer: Buffer; userId?: string };
 export class JobQueueService implements OnModuleInit, OnModuleDestroy {
   private logger = new Logger("JobQueue");
   private queue: Job[] = [];
-  private timer: NodeJS.Timeout;
+  private timer!: NodeJS.Timeout;
 
   constructor(private analysis: AnalysisService) {}
 
