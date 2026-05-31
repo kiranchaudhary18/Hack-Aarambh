@@ -1,6 +1,8 @@
 import subprocess
 import sys
 import json
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from api.predict import PredictionEngine
 
 def analyze_job_text(text: str) -> dict:
