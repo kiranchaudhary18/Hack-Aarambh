@@ -9,10 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyCodeRouteImport } from './routes/verify-code'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResultRouteImport } from './routes/result'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ReportRouteImport } from './routes/report'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -31,6 +33,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminFlaggedRouteImport } from './routes/admin/flagged'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
 
+const VerifyCodeRoute = VerifyCodeRouteImport.update({
+  id: '/verify-code',
+  path: '/verify-code',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -49,6 +56,11 @@ const SignupRoute = SignupRouteImport.update({
 const ResultRoute = ResultRouteImport.update({
   id: '/result',
   path: '/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportRoute = ReportRouteImport.update({
@@ -152,10 +164,12 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/report': typeof ReportRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/result': typeof ResultRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/verify-code': typeof VerifyCodeRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/flagged': typeof AdminFlaggedRoute
   '/admin/': typeof AdminIndexRoute
@@ -175,10 +189,12 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/report': typeof ReportRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/result': typeof ResultRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/verify-code': typeof VerifyCodeRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/flagged': typeof AdminFlaggedRoute
   '/admin': typeof AdminIndexRoute
@@ -199,10 +215,12 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/report': typeof ReportRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/result': typeof ResultRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/verify-code': typeof VerifyCodeRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/flagged': typeof AdminFlaggedRoute
   '/admin/': typeof AdminIndexRoute
@@ -224,10 +242,12 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/report'
+    | '/reset-password'
     | '/result'
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
+    | '/verify-code'
     | '/admin/analytics'
     | '/admin/flagged'
     | '/admin/'
@@ -247,10 +267,12 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/report'
+    | '/reset-password'
     | '/result'
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
+    | '/verify-code'
     | '/admin/analytics'
     | '/admin/flagged'
     | '/admin'
@@ -270,10 +292,12 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/report'
+    | '/reset-password'
     | '/result'
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
+    | '/verify-code'
     | '/admin/analytics'
     | '/admin/flagged'
     | '/admin/'
@@ -294,10 +318,12 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   ReportRoute: typeof ReportRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ResultRoute: typeof ResultRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  VerifyCodeRoute: typeof VerifyCodeRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminFlaggedRoute: typeof AdminFlaggedRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -305,6 +331,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-code': {
+      id: '/verify-code'
+      path: '/verify-code'
+      fullPath: '/verify-code'
+      preLoaderRoute: typeof VerifyCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -331,6 +364,13 @@ declare module '@tanstack/react-router' {
       path: '/result'
       fullPath: '/result'
       preLoaderRoute: typeof ResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/report': {
@@ -470,10 +510,12 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   ReportRoute: ReportRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ResultRoute: ResultRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  VerifyCodeRoute: VerifyCodeRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminFlaggedRoute: AdminFlaggedRoute,
   AdminIndexRoute: AdminIndexRoute,
