@@ -8,23 +8,23 @@ import {
 @Entity()
 export class History {
   @PrimaryGeneratedColumn("uuid")
-  id: string;
+  id!: string;
 
   @Column("text")
-  input: string;
+  input!: string;
 
   @Column("simple-json", { nullable: true })
   result: any;
 
   @Column({ nullable: true })
-  userId: string;
+  userId!: string;
 
   @Column({ default: "pending" })
-  status: "pending" | "processed" | "failed";
+  status!: "pending" | "processed" | "failed";
 
   @Column({ nullable: true })
-  processedAt: Date;
+  processedAt!: Date;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 }
