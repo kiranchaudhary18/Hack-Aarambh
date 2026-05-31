@@ -55,10 +55,10 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
 
-  register: (email: string, password: string) =>
+  register: (email: string, password: string, name?: string) =>
     apiRequest("/auth/register", {
       method: "POST",
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, name }),
     }),
 
   // Analysis
@@ -88,6 +88,23 @@ export const api = {
   // Admin
   getAdminStats: () => apiRequest("/admin/stats"),
   getFlaggedCases: () => apiRequest("/admin/flagged"),
+
+  // Password Reset
+  forgotPassword: (email: string) =>
+    apiRequest("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
+  verifyCode: (email: string, code: string) =>
+    apiRequest("/auth/verify-code", {
+      method: "POST",
+      body: JSON.stringify({ email, code }),
+    }),
+  resetPassword: (email: string, code: string, newPassword: string, confirmPassword: string) =>
+    apiRequest("/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ email, code, newPassword, confirmPassword }),
+    }),
 
   // Profile
   getProfile: () => apiRequest("/users/profile"),
