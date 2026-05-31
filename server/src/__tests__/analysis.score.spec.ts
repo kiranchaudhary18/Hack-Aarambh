@@ -3,7 +3,7 @@ import { AnalysisService } from "../analysis/analysis.service";
 describe("AnalysisService.score", () => {
   let svc: AnalysisService;
   beforeAll(() => {
-    svc = new AnalysisService(null as any);
+    svc = new AnalysisService(null as any, null as any);
   });
 
   it("flags unrealistic salary and payment request", () => {
