@@ -44,6 +44,9 @@ function AdminHome() {
   const [adminStats, setAdminStats] = useState<any>(null);
   const [recentChecks, setRecentChecks] = useState<any[]>([]);
   const [trendData, setTrendData] = useState<any[]>([]);
+  const [todayCount, setTodayCount] = useState(0);
+  const [weekCount, setWeekCount] = useState(0);
+  const [trendPercent, setTrendPercent] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -67,15 +70,55 @@ function AdminHome() {
         }));
         setRecentChecks(transformedHistory);
 
-        // Mock trend data for now (backend doesn't provide this yet)
-        setTrendData([
-          { month: "Jan", safe: 120, scams: 15 },
-          { month: "Feb", safe: 145, scams: 22 },
-          { month: "Mar", safe: 180, scams: 18 },
-          { month: "Apr", safe: 210, scams: 25 },
-          { month: "May", safe: 240, scams: 30 },
-          { month: "Jun", safe: 280, scams: 35 },
-        ]);
+        // Calculate trend data from actual history
+        const monthlyData = historyData.reduce((acc: any, item: any) => {
+          const date = new Date(item.createdAt);
+          const monthKey = date.toLocaleString('default', { month: 'short' });
+          if (!acc[monthKey]) {
+            acc[monthKey] = { safe: 0, scams: 0 };
+          }
+          if (item.result?.isFake) {
+            acc[monthKey].scams++;
+          } else {
+            acc[monthKey].safe++;
+          }
+          return acc;
+        }, {});
+
+        const trendData = Object.entries(monthlyData).map(([month, data]: [string, any]) => ({
+          month,
+          safe: data.safe,
+          scams: data.scams,
+        }));
+        setTrendData(trendData);
+
+        // Calculate today's count
+        const today = new Date();
+        const todayStr = today.toISOString().slice(0, 10);
+        const todayScans = historyData.filter((item: any) =>
+          item.createdAt?.startsWith(todayStr),
+        ).length;
+        setTodayCount(todayScans);
+
+        // Calculate this week's count
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const weekScans = historyData.filter(
+          (item: any) => new Date(item.createdAt) >= weekAgo,
+        ).length;
+        setWeekCount(weekScans);
+
+        // Calculate trend percentage (compare last 2 months)
+        const months = Object.keys(monthlyData);
+        if (months.length >= 2) {
+          const lastMonth = monthlyData[months[months.length - 1]];
+          const prevMonth = monthlyData[months[months.length - 2]];
+          const lastTotal = lastMonth.safe + lastMonth.scams;
+          const prevTotal = prevMonth.safe + prevMonth.scams;
+          if (prevTotal > 0) {
+            const percentChange = Math.round(((lastTotal - prevTotal) / prevTotal) * 100);
+            setTrendPercent(percentChange);
+          }
+        }
       } catch (error) {
         console.error("Failed to fetch admin data:", error);
       } finally {
@@ -116,7 +159,7 @@ function AdminHome() {
               icon={ScanSearch}
               label="Total scans"
               value={adminStats?.totalScans?.toLocaleString() || "0"}
-              sub="+412 today"
+              sub={`+${todayCount} today`}
               color="var(--clay-purple)"
             />
             <Stat
@@ -130,7 +173,7 @@ function AdminHome() {
               icon={Users}
               label="Active users"
               value={adminStats?.activeUsers?.toLocaleString() || "0"}
-              sub="+86 this week"
+              sub={`+${weekCount} this week`}
               color="var(--clay-green)"
             />
             <Stat
@@ -148,7 +191,8 @@ function AdminHome() {
                 <div className="flex items-center justify-between">
                   <h2 className="font-display text-2xl font-bold">Scan volume · last 6 months</h2>
                   <span className="clay-pill inline-flex items-center gap-1.5">
-                    <TrendingUp className="h-3 w-3" /> +24%
+                    <TrendingUp className="h-3 w-3" /> {trendPercent > 0 ? "+" : ""}
+                    {trendPercent}%
                   </span>
                 </div>
                 <div className="mt-4 h-64">
@@ -246,7 +290,7 @@ function AdminHome() {
             </FadeIn>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[1fr_1fr_1fr]">
+          <div className="grid gap-6 lg:grid-cols-[1fr]">
             <FadeIn delay={0.2}>
               <div className="clay p-6">
                 <div className="flex items-center justify-between">
@@ -259,115 +303,33 @@ function AdminHome() {
                   </span>
                 </div>
                 <ul className="mt-4 space-y-3 text-sm">
-                  {[
-                    {
-                      t: "Scan flagged",
-                      d: "'Crypto wallet activation' · 96%",
-                      c: "var(--clay-pink)",
-                      ago: "8s",
-                    },
-                    {
-                      t: "New user",
-                      d: "anika.r@gmail.com from Karachi",
-                      c: "var(--clay-blue)",
-                      ago: "42s",
-                    },
-                    {
-                      t: "Pattern updated",
-                      d: "Added 'reshipping mule' v2",
-                      c: "var(--clay-yellow)",
-                      ago: "3m",
-                    },
-                    {
-                      t: "Safe verdict",
-                      d: "'Backend Engineer · Stripe'",
-                      c: "var(--clay-green)",
-                      ago: "5m",
-                    },
-                  ].map((x, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span
-                        className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-lg"
-                        style={{ background: x.c }}
-                      >
-                        <Activity className="h-3.5 w-3.5" />
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold">{x.t}</p>
-                        <p className="truncate text-xs text-muted-foreground">{x.d}</p>
-                      </div>
-                      <span className="text-[10px] text-muted-foreground">{x.ago}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.25}>
-              <div className="clay p-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-display text-lg font-bold">Top regions</h3>
-                  <Globe2 className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <ul className="mt-4 space-y-3">
-                  {[
-                    { l: "Pakistan", v: 38, c: "var(--clay-purple)" },
-                    { l: "India", v: 27, c: "var(--clay-pink)" },
-                    { l: "Nigeria", v: 14, c: "var(--clay-orange)" },
-                    { l: "Philippines", v: 11, c: "var(--clay-blue)" },
-                    { l: "Other", v: 10, c: "var(--clay-yellow)" },
-                  ].map((x) => (
-                    <li key={x.l}>
-                      <div className="flex items-center justify-between text-xs font-semibold">
-                        <span>{x.l}</span>
-                        <span className="text-muted-foreground">{x.v}%</span>
-                      </div>
-                      <div className="clay-inset mt-1 h-2 overflow-hidden rounded-full">
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: `${x.v}%`, background: x.c }}
-                        />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.3}>
-              <div className="clay p-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-display text-lg font-bold">System health</h3>
-                  <span
-                    className="clay-pill text-[10px]"
-                    style={{ background: "var(--clay-green)" }}
-                  >
-                    All green
-                  </span>
-                </div>
-                <div className="mt-4 space-y-3">
-                  {[
-                    { l: "API latency", v: "184 ms", icon: Server, c: "var(--clay-blue)" },
-                    { l: "Model accuracy", v: "94.2 %", icon: Cpu, c: "var(--clay-purple)" },
-                    { l: "Uptime", v: "99.98 %", icon: Activity, c: "var(--clay-green)" },
-                  ].map((x) => {
-                    const Icon = x.icon;
-                    return (
-                      <div key={x.l} className="clay-inset flex items-center gap-3 p-3">
+                  {recentChecks.length > 0 ? (
+                    recentChecks.slice(0, 4).map((c) => (
+                      <li key={c.id} className="flex items-start gap-3">
                         <span
-                          className="grid h-9 w-9 place-items-center rounded-xl"
-                          style={{ background: x.c }}
+                          className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-lg"
+                          style={{ background: c.verdict === "scam" ? "var(--clay-pink)" : "var(--clay-green)" }}
                         >
-                          <Icon className="h-4 w-4" />
+                          <Activity className="h-3.5 w-3.5" />
                         </span>
-                        <div className="flex-1">
-                          <p className="text-xs text-muted-foreground">{x.l}</p>
-                          <p className="font-display text-lg font-bold">{x.v}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold">{c.verdict === "scam" ? "Scan flagged" : "Safe verdict"}</p>
+                          <p className="truncate text-xs text-muted-foreground">{c.title}</p>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                        <span className="text-[10px] text-muted-foreground">Just now</span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-center text-xs text-muted-foreground py-4">
+                      No recent activity
+                    </li>
+                  )}
+                </ul>
+                {recentChecks.length === 0 && (
+                  <p className="text-center text-xs text-muted-foreground py-4">
+                    No recent activity
+                  </p>
+                )}
               </div>
             </FadeIn>
           </div>
