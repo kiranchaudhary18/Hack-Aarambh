@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { api } from "@/lib/api";
 
 const items = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -24,7 +25,21 @@ const items = [
 export function Sidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
+  const [profile, setProfile] = useState<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await api.getProfile();
+        setProfile(data);
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   // Stagger entry animation for sidebar elements
   useEffect(() => {
@@ -141,18 +156,21 @@ export function Sidebar() {
               </span>
             </div>
             <p className="font-space text-[14.5px] font-extrabold text-[oklch(0.24_0.04_270)] mt-1.5">
-              12 / 20 scans
+              {profile?.scansUsed || 0} / {profile?.scansLimit || 20} scans
             </p>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200/80 p-[1.5px] relative">
               <div
                 className="h-full rounded-full transition-all duration-1000 ease-out"
                 style={{
-                  width: "60%",
+                  width: `${((profile?.scansUsed || 0) / (profile?.scansLimit || 20)) * 100}%`,
                   background: "linear-gradient(90deg, oklch(0.68 0.16 295), oklch(0.83 0.13 55))",
                 }}
               />
               {/* Glow peak */}
-              <div className="absolute top-0 bottom-0 left-[60%] w-2 h-full bg-white/60 blur-[1px]" />
+              <div
+                className="absolute top-0 bottom-0 w-2 h-full bg-white/60 blur-[1px]"
+                style={{ left: `${((profile?.scansUsed || 0) / (profile?.scansLimit || 20)) * 100}%` }}
+              />
             </div>
           </div>
 
@@ -166,7 +184,7 @@ export function Sidebar() {
                 {/* Avatar with luxury clay border */}
                 <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-[oklch(0.82_0.1_295)] to-[oklch(0.85_0.12_70)] p-[2px] shadow-md">
                   <div className="h-full w-full rounded-full bg-white flex items-center justify-center font-space text-[11px] font-extrabold text-[oklch(0.24_0.04_270)]">
-                    AK
+                    {profile?.name ? profile.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2) : "U"}
                   </div>
                 </div>
                 {/* Live online dot */}
@@ -174,10 +192,10 @@ export function Sidebar() {
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="font-space text-xs font-extrabold text-[oklch(0.24_0.04_270)] truncate">
-                  Aisha Khan
+                  {profile?.name || "User"}
                 </span>
                 <span className="text-[9.5px] font-semibold text-muted-foreground truncate">
-                  aisha@scamsniff.ai
+                  {profile?.email || "user@example.com"}
                 </span>
               </div>
             </div>
