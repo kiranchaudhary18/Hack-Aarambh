@@ -631,7 +631,7 @@ function Login() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="kiran@hacksniff.ai"
+                        placeholder="Enter your email"
                         className="w-full h-11 pl-11 pr-4 bg-[oklch(0.95_0.01_95/0.8)] border border-[oklch(0.88_0.02_95)] rounded-full outline-none text-xs sm:text-sm font-semibold text-[oklch(0.24_0.04_270)] placeholder:text-muted-foreground/60 shadow-[inset_2px_2px_5px_rgba(180,160,200,0.08),_inset_-2px_-2px_5px_rgba(255,255,255,0.7)] hover:border-[oklch(0.82_0.1_295/0.3)] focus:border-[oklch(0.62_0.18_295/0.5)] focus:ring-4 focus:ring-[oklch(0.62_0.18_295/0.1)] focus:bg-white transition-all duration-300 font-sans"
                       />
                     </div>
@@ -709,27 +709,6 @@ function Login() {
                     />
                   </button>
                 </form>
-
-                {/* Divider with moving shine animation */}
-                <div className="flex items-center gap-2.5 text-[9px] font-bold text-muted-foreground uppercase tracking-widest px-2 font-space relative overflow-hidden">
-                  <span className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-[oklch(0.85_0.03_270/0.4)]" />
-                  <span>Cloud Gateway</span>
-                  <span className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-[oklch(0.85_0.03_270/0.4)]" />
-                </div>
-
-                {/* Google Sign In with hover spotlight */}
-                <button
-                  type="button"
-                  className="w-full h-11 flex items-center justify-center gap-2.5 rounded-full bg-white border border-[oklch(0.88_0.02_95)] text-xs font-extrabold text-[oklch(0.24_0.04_270)] hover:bg-[oklch(0.98_0.01_95)] hover:border-[oklch(0.62_0.18_295/0.3)] hover:shadow-[0_4px_12px_rgba(98,0,185,0.08)] active:scale-[0.99] transition-all duration-200 cursor-pointer font-space shadow-[inset_0_1px_2px_rgba(255,255,255,0.9)]"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4">
-                    <path
-                      fill="#EA4335"
-                      d="M12 10.2v3.9h5.5c-.2 1.4-1.6 4.1-5.5 4.1-3.3 0-6-2.7-6-6.2s2.7-6.2 6-6.2c1.9 0 3.2.8 3.9 1.5l2.7-2.6C16.9 3.1 14.7 2 12 2 6.9 2 2.8 6.1 2.8 12S6.9 22 12 22c6.9 0 9.6-4.8 9.6-9.2 0-.6-.1-1-.2-1.6H12z"
-                    />
-                  </svg>
-                  <span>Verify Identity via Google</span>
-                </button>
 
                 {/* Signup redirect */}
                 <p className="text-center text-xs font-medium text-muted-foreground font-sans">
