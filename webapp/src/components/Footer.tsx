@@ -17,41 +17,57 @@ export function Footer() {
               </div>
             </div>
             <p className="mt-5 max-w-xs text-sm text-muted-foreground">
-              We help job seekers spot fraud before they reply. Built independently, funded by Pro upgrades — never by your data.
+              We help job seekers spot fraud before they reply. Built independently, funded by Pro
+              upgrades — never by your data.
             </p>
             <div className="mt-5 flex items-center gap-2">
               {[Github, Twitter, Linkedin].map((I, i) => (
-                <a key={i} href="#" className="clay-btn grid h-10 w-10 place-items-center" aria-label="social">
+                <a
+                  key={i}
+                  href="#"
+                  className="clay-btn grid h-10 w-10 place-items-center"
+                  aria-label="social"
+                >
                   <I className="h-4 w-4" />
                 </a>
               ))}
             </div>
           </div>
 
-          <FooterCol title="Product" links={[
-            { l: "Analyze offer", to: "/analyze" },
-            { l: "Dashboard", to: "/dashboard" },
-            { l: "History", to: "/history" },
-            { l: "Awareness", to: "/awareness" },
-          ]} />
-          <FooterCol title="Company" links={[
-            { l: "About", to: "/about" },
-            { l: "Contact", to: "/contact" },
-            { l: "Help center", to: "/help" },
-            { l: "Report a scam", to: "/report" },
-          ]} />
-          <FooterCol title="Resources" links={[
-            { l: "Scam patterns", to: "/patterns" },
-            { l: "Privacy policy", to: "/privacy" },
-            { l: "Terms & conditions", to: "/terms" },
-            { l: "Awareness library", to: "/awareness" },
-          ]} />
+          <FooterCol
+            title="Product"
+            links={[
+              { l: "Analyze offer", to: "/analyze" },
+              { l: "Dashboard", to: "/dashboard" },
+              { l: "History", to: "/history" },
+              { l: "Awareness", to: "/awareness" },
+            ]}
+          />
+          <FooterCol
+            title="Company"
+            links={[
+              { l: "About", to: "/about" },
+              { l: "Contact", to: "/contact" },
+              { l: "Help center", to: "/help" },
+              { l: "Report a scam", to: "/report" },
+            ]}
+          />
+          <FooterCol
+            title="Resources"
+            links={[
+              { l: "Scam patterns", to: "/patterns" },
+              { l: "Privacy policy", to: "/privacy" },
+              { l: "Terms & conditions", to: "/terms" },
+              { l: "Awareness library", to: "/awareness" },
+            ]}
+          />
         </div>
 
         <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:items-center">
           <p>© 2026 ScamSniff Labs · All rights reserved.</p>
           <p className="flex items-center gap-2">
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-[color:var(--success)]" /> All systems normal · 99.98% uptime
+            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-[color:var(--success)]" />{" "}
+            All systems normal · 99.98% uptime
           </p>
           <p>Made with care for job seekers worldwide.</p>
         </div>
@@ -67,7 +83,12 @@ function FooterCol({ title, links }: { title: string; links: { l: string; to: st
       <ul className="mt-4 space-y-2.5">
         {links.map((x) => (
           <li key={x.l}>
-            <Link to={x.to} className="text-sm text-muted-foreground transition hover:text-foreground">{x.l}</Link>
+            <Link
+              to={x.to}
+              className="text-sm text-muted-foreground transition hover:text-foreground"
+            >
+              {x.l}
+            </Link>
           </li>
         ))}
       </ul>
