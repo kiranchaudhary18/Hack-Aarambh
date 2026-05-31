@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { ClayBlobs } from "@/components/ClayBlobs";
 import { FadeIn } from "@/components/Animated";
-import { scamTypes, trendData } from "@/lib/mockData";
+import { api } from "@/lib/api";
 import {
   ResponsiveContainer,
   BarChart,
@@ -33,18 +33,76 @@ export const Route = createFileRoute("/admin/analytics")({
 
 function Analytics() {
   const [loading, setLoading] = useState(true);
+  const [trendData, setTrendData] = useState<any[]>([]);
+  const [scamTypes, setScamTypes] = useState<any[]>([]);
 
   useEffect(() => {
-    // Simulate loading for analytics data
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
+    const fetchData = async () => {
+      try {
+        const historyData = await api.getHistory();
+
+        // Calculate trend data from actual history
+        const monthlyData = historyData.reduce((acc: any, item: any) => {
+          const date = new Date(item.createdAt);
+          const monthKey = date.toLocaleString("default", { month: "short" });
+          if (!acc[monthKey]) {
+            acc[monthKey] = { safe: 0, scams: 0 };
+          }
+          if (item.result?.isFake) {
+            acc[monthKey].scams++;
+          } else {
+            acc[monthKey].safe++;
+          }
+          return acc;
+        }, {});
+
+        const trend = Object.entries(monthlyData).map(([month, data]: [string, any]) => ({
+          month,
+          safe: data.safe,
+          scams: data.scams,
+        }));
+        setTrendData(trend);
+
+        // Calculate scam types from reasons
+        const reasonCounts: any = {};
+        historyData.forEach((item: any) => {
+          if (item.result?.isFake && item.result?.reasons) {
+            item.result.reasons.forEach((reason: string) => {
+              reasonCounts[reason] = (reasonCounts[reason] || 0) + 1;
+            });
+          }
+        });
+
+        const colors = [
+          "oklch(0.62 0.18 295)",
+          "oklch(0.72 0.16 155)",
+          "oklch(0.66 0.22 22)",
+          "oklch(0.75 0.15 45)",
+          "oklch(0.68 0.20 280)",
+        ];
+
+        const scamTypesData = Object.entries(reasonCounts)
+          .map(([name, value]: [string, any]) => ({
+            name,
+            value,
+            color: colors[Object.keys(reasonCounts).indexOf(name) % colors.length],
+          }))
+          .sort((a, b) => b.value - a.value)
+          .slice(0, 5);
+        setScamTypes(scamTypesData);
+      } catch (error) {
+        console.error("Failed to fetch analytics data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const conversion = trendData.map((d) => ({
     month: d.month,
-    rate: Math.round((d.scams / (d.scams + d.safe)) * 100),
+    rate: d.scams + d.safe > 0 ? Math.round((d.scams / (d.scams + d.safe)) * 100) : 0,
   }));
 
   if (loading) {
