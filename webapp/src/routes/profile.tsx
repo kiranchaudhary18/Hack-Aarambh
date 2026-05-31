@@ -14,6 +14,7 @@ import {
   Sparkles,
   Zap,
   Loader2,
+  User,
 } from "lucide-react";
 import { gsap } from "gsap";
 import { toast } from "sonner";
@@ -349,8 +350,8 @@ function Profile() {
                   </div>
 
                   <div className="mt-5 space-y-4">
-                    <Row icon={User} label="Full name" value="Aisha Khan" />
-                    <Row icon={Mail} label="Email address" value="aisha@scamsniff.ai" />
+                    <Row icon={User} label="Full name" value={profile?.name || "Not set"} />
+                    <Row icon={Mail} label="Email address" value={profile?.email || "Not set"} />
                     <Row
                       icon={KeyRound}
                       label="Password status"
