@@ -8,9 +8,13 @@ import * as bcrypt from "bcrypt";
 export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  async create(email: string, password: string) {
+  async create(email: string, password: string, name?: string) {
+    console.log("UsersService.create called with:", { email, password: password ? "***" : "undefined", name });
+    if (!password) {
+      throw new Error("Password is required");
+    }
     const hashed = await bcrypt.hash(password, 10);
-    const user = this.repo.create({ email, password: hashed });
+    const user = this.repo.create({ email, password: hashed, name });
     return this.repo.save(user);
   }
 
