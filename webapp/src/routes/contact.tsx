@@ -8,11 +8,19 @@ import { FadeIn } from "@/components/Animated";
 import { Mail, MessageSquare, Twitter, Github, Linkedin, Send, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({ meta: [
-    { title: "Contact — ScamSniff" },
-    { name: "description", content: "Get in touch with the ScamSniff team. We reply within 24 hours." },
-    { property: "og:title", content: "Contact ScamSniff" },
-  ]}),
+  head: () => ({
+    meta: [
+      { title: "Contact — ScamSniff" },
+      {
+        name: "description",
+        content: "Get in touch with the ScamSniff team. We reply within 24 hours.",
+      },
+      {
+        property: "og:title",
+        content: "Contact ScamSniff",
+      },
+    ],
+  }),
   component: Contact,
 });
 
@@ -26,7 +34,8 @@ function Contact() {
     const email = form.email.trim();
     const message = form.message.trim();
     if (!name || name.length > 100) return toast.error("Please enter a valid name (1–100 chars).");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255) return toast.error("Please enter a valid email.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255)
+      return toast.error("Please enter a valid email.");
     if (!message || message.length > 1000) return toast.error("Message must be 1–1000 characters.");
     setSending(true);
     setTimeout(() => {
@@ -43,8 +52,12 @@ function Contact() {
       <section className="relative mx-auto w-[min(1180px,94%)] pt-12">
         <FadeIn>
           <span className="clay-pill inline-block">Contact</span>
-          <h1 className="mt-4 font-display text-5xl font-bold sm:text-6xl">Let's <span className="text-gradient">talk.</span></h1>
-          <p className="mt-4 max-w-xl text-muted-foreground">Press, partnerships, bug reports, or just a hello — we read every message.</p>
+          <h1 className="mt-4 font-display text-5xl font-bold sm:text-6xl">
+            Let's <span className="text-gradient">talk.</span>
+          </h1>
+          <p className="mt-4 max-w-xl text-muted-foreground">
+            Press, partnerships, bug reports, or just a hello — we read every message.
+          </p>
         </FadeIn>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
@@ -83,8 +96,15 @@ function Contact() {
                 />
                 <p className="mt-1 text-xs text-muted-foreground">{form.message.length}/1000</p>
               </div>
-              <button disabled={sending} className="clay-primary inline-flex items-center gap-2 px-7 py-3.5 font-semibold disabled:opacity-70">
-                {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              <button
+                disabled={sending}
+                className="clay-primary inline-flex items-center gap-2 px-7 py-3.5 font-semibold disabled:opacity-70"
+              >
+                {sending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
                 {sending ? "Sending…" : "Send message"}
               </button>
             </form>
@@ -94,7 +114,10 @@ function Contact() {
             <div className="space-y-5">
               <div className="clay p-6">
                 <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 place-items-center rounded-2xl" style={{ background: "var(--clay-pink)" }}>
+                  <div
+                    className="grid h-10 w-10 place-items-center rounded-2xl"
+                    style={{ background: "var(--clay-pink)" }}
+                  >
                     <Mail className="h-5 w-5" />
                   </div>
                   <div>
@@ -105,7 +128,10 @@ function Contact() {
               </div>
               <div className="clay p-6">
                 <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 place-items-center rounded-2xl" style={{ background: "var(--clay-green)" }}>
+                  <div
+                    className="grid h-10 w-10 place-items-center rounded-2xl"
+                    style={{ background: "var(--clay-green)" }}
+                  >
                     <MessageSquare className="h-5 w-5" />
                   </div>
                   <div>
@@ -128,7 +154,9 @@ function Contact() {
           </FadeIn>
         </div>
       </section>
-      <div className="mt-20"><Footer /></div>
+      <div className="mt-20">
+        <Footer />
+      </div>
     </div>
   );
 }

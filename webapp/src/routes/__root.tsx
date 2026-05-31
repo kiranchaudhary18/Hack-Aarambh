@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { ShieldOff, Home, ScanSearch } from "lucide-react";
-
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -25,10 +24,16 @@ function NotFoundComponent() {
           Looks like this offer was too good to be true. The page you're looking for doesn't exist.
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Link to="/" className="clay-primary inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold">
+          <Link
+            to="/"
+            className="clay-primary inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold"
+          >
             <Home className="h-4 w-4" /> Go home
           </Link>
-          <Link to="/analyze" className="clay-btn inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold">
+          <Link
+            to="/analyze"
+            className="clay-btn inline-flex items-center gap-2 px-5 py-3 text-sm font-semibold"
+          >
             <ScanSearch className="h-4 w-4" /> Sniff an offer
           </Link>
         </div>
@@ -78,10 +83,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "ScamSniff — Detect job scams before they cost you" },
-      { name: "description", content: "Paste any job offer and instantly see if it's a scam. AI-powered red-flag detection with a soft, friendly claymorphism UI." },
+      {
+        name: "description",
+        content:
+          "Paste any job offer and instantly see if it's a scam. AI-powered red-flag detection with a soft, friendly claymorphism UI.",
+      },
       { name: "author", content: "ScamSniff" },
       { property: "og:title", content: "ScamSniff — Detect job scams before they cost you" },
-      { property: "og:description", content: "AI-powered job offer scam detection. Paste, scan, stay safe." },
+      {
+        property: "og:description",
+        content: "AI-powered job offer scam detection. Paste, scan, stay safe.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -90,7 +102,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300..700&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300..700&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
