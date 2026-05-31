@@ -8,20 +8,18 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { AnalysisService } from "./analysis.service";
+import { JobQueueService } from "../queue/job-queue.service";
 
 class TextDto {
-  text: string;
+  text!: string;
 }
 
 @Controller("analysis")
 export class AnalysisController {
   constructor(
     private svc: AnalysisService,
-    private queue: any,
-  ) {
-    // attach queue to controller for enqueueing (injection by module)
-    (this as any).queue = queue;
-  }
+    private queue: JobQueueService,
+  ) {}
 
   @Post("text")
   analyzeText(@Body() body: TextDto, @Req() req: any) {
@@ -45,7 +43,7 @@ export class AnalysisController {
     const id =
       Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
     // enqueue job
-    (this as any).queue.enqueue({ id, buffer: file.buffer, userId });
+    this.queue.enqueue({ id, buffer: file.buffer, userId });
     return { jobId: id, status: "queued" };
   }
 }
