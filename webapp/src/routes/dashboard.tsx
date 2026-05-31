@@ -99,6 +99,30 @@ function Dashboard() {
 
   const scamCount = recentChecks.filter((c) => c.verdict === "scam").length;
 
+  // Calculate average risk score
+  const avgRiskScore =
+    recentChecks.length > 0
+      ? Math.round(recentChecks.reduce((sum, c) => sum + c.score, 0) / recentChecks.length)
+      : 0;
+
+  // Determine risk profile
+  const riskProfile =
+    avgRiskScore < 30 ? "low risk profile" : avgRiskScore < 60 ? "medium risk profile" : "high risk profile";
+
+  // Calculate trend (compare recent vs older checks)
+  const midPoint = Math.floor(recentChecks.length / 2);
+  const recentAvg =
+    midPoint > 0
+      ? recentChecks.slice(0, midPoint).reduce((sum, c) => sum + c.score, 0) / midPoint
+      : avgRiskScore;
+  const olderAvg =
+    midPoint > 0
+      ? recentChecks.slice(midPoint).reduce((sum, c) => sum + c.score, 0) / midPoint
+      : avgRiskScore;
+  const riskTrend = recentAvg - olderAvg;
+  const riskTrendPercent = olderAvg > 0 ? Math.round((riskTrend / olderAvg) * 100) : 0;
+  const riskTrendUp = riskTrend > 0;
+
   // Stagger reveal on mount
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -315,12 +339,15 @@ function Dashboard() {
               <StatCard
                 icon={TrendingUp}
                 label="Avg Risk Quotient"
-                value="48%"
-                sub="medium risk profile"
+                value={`${avgRiskScore}%`}
+                sub={riskProfile}
                 color="bg-amber-500/10 text-amber-600"
-                trend="-12% decline"
-                trendUp={false}
-                sparklinePoints="0,5 20,12 40,18 60,22 80,28 100,30"
+                trend={`${riskTrendUp ? "+" : ""}${riskTrendPercent}% ${riskTrendUp ? "increase" : "decline"}`}
+                trendUp={riskTrendUp}
+                sparklinePoints={recentChecks.length > 0
+                  ? recentChecks.slice(0, 6).map((c, i) => `${i * 20},${100 - c.score}`).join(" ")
+                  : "0,50 20,50 40,50 60,50 80,50 100,50"
+                }
               />
             </div>
 
@@ -478,16 +505,28 @@ function Dashboard() {
                     day one.
                   </p>
                   {/* Warning dynamic graphic alerts */}
-                  <div className="tip-alert-badge bg-rose-50/50 p-3 rounded-2xl border border-rose-100 flex items-start gap-3 shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)]">
-                    <AlertTriangle className="h-5 w-5 shrink-0 text-rose-500" />
-                    <div className="font-sans text-[11px] text-[oklch(0.3_0.03_270)]">
-                      <p className="font-bold">Urgent Pressure Spotted</p>
-                      <p className="text-muted-foreground mt-0.5">
-                        3 of your recent scanned job offers contained aggressive deadlines. Slow
-                        down.
-                      </p>
+                  {recentChecks.length > 0 && scamCount > 0 && (
+                    <div className="tip-alert-badge bg-rose-50/50 p-3 rounded-2xl border border-rose-100 flex items-start gap-3 shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)]">
+                      <AlertTriangle className="h-5 w-5 shrink-0 text-rose-500" />
+                      <div className="font-sans text-[11px] text-[oklch(0.3_0.03_270)]">
+                        <p className="font-bold">Urgent Pressure Spotted</p>
+                        <p className="text-muted-foreground mt-0.5">
+                          {scamCount} of your recent scanned job offers were flagged as scams. Stay vigilant.
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )}
+                  {recentChecks.length === 0 && (
+                    <div className="tip-alert-badge bg-emerald-50/50 p-3 rounded-2xl border border-emerald-100 flex items-start gap-3 shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)]">
+                      <ShieldCheck className="h-5 w-5 shrink-0 text-emerald-500" />
+                      <div className="font-sans text-[11px] text-[oklch(0.3_0.03_270)]">
+                        <p className="font-bold">Start Analyzing</p>
+                        <p className="text-muted-foreground mt-0.5">
+                          Upload job offers to build your threat detection history.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <Link
@@ -513,25 +552,27 @@ function Dashboard() {
                       Defensive Streak
                     </p>
                     <p className="text-xl font-extrabold text-[oklch(0.24_0.04_270)] font-space">
-                      14 Active Days
+                      {recentChecks.length > 0 ? `${recentChecks.length} Active Days` : "0 Active Days"}
                     </p>
                   </div>
                 </div>
                 {/* Streak grid dots */}
                 <div className="mt-4 flex gap-1.5">
-                  {Array.from({ length: 14 }).map((_, i) => (
+                  {Array.from({ length: Math.min(recentChecks.length, 14) }).map((_, i) => (
                     <span
                       key={i}
-                      className={`h-5 flex-1 rounded-md transition-all duration-300 ${
-                        i < 12
-                          ? "bg-gradient-to-t from-amber-500 to-amber-400 shadow-sm shadow-amber-200"
-                          : "bg-gray-200"
-                      }`}
+                      className="h-5 flex-1 rounded-md bg-gradient-to-t from-amber-500 to-amber-400 shadow-sm shadow-amber-200 transition-all duration-300"
+                    />
+                  ))}
+                  {recentChecks.length < 14 && Array.from({ length: 14 - recentChecks.length }).map((_, i) => (
+                    <span
+                      key={`empty-${i}`}
+                      className="h-5 flex-1 rounded-md bg-gray-200 transition-all duration-300"
                     />
                   ))}
                 </div>
                 <p className="mt-3.5 text-[10px] font-bold text-muted-foreground/80 font-space tracking-wide uppercase">
-                  2 days from your personal best streak
+                  {recentChecks.length === 0 ? "Start analyzing to build your streak" : `${recentChecks.length} days active`}
                 </p>
               </div>
 
@@ -546,30 +587,38 @@ function Dashboard() {
                       Top Red Flags Spotted
                     </p>
                     <p className="text-xl font-extrabold text-[oklch(0.24_0.04_270)] font-space">
-                      Audits Profile
+                      {recentChecks.length} Audits
                     </p>
                   </div>
                 </div>
 
                 <ul className="mt-4 space-y-2 text-xs font-sans">
-                  {[
-                    { l: "Upfront software setup fees", v: 64, c: "bg-rose-500" },
-                    { l: "Urgency deadline pressure", v: 42, c: "bg-amber-500" },
-                    { l: "Public domains (gmail, outlook)", v: 28, c: "bg-indigo-500" },
-                  ].map((x) => (
-                    <li key={x.l} className="space-y-1">
-                      <div className="flex items-center justify-between text-[10.5px] font-bold text-[oklch(0.3_0.03_270)]">
-                        <span>{x.l}</span>
-                        <span className="text-muted-foreground">{x.v}%</span>
-                      </div>
-                      <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden relative">
-                        <div
-                          className={`h-full rounded-full ${x.c}`}
-                          style={{ width: `${x.v}%` }}
-                        />
-                      </div>
+                  {recentChecks.length > 0 ? (
+                    recentChecks.slice(0, 3).map((check, idx) => (
+                      <li key={check.id} className="space-y-1">
+                        <div className="flex items-center justify-between text-[10.5px] font-bold text-[oklch(0.3_0.03_270)]">
+                          <span className="truncate max-w-[150px]">{check.title}</span>
+                          <span className="text-muted-foreground">{check.score}%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden relative">
+                          <div
+                            className={`h-full rounded-full ${
+                              check.verdict === "scam"
+                                ? "bg-rose-500"
+                                : check.verdict === "suspicious"
+                                  ? "bg-amber-500"
+                                  : "bg-emerald-500"
+                            }`}
+                            style={{ width: `${check.score}%` }}
+                          />
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-center text-[10px] text-muted-foreground py-4">
+                      No audits yet
                     </li>
-                  ))}
+                  )}
                 </ul>
               </div>
 
@@ -591,10 +640,10 @@ function Dashboard() {
 
                 <div className="mt-3.5 space-y-1">
                   <p className="text-3xl font-extrabold text-emerald-600 font-space tracking-tight">
-                    $1,250
+                    ${scamCount > 0 ? scamCount * 500 : 0}
                   </p>
                   <p className="text-[10px] text-muted-foreground font-semibold font-sans">
-                    Across 3 caught scam models since you joined.
+                    Across {scamCount} caught scam{scamCount !== 1 ? "s" : ""} since you joined.
                   </p>
                 </div>
 
