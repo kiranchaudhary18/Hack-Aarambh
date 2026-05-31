@@ -10,16 +10,15 @@ import { History } from "./history/history.entity";
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: (process.env.DB_TYPE as any) || "postgres",
-      host: process.env.DB_HOST || "localhost",
-      port: Number(process.env.DB_PORT || 5432),
-      username: process.env.DB_USER || "postgres",
-      password: process.env.DB_PASS || "postgres",
-      database: process.env.DB_NAME || "fakejob",
+      type: "postgres",
+      host: "localhost",
+      port: 5432,
+      username: "fackjob_user",
+      password: "fackjobdb21",
+      database: "fakejob",
       entities: [__dirname + "/**/*.entity{.ts,.js}"],
-      synchronize: process.env.TYPEORM_SYNC
-        ? process.env.TYPEORM_SYNC === "true"
-        : true,
+      synchronize: true,
+      logging: false,
     }),
     UsersModule,
     AuthModule,
