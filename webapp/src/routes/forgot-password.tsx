@@ -1,9 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ShieldCheck, Mail, ArrowRight, MailCheck } from "lucide-react";
+import { ShieldCheck, Mail, ArrowRight, MailCheck, Loader2 } from "lucide-react";
 import { ClayBlobs } from "@/components/ClayBlobs";
 import { FadeIn } from "@/components/Animated";
-import { Field } from "@/routes/login";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -18,7 +19,29 @@ export const Route = createFileRoute("/forgot-password")({
 });
 
 function Forgot() {
-  const [sent, setSent] = useState(false);
+  const nav = useNavigate();
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Email is required");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await api.forgotPassword(email);
+      toast.success("Verification code sent to your email");
+      nav({ to: "/verify-code", search: { email } as any });
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send verification code");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       <ClayBlobs />
@@ -33,57 +56,53 @@ function Forgot() {
             </span>
           </Link>
 
-          {!sent ? (
-            <div className="clay-lg p-8">
-              <h1 className="font-display text-3xl font-bold">Forgot password?</h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Drop your email and we'll send a verification link to reset it.
-              </p>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSent(true);
-                }}
-                className="mt-6 space-y-4"
-              >
-                <Field
-                  icon={<Mail className="h-4 w-4" />}
-                  label="Email"
-                  type="email"
-                  placeholder="you@email.com"
-                />
-                <button className="clay-primary mt-2 flex w-full items-center justify-center gap-2 py-3 font-semibold">
-                  Send reset link <ArrowRight className="h-4 w-4" />
-                </button>
-              </form>
-              <p className="mt-6 text-center text-sm text-muted-foreground">
-                Remembered it?{" "}
-                <Link to="/login" className="font-semibold text-[color:var(--primary)]">
-                  Back to login
-                </Link>
-              </p>
-            </div>
-          ) : (
-            <div className="clay-lg p-8 text-center">
-              <div
-                className="mx-auto grid h-20 w-20 place-items-center rounded-3xl"
-                style={{ background: "var(--clay-green)" }}
-              >
-                <MailCheck className="h-10 w-10" />
+          <div className="clay-lg p-8">
+            <h1 className="font-display text-3xl font-bold">Forgot password?</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Drop your email and we'll send a verification code to reset it.
+            </p>
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-muted-foreground pl-1.5 tracking-wider uppercase flex items-center gap-1">
+                  <Mail className="h-3 w-3" /> Email
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    <Mail className="h-4 w-4" />
+                  </span>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@email.com"
+                    className="w-full h-11 pl-11 pr-4 bg-background border border-input rounded-full outline-none text-sm font-semibold placeholder:text-muted-foreground/60 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all"
+                  />
+                </div>
               </div>
-              <h1 className="mt-6 font-display text-3xl font-bold">Check your inbox</h1>
-              <p className="mt-2 text-sm text-muted-foreground">
-                We sent a verification link. It expires in 30 minutes. Don't see it? Check spam —
-                ironic, we know.
-              </p>
               <button
-                onClick={() => setSent(false)}
-                className="clay-btn mt-6 px-5 py-2.5 text-sm font-semibold"
+                type="submit"
+                disabled={isLoading}
+                className="clay-primary mt-2 flex w-full items-center justify-center gap-2 py-3 font-semibold disabled:opacity-50"
               >
-                Resend
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> Sending...
+                  </>
+                ) : (
+                  <>
+                    Send verification code <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
               </button>
-            </div>
-          )}
+            </form>
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              Remembered it?{" "}
+              <Link to="/login" className="font-semibold text-primary">
+                Back to login
+              </Link>
+            </p>
+          </div>
         </FadeIn>
       </div>
     </div>
