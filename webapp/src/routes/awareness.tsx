@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { tips } from "@/lib/mockData";
 import * as Icons from "lucide-react";
 import {
   ShieldAlert,
@@ -250,20 +249,20 @@ function Awareness() {
                 </div>
 
                 <div className="grid gap-4.5 sm:grid-cols-2">
-                  {tips.map((t) => {
+                  {scamPatterns.map((t) => {
                     const Icon =
                       (
                         Icons as unknown as Record<
                           string,
                           React.ComponentType<{ className?: string; strokeWidth?: number }>
                         >
-                      )[t.icon] || Sparkles;
-                    const isOpen = activeTab === t.title;
+                      )[t.name] || Sparkles;
+                    const isOpen = activeTab === t.name;
 
                     return (
                       <div
-                        key={t.title}
-                        onClick={() => setActiveTab(isOpen ? null : t.title)}
+                        key={t.name}
+                        onClick={() => setActiveTab(isOpen ? null : t.name)}
                         className={`bg-white/75 border rounded-[32px] p-5 shadow-[0_12px_30px_rgba(180,160,200,0.05),_inset_0_2px_4px_rgba(255,255,255,0.95)] backdrop-blur-xl transition-all duration-300 hover:scale-[1.015] hover:shadow-[0_15px_35px_rgba(180,160,200,0.1)] group cursor-pointer ${
                           isOpen ? "border-[oklch(0.62_0.18_295/0.4)]" : "border-white/80"
                         }`}
@@ -282,7 +281,7 @@ function Awareness() {
                         </div>
 
                         <h3 className="mt-4 font-space text-sm sm:text-base font-extrabold text-[oklch(0.24_0.04_270)] group-hover:text-[oklch(0.62_0.18_295)] transition-colors duration-300">
-                          {t.title}
+                          {t.name}
                         </h3>
                         <p className="mt-2 font-sans text-xs text-muted-foreground leading-relaxed">
                           {t.desc}
