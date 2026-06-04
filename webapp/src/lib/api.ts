@@ -1,13 +1,10 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export async function apiRequest(endpoint: string, options: RequestInit = {}) {
-  const token = localStorage.getItem("token");
-
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
       ...options.headers,
     },
   });
@@ -69,15 +66,11 @@ export const api = {
     }),
 
   analyzePdf: (file: File) => {
-    const token = localStorage.getItem("token");
     const formData = new FormData();
     formData.append("file", file);
 
     return fetch(`${API_BASE_URL}/analysis/pdf`, {
       method: "POST",
-      headers: {
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
       body: formData,
     }).then((res) => res.json());
   },
@@ -108,9 +101,28 @@ export const api = {
 
   // Profile
   getProfile: () => apiRequest("/users/profile"),
-  updateProfile: (data: { name?: string; avatar?: string }) =>
+  updateProfile: (data: { name?: string; email?: string; avatar?: string }) =>
     apiRequest("/users/profile", {
       method: "PUT",
       body: JSON.stringify(data),
     }),
+  uploadAvatar: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return fetch(`${API_BASE_URL}/users/avatar`, {
+      method: "POST",
+      body: formData,
+    }).then((res) => res.json());
+  },
+
+  // History by ID
+  getHistoryById: (id: string) => apiRequest(`/history/${id}`),
+  deleteHistory: (id: string) =>
+    apiRequest(`/history/${id}`, {
+      method: "DELETE",
+    }),
+
+  // Analytics (for admin)
+  getAnalytics: () => apiRequest("/admin/analytics"),
 };
