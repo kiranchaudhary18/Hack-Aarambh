@@ -1,0 +1,660 @@
+text,label,source,category,language,date
+Pay ₹500 registration fee to get hired immediately,1,existing,unknown,English,2024-01-01
+"Urgent job offer! Earn ₹80,000 per month as fresher with no experience required",1,existing,unknown,English,2024-01-01
+"Work from home, easy money, passive income scheme",1,existing,unknown,English,2024-01-01
+"Limited time offer: Data entry job, ₹60,000/month, apply now",1,existing,unknown,English,2024-01-01
+"Contact recruiter@gmail.com for job offer, payment required",1,existing,unknown,English,2024-01-01
+"Get hired in 24 hours, pay training fee of ₹2000",1,existing,unknown,English,2024-01-01
+"Fresher job: ₹1,00,000 monthly salary, transfers funds daily",1,existing,unknown,English,2024-01-01
+"WhatsApp job offer: Simple work, ₹50,000/month, deposit needed",1,existing,unknown,English,2024-01-01
+"Part-time work: Earn ₹40,000/month from home, beginner friendly",1,existing,unknown,English,2024-01-01
+"Spam: Data entry ₹25,000/month, pay now to join",1,existing,unknown,English,2024-01-01
+"Telegram job: Google hiring, ₹80,000 salary, registration ₹999",1,existing,unknown,English,2024-01-01
+"Urgent hiring! ₹90,000 monthly for beginners, apply via Gmail account",1,existing,unknown,English,2024-01-01
+"Quick money job: ₹70,000/month, deposit your ID proof and ₹500",1,existing,unknown,English,2024-01-01
+Job offer from unknown sender on Yahoo mail,1,existing,unknown,English,2024-01-01
+"Work at home scheme: Simple task ₹3,000 per task guaranteed",1,existing,unknown,English,2024-01-01
+"Unverified job posting: ₹150,000/month for zero experience",1,existing,unknown,English,2024-01-01
+Facebook job scam: Pay ₹300 to confirm interview slot,1,existing,unknown,English,2024-01-01
+LinkedIn fake offer: Verify account with ₹1000 payment,1,existing,unknown,English,2024-01-01
+"SMS job alert: Earn fast, pay commission first",1,existing,unknown,English,2024-01-01
+"Immediate hiring without interview, just pay registration",1,existing,unknown,English,2024-01-01
+Google job offer via random email with payment demand,1,existing,unknown,English,2024-01-01
+"Microsoft hiring for ₹200,000/month, send certificate fees",1,existing,unknown,English,2024-01-01
+"Guaranteed income: ₹50,000 monthly from mobile app task",1,existing,unknown,English,2024-01-01
+"Cryptocurrency mining job: Invest ₹5000 to earn ₹20,000/day",1,existing,unknown,English,2024-01-01
+Job guarantee scheme: Pay ₹1500 for permanent placement,1,existing,unknown,English,2024-01-01
+"Refer and earn: ₹10,000 per referral, pay ₹100 to start",1,existing,unknown,English,2024-01-01
+"Online data entry: ₹40,000/month confirmed, fees required",1,existing,unknown,English,2024-01-01
+"Hired immediately for ₹80,000/month if you send application fee now",1,existing,unknown,English,2024-01-01
+"Part time job: ₹60,000 monthly, flexible hours, registration closed",1,existing,unknown,English,2024-01-01
+"Fortune 500 company: ₹100,000/month fresher role, pay subscription",1,existing,unknown,English,2024-01-01
+TCS Software Engineer position - Apply on careers.tcs.com,0,existing,unknown,English,2024-01-01
+Google is hiring Cloud Engineers with 3-5 years experience,0,existing,unknown,English,2024-01-01
+Amazon job opening: Senior Developer at Bangalore office,0,existing,unknown,English,2024-01-01
+Microsoft Internship Program 2024 - Apply here with resume,0,existing,unknown,English,2024-01-01
+Infosys recruitment drive for recent graduates in IT,0,existing,unknown,English,2024-01-01
+Wipro hiring engineers through official job portal,0,existing,unknown,English,2024-01-01
+Cognizant careers page: Software development roles available,0,existing,unknown,English,2024-01-01
+IBM internship program open for Computer Science students,0,existing,unknown,English,2024-01-01
+LinkedIn official job posting by HR Manager at HP,0,existing,unknown,English,2024-01-01
+Accenture is recruiting across multiple locations in India,0,existing,unknown,English,2024-01-01
+"Company hiring: Software Engineer role, contact HR@company.com",0,existing,unknown,English,2024-01-01
+Formal job interview scheduled at office for tomorrow 10 AM,0,existing,unknown,English,2024-01-01
+HR department email regarding job offer letter,0,existing,unknown,English,2024-01-01
+Company official website careers page for job applications,0,existing,unknown,English,2024-01-01
+Government job recruitment via official UPSC portal,0,existing,unknown,English,2024-01-01
+Bank recruitment exam notification on official website,0,existing,unknown,English,2024-01-01
+College placement drive by reputed IT company,0,existing,unknown,English,2024-01-01
+Campus interview schedule for final year students,0,existing,unknown,English,2024-01-01
+Networking event: Meet hiring managers from tech companies,0,existing,unknown,English,2024-01-01
+Job fair organized by industry associations,0,existing,unknown,English,2024-01-01
+Official press release about company expansion and hiring,0,existing,unknown,English,2024-01-01
+Email from verified company domain about job opportunity,0,existing,unknown,English,2024-01-01
+LinkedIn connection from verified company recruiter,0,existing,unknown,English,2024-01-01
+Freelance project posting on Upwork by verified client,0,existing,unknown,English,2024-01-01
+Contract work opportunity from established agency,0,existing,unknown,English,2024-01-01
+Consulting project from reputable firm,0,existing,unknown,English,2024-01-01
+Teaching position at university sent via official email,0,existing,unknown,English,2024-01-01
+Remote work opportunity from established company,0,existing,unknown,English,2024-01-01
+Project-based work through verified platforms,0,existing,unknown,English,2024-01-01
+"WhatsApp job offer: Online Tutor for ₹80,000/month, send ₹1000 to confirm",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Software Engineer for ₹50,000/month, send ₹5000 to confirm",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Content Writer - ₹60,000/month, send 2000 for training",1,synthetic,non-IT,English,2026-05-31
+"Limited time offer: Social Media Manager position, ₹50,000/month, apply now via protonmail.com",1,synthetic,IT,English,2026-05-31
+"Fortune 500 company: Software Engineer fresher role ₹1,50,000/month, pay subscription ₹999",1,synthetic,freelance,English,2026-05-31
+"Google/Microsoft hiring Web Developer - ₹40,000/month, pay verification fee ₹500",1,synthetic,freelance,English,2026-05-31
+"Data entry job Online Tutor - ₹80,000/month, pay registration ₹3000",1,synthetic,IT,English,2026-05-31
+"Limited time offer: Content Writer position, ₹40,000/month, apply now via protonmail.com",1,synthetic,non-IT,English,2026-05-31
+"Part-time Customer Support from home - ₹1,00,000/month guaranteed, deposit ₹999",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Customer Support - ₹1,50,000/month, pay verification fee ₹5000",1,synthetic,non-IT,English,2026-05-31
+"WhatsApp job offer: Customer Support for ₹1,00,000/month, send ₹999 to confirm",1,synthetic,freelance,English,2026-05-31
+"Work from home Virtual Assistant - Earn ₹60,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Telecaller - ₹60,000/month, send 2500 for training",1,synthetic,freelance,English,2026-05-31
+"Easy money: Content Writer task-based work, earn ₹80,000/day, invest ₹500",1,synthetic,freelance,English,2026-05-31
+"Fortune 500 company: Back Office Executive fresher role ₹40,000/month, pay subscription ₹2500",1,synthetic,freelance,English,2026-05-31
+"Data entry job Back Office Executive - ₹1,00,000/month, pay registration ₹2000",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Content Writer - ₹40,000/month, send 1500 for training",1,synthetic,non-IT,English,2026-05-31
+"URGENT! Pay ₹2000 registration fee to get ₹60,000/month job as Back Office Executive",1,synthetic,non-IT,English,2026-05-31
+"Easy money: Online Tutor task-based work, earn ₹40,000/day, invest ₹2500",1,synthetic,IT,English,2026-05-31
+"URGENT! Pay ₹5000 registration fee to get ₹50,000/month job as Software Engineer",1,synthetic,non-IT,English,2026-05-31
+"Work from home Data Entry Operator - Earn ₹80,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Limited time offer: Graphic Designer position, ₹60,000/month, apply now via gmail.com",1,synthetic,IT,English,2026-05-31
+"Limited time offer: Web Developer position, ₹80,000/month, apply now via yahoo.com",1,synthetic,freelance,English,2026-05-31
+"Easy money: Web Developer task-based work, earn ₹60,000/day, invest ₹500",1,synthetic,freelance,English,2026-05-31
+"Google/Microsoft hiring Customer Support - ₹1,00,000/month, pay verification fee ₹3000",1,synthetic,IT,English,2026-05-31
+"WhatsApp job offer: Web Developer for ₹80,000/month, send ₹5000 to confirm",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹500 registration fee to get ₹50,000/month job as Graphic Designer",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Software Engineer - ₹50,000/month, send 500 for training",1,synthetic,IT,English,2026-05-31
+"Part-time Telecaller from home - ₹50,000/month guaranteed, deposit ₹1000",1,synthetic,IT,English,2026-05-31
+"Work from home Content Writer - Earn ₹60,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Content Writer - ₹60,000/month, pay registration ₹2500",1,synthetic,non-IT,English,2026-05-31
+"Work from home Social Media Manager - Earn ₹40,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Back Office Executive for ₹1,00,000/month, send ₹2500 to confirm",1,synthetic,IT,English,2026-05-31
+"Part-time Online Tutor from home - ₹1,00,000/month guaranteed, deposit ₹500",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Virtual Assistant - ₹40,000/month, send 1000 for training",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹2500 registration fee to get ₹50,000/month job as Digital Marketing",1,synthetic,non-IT,English,2026-05-31
+"Limited time offer: Back Office Executive position, ₹60,000/month, apply now via yahoo.com",1,synthetic,non-IT,English,2026-05-31
+"Limited time offer: Back Office Executive position, ₹50,000/month, apply now via yahoo.com",1,synthetic,IT,English,2026-05-31
+"Data entry job Social Media Manager - ₹50,000/month, pay registration ₹5000",1,synthetic,non-IT,English,2026-05-31
+"Easy money: Web Developer task-based work, earn ₹1,00,000/day, invest ₹2000",1,synthetic,IT,English,2026-05-31
+"WhatsApp job offer: Virtual Assistant for ₹1,50,000/month, send ₹3000 to confirm",1,synthetic,IT,English,2026-05-31
+"Easy money: Telecaller task-based work, earn ₹1,50,000/day, invest ₹1000",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Digital Marketing for ₹1,00,000/month, send ₹5000 to confirm",1,synthetic,IT,English,2026-05-31
+"Part-time Virtual Assistant from home - ₹60,000/month guaranteed, deposit ₹2500",1,synthetic,non-IT,English,2026-05-31
+"Part-time Online Tutor from home - ₹40,000/month guaranteed, deposit ₹1500",1,synthetic,IT,English,2026-05-31
+"Part-time Online Tutor from home - ₹80,000/month guaranteed, deposit ₹5000",1,synthetic,freelance,English,2026-05-31
+"Fortune 500 company: Online Tutor fresher role ₹60,000/month, pay subscription ₹999",1,synthetic,freelance,English,2026-05-31
+"Easy money: Data Entry Operator task-based work, earn ₹1,00,000/day, invest ₹5000",1,synthetic,non-IT,English,2026-05-31
+"Limited time offer: Web Developer position, ₹40,000/month, apply now via yahoo.com",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Web Developer - ₹40,000/month, pay verification fee ₹1500",1,synthetic,non-IT,English,2026-05-31
+"Part-time Back Office Executive from home - ₹1,50,000/month guaranteed, deposit ₹2000",1,synthetic,non-IT,English,2026-05-31
+"Google/Microsoft hiring Online Tutor - ₹1,50,000/month, pay verification fee ₹1000",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Customer Support - ₹40,000/month, send 2500 for training",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Content Writer - ₹1,50,000/month, send 5000 for training",1,synthetic,non-IT,English,2026-05-31
+"Part-time Digital Marketing from home - ₹80,000/month guaranteed, deposit ₹2000",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Online Tutor - ₹1,50,000/month, send 5000 for training",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Data Entry Operator - ₹40,000/month, send 2500 for training",1,synthetic,non-IT,English,2026-05-31
+"Easy money: Customer Support task-based work, earn ₹60,000/day, invest ₹500",1,synthetic,IT,English,2026-05-31
+"Work from home Online Tutor - Earn ₹40,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Work from home Virtual Assistant - Earn ₹1,00,000/month, no experience needed",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Online Tutor - ₹1,00,000/month, pay verification fee ₹1000",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Data Entry Operator - ₹80,000/month, send 500 for training",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Virtual Assistant - ₹1,50,000/month, send 500 for training",1,synthetic,IT,English,2026-05-31
+"Data entry job Digital Marketing - ₹40,000/month, pay registration ₹5000",1,synthetic,IT,English,2026-05-31
+"WhatsApp job offer: Online Tutor for ₹40,000/month, send ₹1000 to confirm",1,synthetic,non-IT,English,2026-05-31
+"WhatsApp job offer: Online Tutor for ₹1,00,000/month, send ₹2000 to confirm",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Virtual Assistant - ₹40,000/month, send 2000 for training",1,synthetic,IT,English,2026-05-31
+"Limited time offer: Web Developer position, ₹50,000/month, apply now via gmail.com",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Customer Support - ₹50,000/month, send 2500 for training",1,synthetic,freelance,English,2026-05-31
+"Fortune 500 company: Virtual Assistant fresher role ₹40,000/month, pay subscription ₹500",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Telecaller - ₹80,000/month, pay registration ₹5000",1,synthetic,freelance,English,2026-05-31
+"Google/Microsoft hiring Customer Support - ₹1,50,000/month, pay verification fee ₹2000",1,synthetic,freelance,English,2026-05-31
+"Data entry job Software Engineer - ₹40,000/month, pay registration ₹1000",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹2500 registration fee to get ₹1,00,000/month job as Back Office Executive",1,synthetic,freelance,English,2026-05-31
+"Fortune 500 company: Customer Support fresher role ₹80,000/month, pay subscription ₹999",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Graphic Designer - ₹60,000/month, send 5000 for training",1,synthetic,freelance,English,2026-05-31
+"Data entry job Customer Support - ₹1,50,000/month, pay registration ₹999",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Content Writer - ₹1,00,000/month, pay registration ₹3000",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Back Office Executive - ₹50,000/month, pay verification fee ₹2500",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Virtual Assistant - ₹80,000/month, send 1500 for training",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Telecaller - ₹60,000/month, send 999 for training",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Online Tutor fresher role ₹50,000/month, pay subscription ₹2000",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Software Engineer - ₹40,000/month, send 2000 for training",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Content Writer fresher role ₹1,00,000/month, pay subscription ₹5000",1,synthetic,non-IT,English,2026-05-31
+"Google/Microsoft hiring Online Tutor - ₹50,000/month, pay verification fee ₹500",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Data Entry Operator - ₹1,50,000/month, send 3000 for training",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Web Developer - ₹40,000/month, send 1500 for training",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹2000 registration fee to get ₹1,00,000/month job as Graphic Designer",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Graphic Designer - ₹1,50,000/month, send 999 for training",1,synthetic,non-IT,English,2026-05-31
+"URGENT! Pay ₹1000 registration fee to get ₹60,000/month job as Virtual Assistant",1,synthetic,IT,English,2026-05-31
+"URGENT! Pay ₹3000 registration fee to get ₹80,000/month job as Virtual Assistant",1,synthetic,IT,English,2026-05-31
+"Part-time Social Media Manager from home - ₹1,00,000/month guaranteed, deposit ₹5000",1,synthetic,non-IT,English,2026-05-31
+"Google/Microsoft hiring Customer Support - ₹1,00,000/month, pay verification fee ₹2500",1,synthetic,freelance,English,2026-05-31
+"Easy money: Telecaller task-based work, earn ₹60,000/day, invest ₹2000",1,synthetic,freelance,English,2026-05-31
+"Data entry job Virtual Assistant - ₹1,50,000/month, pay registration ₹1500",1,synthetic,IT,English,2026-05-31
+"URGENT! Pay ₹1000 registration fee to get ₹1,00,000/month job as Content Writer",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Graphic Designer - ₹40,000/month, pay verification fee ₹1500",1,synthetic,freelance,English,2026-05-31
+"Work from home Customer Support - Earn ₹1,00,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"Limited time offer: Content Writer position, ₹1,00,000/month, apply now via gmail.com",1,synthetic,IT,English,2026-05-31
+"WhatsApp job offer: Data Entry Operator for ₹1,00,000/month, send ₹3000 to confirm",1,synthetic,freelance,English,2026-05-31
+"Part-time Digital Marketing from home - ₹50,000/month guaranteed, deposit ₹500",1,synthetic,non-IT,English,2026-05-31
+"Limited time offer: Digital Marketing position, ₹1,00,000/month, apply now via gmail.com",1,synthetic,IT,English,2026-05-31
+"Easy money: Graphic Designer task-based work, earn ₹50,000/day, invest ₹5000",1,synthetic,IT,English,2026-05-31
+"Fortune 500 company: Online Tutor fresher role ₹50,000/month, pay subscription ₹500",1,synthetic,IT,English,2026-05-31
+"Limited time offer: Content Writer position, ₹80,000/month, apply now via yahoo.com",1,synthetic,IT,English,2026-05-31
+"URGENT! Pay ₹2000 registration fee to get ₹1,50,000/month job as Content Writer",1,synthetic,non-IT,English,2026-05-31
+"URGENT! Pay ₹999 registration fee to get ₹80,000/month job as Back Office Executive",1,synthetic,IT,English,2026-05-31
+"Data entry job Software Engineer - ₹80,000/month, pay registration ₹2000",1,synthetic,freelance,English,2026-05-31
+"Limited time offer: Back Office Executive position, ₹50,000/month, apply now via outlook.com",1,synthetic,freelance,English,2026-05-31
+"Easy money: Data Entry Operator task-based work, earn ₹80,000/day, invest ₹1000",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Online Tutor - ₹60,000/month, pay verification fee ₹999",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Customer Support fresher role ₹60,000/month, pay subscription ₹2000",1,synthetic,IT,English,2026-05-31
+"Work from home Social Media Manager - Earn ₹1,00,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"Limited time offer: Software Engineer position, ₹40,000/month, apply now via outlook.com",1,synthetic,non-IT,English,2026-05-31
+"Limited time offer: Virtual Assistant position, ₹50,000/month, apply now via protonmail.com",1,synthetic,IT,English,2026-05-31
+"Limited time offer: Online Tutor position, ₹60,000/month, apply now via yahoo.com",1,synthetic,IT,English,2026-05-31
+"Easy money: Back Office Executive task-based work, earn ₹50,000/day, invest ₹1500",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Customer Support - ₹50,000/month, pay verification fee ₹5000",1,synthetic,non-IT,English,2026-05-31
+"Work from home Customer Support - Earn ₹80,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Software Engineer fresher role ₹50,000/month, pay subscription ₹3000",1,synthetic,IT,English,2026-05-31
+"Part-time Customer Support from home - ₹1,00,000/month guaranteed, deposit ₹2500",1,synthetic,non-IT,English,2026-05-31
+"Google/Microsoft hiring Data Entry Operator - ₹40,000/month, pay verification fee ₹999",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Digital Marketing - ₹40,000/month, send 5000 for training",1,synthetic,non-IT,English,2026-05-31
+"WhatsApp job offer: Social Media Manager for ₹40,000/month, send ₹2000 to confirm",1,synthetic,freelance,English,2026-05-31
+"Work from home Web Developer - Earn ₹50,000/month, no experience needed",1,synthetic,IT,English,2026-05-31
+"Work from home Social Media Manager - Earn ₹50,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Graphic Designer - ₹1,00,000/month, send 3000 for training",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Data Entry Operator - ₹60,000/month, pay registration ₹999",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Software Engineer - ₹1,00,000/month, send 1500 for training",1,synthetic,IT,English,2026-05-31
+"Work from home Digital Marketing - Earn ₹60,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Content Writer fresher role ₹1,50,000/month, pay subscription ₹1500",1,synthetic,IT,English,2026-05-31
+"Part-time Virtual Assistant from home - ₹60,000/month guaranteed, deposit ₹1000",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Telecaller - ₹1,00,000/month, send 1500 for training",1,synthetic,non-IT,English,2026-05-31
+"Work from home Telecaller - Earn ₹1,50,000/month, no experience needed",1,synthetic,IT,English,2026-05-31
+"Work from home Telecaller - Earn ₹80,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Work from home Digital Marketing - Earn ₹40,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"Work from home Online Tutor - Earn ₹1,00,000/month, no experience needed",1,synthetic,IT,English,2026-05-31
+"Part-time Web Developer from home - ₹1,50,000/month guaranteed, deposit ₹2500",1,synthetic,non-IT,English,2026-05-31
+"Easy money: Social Media Manager task-based work, earn ₹1,00,000/day, invest ₹1500",1,synthetic,non-IT,English,2026-05-31
+"WhatsApp job offer: Digital Marketing for ₹40,000/month, send ₹2000 to confirm",1,synthetic,non-IT,English,2026-05-31
+"Easy money: Content Writer task-based work, earn ₹40,000/day, invest ₹2000",1,synthetic,IT,English,2026-05-31
+"Fortune 500 company: Telecaller fresher role ₹1,50,000/month, pay subscription ₹1000",1,synthetic,IT,English,2026-05-31
+"Part-time Virtual Assistant from home - ₹40,000/month guaranteed, deposit ₹2000",1,synthetic,freelance,English,2026-05-31
+"Work from home Web Developer - Earn ₹1,50,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Web Developer - ₹80,000/month, pay registration ₹1500",1,synthetic,freelance,English,2026-05-31
+"Limited time offer: Virtual Assistant position, ₹80,000/month, apply now via outlook.com",1,synthetic,IT,English,2026-05-31
+"Part-time Customer Support from home - ₹50,000/month guaranteed, deposit ₹2000",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹2500 registration fee to get ₹1,50,000/month job as Data Entry Operator",1,synthetic,freelance,English,2026-05-31
+"Work from home Online Tutor - Earn ₹1,00,000/month, no experience needed",1,synthetic,IT,English,2026-05-31
+"Fortune 500 company: Customer Support fresher role ₹80,000/month, pay subscription ₹500",1,synthetic,freelance,English,2026-05-31
+"Data entry job Telecaller - ₹1,00,000/month, pay registration ₹5000",1,synthetic,IT,English,2026-05-31
+"URGENT! Pay ₹999 registration fee to get ₹1,50,000/month job as Social Media Manager",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Software Engineer for ₹1,50,000/month, send ₹3000 to confirm",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Back Office Executive fresher role ₹1,50,000/month, pay subscription ₹3000",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Online Tutor - ₹1,00,000/month, send 1500 for training",1,synthetic,non-IT,English,2026-05-31
+"Google/Microsoft hiring Back Office Executive - ₹60,000/month, pay verification fee ₹2000",1,synthetic,non-IT,English,2026-05-31
+"Easy money: Web Developer task-based work, earn ₹80,000/day, invest ₹500",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹500 registration fee to get ₹40,000/month job as Customer Support",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Data Entry Operator - ₹60,000/month, send 2500 for training",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Data Entry Operator - ₹1,00,000/month, send 2000 for training",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Virtual Assistant - ₹80,000/month, pay registration ₹2000",1,synthetic,non-IT,English,2026-05-31
+"Part-time Data Entry Operator from home - ₹60,000/month guaranteed, deposit ₹500",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Data Entry Operator - ₹1,00,000/month, pay registration ₹999",1,synthetic,non-IT,English,2026-05-31
+"URGENT! Pay ₹3000 registration fee to get ₹1,00,000/month job as Data Entry Operator",1,synthetic,IT,English,2026-05-31
+"Data entry job Software Engineer - ₹1,50,000/month, pay registration ₹2000",1,synthetic,IT,English,2026-05-31
+"Part-time Digital Marketing from home - ₹40,000/month guaranteed, deposit ₹1000",1,synthetic,IT,English,2026-05-31
+"Easy money: Customer Support task-based work, earn ₹80,000/day, invest ₹999",1,synthetic,freelance,English,2026-05-31
+"Data entry job Back Office Executive - ₹1,00,000/month, pay registration ₹1000",1,synthetic,IT,English,2026-05-31
+"Work from home Customer Support - Earn ₹50,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Telecaller - ₹1,50,000/month, pay registration ₹3000",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Virtual Assistant for ₹1,50,000/month, send ₹2000 to confirm",1,synthetic,freelance,English,2026-05-31
+"Work from home Graphic Designer - Earn ₹60,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Customer Support for ₹60,000/month, send ₹999 to confirm",1,synthetic,non-IT,English,2026-05-31
+"URGENT! Pay ₹1000 registration fee to get ₹40,000/month job as Virtual Assistant",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹3000 registration fee to get ₹40,000/month job as Web Developer",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹500 registration fee to get ₹60,000/month job as Graphic Designer",1,synthetic,IT,English,2026-05-31
+"Work from home Content Writer - Earn ₹40,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Back Office Executive for ₹40,000/month, send ₹1000 to confirm",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹3000 registration fee to get ₹1,00,000/month job as Telecaller",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Software Engineer - ₹60,000/month, send 5000 for training",1,synthetic,non-IT,English,2026-05-31
+"WhatsApp job offer: Digital Marketing for ₹60,000/month, send ₹999 to confirm",1,synthetic,non-IT,English,2026-05-31
+"Limited time offer: Telecaller position, ₹40,000/month, apply now via gmail.com",1,synthetic,IT,English,2026-05-31
+"Data entry job Virtual Assistant - ₹80,000/month, pay registration ₹999",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Graphic Designer for ₹1,00,000/month, send ₹2000 to confirm",1,synthetic,non-IT,English,2026-05-31
+"URGENT! Pay ₹5000 registration fee to get ₹1,00,000/month job as Social Media Manager",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Digital Marketing - ₹1,00,000/month, pay registration ₹3000",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Telecaller for ₹1,00,000/month, send ₹3000 to confirm",1,synthetic,non-IT,English,2026-05-31
+"Google/Microsoft hiring Software Engineer - ₹40,000/month, pay verification fee ₹5000",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Social Media Manager - ₹60,000/month, pay verification fee ₹2000",1,synthetic,freelance,English,2026-05-31
+"Fortune 500 company: Telecaller fresher role ₹40,000/month, pay subscription ₹500",1,synthetic,non-IT,English,2026-05-31
+"Work from home Social Media Manager - Earn ₹40,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Google/Microsoft hiring Software Engineer - ₹60,000/month, pay verification fee ₹5000",1,synthetic,IT,English,2026-05-31
+"Easy money: Graphic Designer task-based work, earn ₹60,000/day, invest ₹1500",1,synthetic,IT,English,2026-05-31
+"Fortune 500 company: Telecaller fresher role ₹60,000/month, pay subscription ₹5000",1,synthetic,freelance,English,2026-05-31
+"WhatsApp job offer: Software Engineer for ₹1,00,000/month, send ₹1000 to confirm",1,synthetic,IT,English,2026-05-31
+"Part-time Web Developer from home - ₹80,000/month guaranteed, deposit ₹500",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Telecaller - ₹50,000/month, pay verification fee ₹1500",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Content Writer fresher role ₹1,00,000/month, pay subscription ₹3000",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Graphic Designer - ₹80,000/month, send 500 for training",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Customer Support fresher role ₹1,50,000/month, pay subscription ₹3000",1,synthetic,freelance,English,2026-05-31
+"Limited time offer: Digital Marketing position, ₹80,000/month, apply now via gmail.com",1,synthetic,freelance,English,2026-05-31
+"Work from home Telecaller - Earn ₹40,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"Part-time Graphic Designer from home - ₹50,000/month guaranteed, deposit ₹500",1,synthetic,freelance,English,2026-05-31
+"Google/Microsoft hiring Content Writer - ₹40,000/month, pay verification fee ₹1500",1,synthetic,freelance,English,2026-05-31
+"Limited time offer: Digital Marketing position, ₹1,00,000/month, apply now via protonmail.com",1,synthetic,non-IT,English,2026-05-31
+"URGENT! Pay ₹3000 registration fee to get ₹50,000/month job as Telecaller",1,synthetic,freelance,English,2026-05-31
+"Immediate hiring for Virtual Assistant - ₹1,00,000/month, send 2500 for training",1,synthetic,IT,English,2026-05-31
+"Limited time offer: Back Office Executive position, ₹60,000/month, apply now via outlook.com",1,synthetic,IT,English,2026-05-31
+"Data entry job Digital Marketing - ₹40,000/month, pay registration ₹999",1,synthetic,IT,English,2026-05-31
+"Fortune 500 company: Web Developer fresher role ₹80,000/month, pay subscription ₹500",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹5000 registration fee to get ₹1,00,000/month job as Content Writer",1,synthetic,freelance,English,2026-05-31
+"Data entry job Back Office Executive - ₹80,000/month, pay registration ₹3000",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Back Office Executive fresher role ₹40,000/month, pay subscription ₹999",1,synthetic,non-IT,English,2026-05-31
+"Work from home Back Office Executive - Earn ₹50,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"Limited time offer: Software Engineer position, ₹1,00,000/month, apply now via outlook.com",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹3000 registration fee to get ₹1,50,000/month job as Customer Support",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Back Office Executive - ₹50,000/month, pay verification fee ₹500",1,synthetic,IT,English,2026-05-31
+"Immediate hiring for Virtual Assistant - ₹1,50,000/month, send 500 for training",1,synthetic,IT,English,2026-05-31
+"Limited time offer: Back Office Executive position, ₹60,000/month, apply now via gmail.com",1,synthetic,non-IT,English,2026-05-31
+"Work from home Customer Support - Earn ₹1,00,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"Part-time Customer Support from home - ₹1,00,000/month guaranteed, deposit ₹500",1,synthetic,freelance,English,2026-05-31
+"URGENT! Pay ₹1000 registration fee to get ₹1,00,000/month job as Web Developer",1,synthetic,IT,English,2026-05-31
+"Google/Microsoft hiring Social Media Manager - ₹80,000/month, pay verification fee ₹1500",1,synthetic,non-IT,English,2026-05-31
+"Fortune 500 company: Social Media Manager fresher role ₹50,000/month, pay subscription ₹5000",1,synthetic,freelance,English,2026-05-31
+"Easy money: Back Office Executive task-based work, earn ₹1,50,000/day, invest ₹3000",1,synthetic,IT,English,2026-05-31
+"WhatsApp job offer: Online Tutor for ₹60,000/month, send ₹2500 to confirm",1,synthetic,freelance,English,2026-05-31
+"Work from home Back Office Executive - Earn ₹1,00,000/month, no experience needed",1,synthetic,IT,English,2026-05-31
+"Data entry job Graphic Designer - ₹40,000/month, pay registration ₹999",1,synthetic,freelance,English,2026-05-31
+"Data entry job Customer Support - ₹1,00,000/month, pay registration ₹2500",1,synthetic,freelance,English,2026-05-31
+"Work from home Content Writer - Earn ₹50,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"Part-time Customer Support from home - ₹80,000/month guaranteed, deposit ₹500",1,synthetic,non-IT,English,2026-05-31
+"Data entry job Software Engineer - ₹1,00,000/month, pay registration ₹1500",1,synthetic,non-IT,English,2026-05-31
+"Work from home Social Media Manager - Earn ₹1,50,000/month, no experience needed",1,synthetic,IT,English,2026-05-31
+"Part-time Web Developer from home - ₹1,00,000/month guaranteed, deposit ₹500",1,synthetic,non-IT,English,2026-05-31
+"Part-time Online Tutor from home - ₹80,000/month guaranteed, deposit ₹5000",1,synthetic,IT,English,2026-05-31
+"Work from home Content Writer - Earn ₹1,00,000/month, no experience needed",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Content Writer - ₹80,000/month, send 999 for training",1,synthetic,freelance,English,2026-05-31
+"Easy money: Virtual Assistant task-based work, earn ₹60,000/day, invest ₹1000",1,synthetic,non-IT,English,2026-05-31
+"Limited time offer: Content Writer position, ₹60,000/month, apply now via outlook.com",1,synthetic,freelance,English,2026-05-31
+"Easy money: Web Developer task-based work, earn ₹80,000/day, invest ₹3000",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Graphic Designer - ₹50,000/month, send 3000 for training",1,synthetic,IT,English,2026-05-31
+"Fortune 500 company: Customer Support fresher role ₹1,50,000/month, pay subscription ₹500",1,synthetic,freelance,English,2026-05-31
+"Part-time Software Engineer from home - ₹40,000/month guaranteed, deposit ₹2000",1,synthetic,non-IT,English,2026-05-31
+"Immediate hiring for Social Media Manager - ₹80,000/month, send 1000 for training",1,synthetic,freelance,English,2026-05-31
+"Easy money: Online Tutor task-based work, earn ₹1,00,000/day, invest ₹500",1,synthetic,non-IT,English,2026-05-31
+"Google/Microsoft hiring Social Media Manager - ₹60,000/month, pay verification fee ₹2000",1,synthetic,IT,English,2026-05-31
+"Work from home Software Engineer - Earn ₹60,000/month, no experience needed",1,synthetic,freelance,English,2026-05-31
+"Data entry job Back Office Executive - ₹60,000/month, pay registration ₹999",1,synthetic,IT,English,2026-05-31
+"Fortune 500 company: Customer Support fresher role ₹50,000/month, pay subscription ₹500",1,synthetic,freelance,English,2026-05-31
+"Fortune 500 company: Virtual Assistant fresher role ₹50,000/month, pay subscription ₹999",1,synthetic,freelance,English,2026-05-31
+Official job posting: Data Scientist at IBM through LinkedIn,0,synthetic,government,English,2026-05-31
+DevOps Engineer position at HCL - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+QA Engineer vacancy at Oracle - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Cybersecurity Analyst vacancy at Cognizant - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+"Adobe career opportunity: Full Stack Developer position, apply on company website",0,synthetic,IT,English,2026-05-31
+IBM is hiring Software Engineer - Apply via careers.tcs.com,0,synthetic,government,English,2026-05-31
+Official job posting: DevOps Engineer at Infosys through LinkedIn,0,synthetic,established,English,2026-05-31
+"Oracle career opportunity: QA Engineer position, apply on company website",0,synthetic,established,English,2026-05-31
+Government job: Machine Learning Engineer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Data Scientist vacancy at Infosys - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Job opening: UX Designer at Adobe - Send resume to hr@oracle.com,0,synthetic,established,English,2026-05-31
+Campus placement: Adobe hiring Business Analyst for 2024 batch,0,synthetic,government,English,2026-05-31
+Campus placement: Capgemini hiring Cloud Architect for 2024 batch,0,synthetic,established,English,2026-05-31
+Accenture is hiring Cybersecurity Analyst - Apply via careers.techmahindra.com,0,synthetic,government,English,2026-05-31
+Google is hiring Machine Learning Engineer - Apply via careers.google.com,0,synthetic,established,English,2026-05-31
+Tech Mahindra is hiring Data Scientist - Apply via careers.techmahindra.com,0,synthetic,government,English,2026-05-31
+Full Stack Developer position at Adobe - 3-5 years experience required,0,synthetic,IT,English,2026-05-31
+"Wipro career opportunity: DevOps Engineer position, apply on company website",0,synthetic,government,English,2026-05-31
+Job opening: Software Engineer at Wipro - Send resume to hr@google.com,0,synthetic,government,English,2026-05-31
+"Infosys career opportunity: Data Scientist position, apply on company website",0,synthetic,government,English,2026-05-31
+Government job: QA Engineer recruitment via official UPSC portal,0,synthetic,established,English,2026-05-31
+TCS internship program for DevOps Engineer - Apply with portfolio,0,synthetic,government,English,2026-05-31
+"Infosys career opportunity: UX Designer position, apply on company website",0,synthetic,established,English,2026-05-31
+"Accenture career opportunity: Software Engineer position, apply on company website",0,synthetic,government,English,2026-05-31
+Deloitte internship program for Machine Learning Engineer - Apply with portfolio,0,synthetic,government,English,2026-05-31
+Tech Mahindra recruitment drive for Data Scientist - Visit official job portal,0,synthetic,government,English,2026-05-31
+Cybersecurity Analyst vacancy at Google - Interview scheduled at office,0,synthetic,established,English,2026-05-31
+Job opening: Product Manager at Oracle - Send resume to hr@tcs.com,0,synthetic,established,English,2026-05-31
+Campus placement: IBM hiring DevOps Engineer for 2024 batch,0,synthetic,established,English,2026-05-31
+Business Analyst vacancy at HCL - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Campus placement: Microsoft hiring DevOps Engineer for 2024 batch,0,synthetic,established,English,2026-05-31
+Cybersecurity Analyst vacancy at TCS - Interview scheduled at office,0,synthetic,government,English,2026-05-31
+Google internship program for Software Engineer - Apply with portfolio,0,synthetic,government,English,2026-05-31
+Business Analyst vacancy at Accenture - Interview scheduled at office,0,synthetic,established,English,2026-05-31
+"IBM career opportunity: Cybersecurity Analyst position, apply on company website",0,synthetic,established,English,2026-05-31
+Government job: Software Engineer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+UX Designer position at Cognizant - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Job opening: Data Scientist at Adobe - Send resume to hr@techmahindra.com,0,synthetic,established,English,2026-05-31
+Campus placement: HCL hiring Product Manager for 2024 batch,0,synthetic,government,English,2026-05-31
+Microsoft recruitment drive for Software Engineer - Visit official job portal,0,synthetic,government,English,2026-05-31
+DevOps Engineer position at Deloitte - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Official job posting: DevOps Engineer at Infosys through LinkedIn,0,synthetic,established,English,2026-05-31
+Deloitte internship program for QA Engineer - Apply with portfolio,0,synthetic,government,English,2026-05-31
+DevOps Engineer vacancy at Capgemini - Interview scheduled at office,0,synthetic,government,English,2026-05-31
+Job opening: Product Manager at Microsoft - Send resume to hr@amazon.com,0,synthetic,IT,English,2026-05-31
+Official job posting: Machine Learning Engineer at Amazon through LinkedIn,0,synthetic,established,English,2026-05-31
+TCS internship program for Product Manager - Apply with portfolio,0,synthetic,government,English,2026-05-31
+Adobe recruitment drive for Cybersecurity Analyst - Visit official job portal,0,synthetic,government,English,2026-05-31
+Official job posting: Data Scientist at Infosys through LinkedIn,0,synthetic,IT,English,2026-05-31
+Accenture is hiring Business Analyst - Apply via careers.wipro.com,0,synthetic,IT,English,2026-05-31
+Official job posting: Full Stack Developer at Tech Mahindra through LinkedIn,0,synthetic,IT,English,2026-05-31
+"Infosys career opportunity: Data Scientist position, apply on company website",0,synthetic,IT,English,2026-05-31
+Campus placement: Infosys hiring Machine Learning Engineer for 2024 batch,0,synthetic,established,English,2026-05-31
+Campus placement: Capgemini hiring Business Analyst for 2024 batch,0,synthetic,IT,English,2026-05-31
+Official job posting: Full Stack Developer at HCL through LinkedIn,0,synthetic,government,English,2026-05-31
+Official job posting: UX Designer at Cognizant through LinkedIn,0,synthetic,IT,English,2026-05-31
+Campus placement: Cognizant hiring QA Engineer for 2024 batch,0,synthetic,government,English,2026-05-31
+Official job posting: UX Designer at IBM through LinkedIn,0,synthetic,government,English,2026-05-31
+Government job: Full Stack Developer recruitment via official UPSC portal,0,synthetic,established,English,2026-05-31
+Deloitte recruitment drive for DevOps Engineer - Visit official job portal,0,synthetic,established,English,2026-05-31
+Campus placement: Adobe hiring Cybersecurity Analyst for 2024 batch,0,synthetic,IT,English,2026-05-31
+Adobe is hiring Software Engineer - Apply via careers.adobe.com,0,synthetic,established,English,2026-05-31
+UX Designer position at Amazon - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+Infosys recruitment drive for Software Engineer - Visit official job portal,0,synthetic,IT,English,2026-05-31
+Machine Learning Engineer vacancy at Infosys - Interview scheduled at office,0,synthetic,established,English,2026-05-31
+Data Scientist vacancy at Deloitte - Interview scheduled at office,0,synthetic,government,English,2026-05-31
+Job opening: Cloud Architect at Capgemini - Send resume to hr@google.com,0,synthetic,established,English,2026-05-31
+Accenture recruitment drive for Machine Learning Engineer - Visit official job portal,0,synthetic,government,English,2026-05-31
+Campus placement: Google hiring DevOps Engineer for 2024 batch,0,synthetic,IT,English,2026-05-31
+Machine Learning Engineer vacancy at Microsoft - Interview scheduled at office,0,synthetic,government,English,2026-05-31
+Official job posting: Business Analyst at Adobe through LinkedIn,0,synthetic,IT,English,2026-05-31
+Business Analyst position at TCS - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+Government job: QA Engineer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Official job posting: Cybersecurity Analyst at TCS through LinkedIn,0,synthetic,IT,English,2026-05-31
+Government job: Cybersecurity Analyst recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Government job: UX Designer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Cloud Architect position at IBM - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+"IBM career opportunity: Business Analyst position, apply on company website",0,synthetic,government,English,2026-05-31
+Official job posting: Software Engineer at Tech Mahindra through LinkedIn,0,synthetic,established,English,2026-05-31
+Government job: QA Engineer recruitment via official UPSC portal,0,synthetic,established,English,2026-05-31
+"HCL career opportunity: QA Engineer position, apply on company website",0,synthetic,government,English,2026-05-31
+"Microsoft career opportunity: DevOps Engineer position, apply on company website",0,synthetic,IT,English,2026-05-31
+Job opening: Data Scientist at TCS - Send resume to hr@amazon.com,0,synthetic,established,English,2026-05-31
+Cloud Architect position at Adobe - 3-5 years experience required,0,synthetic,IT,English,2026-05-31
+HCL internship program for QA Engineer - Apply with portfolio,0,synthetic,established,English,2026-05-31
+Official job posting: UX Designer at Adobe through LinkedIn,0,synthetic,government,English,2026-05-31
+Deloitte is hiring Software Engineer - Apply via careers.google.com,0,synthetic,IT,English,2026-05-31
+Infosys internship program for Full Stack Developer - Apply with portfolio,0,synthetic,IT,English,2026-05-31
+Job opening: QA Engineer at TCS - Send resume to hr@techmahindra.com,0,synthetic,established,English,2026-05-31
+Data Scientist vacancy at Microsoft - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Microsoft recruitment drive for Cybersecurity Analyst - Visit official job portal,0,synthetic,established,English,2026-05-31
+Data Scientist position at Microsoft - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Amazon internship program for UX Designer - Apply with portfolio,0,synthetic,established,English,2026-05-31
+Government job: Cloud Architect recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Government job: Software Engineer recruitment via official UPSC portal,0,synthetic,established,English,2026-05-31
+Government job: DevOps Engineer recruitment via official UPSC portal,0,synthetic,government,English,2026-05-31
+Deloitte is hiring QA Engineer - Apply via careers.hcl.com,0,synthetic,government,English,2026-05-31
+"Tech Mahindra career opportunity: UX Designer position, apply on company website",0,synthetic,established,English,2026-05-31
+Capgemini is hiring Cybersecurity Analyst - Apply via careers.hcl.com,0,synthetic,government,English,2026-05-31
+Full Stack Developer vacancy at Capgemini - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Software Engineer vacancy at Tech Mahindra - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Government job: UX Designer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Government job: Cybersecurity Analyst recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+QA Engineer vacancy at Adobe - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Official job posting: Cybersecurity Analyst at Amazon through LinkedIn,0,synthetic,IT,English,2026-05-31
+"Wipro career opportunity: Business Analyst position, apply on company website",0,synthetic,government,English,2026-05-31
+Government job: UX Designer recruitment via official UPSC portal,0,synthetic,government,English,2026-05-31
+Campus placement: Tech Mahindra hiring Data Scientist for 2024 batch,0,synthetic,established,English,2026-05-31
+"Cognizant career opportunity: Business Analyst position, apply on company website",0,synthetic,IT,English,2026-05-31
+Business Analyst position at HCL - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Official job posting: DevOps Engineer at Google through LinkedIn,0,synthetic,government,English,2026-05-31
+Deloitte internship program for Full Stack Developer - Apply with portfolio,0,synthetic,established,English,2026-05-31
+Government job: QA Engineer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Oracle recruitment drive for UX Designer - Visit official job portal,0,synthetic,IT,English,2026-05-31
+Deloitte internship program for Machine Learning Engineer - Apply with portfolio,0,synthetic,IT,English,2026-05-31
+Machine Learning Engineer position at Amazon - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+Tech Mahindra recruitment drive for DevOps Engineer - Visit official job portal,0,synthetic,government,English,2026-05-31
+Software Engineer vacancy at Wipro - Interview scheduled at office,0,synthetic,government,English,2026-05-31
+Google recruitment drive for UX Designer - Visit official job portal,0,synthetic,established,English,2026-05-31
+Cybersecurity Analyst position at TCS - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Government job: QA Engineer recruitment via official UPSC portal,0,synthetic,established,English,2026-05-31
+Oracle recruitment drive for Full Stack Developer - Visit official job portal,0,synthetic,established,English,2026-05-31
+Official job posting: Cloud Architect at TCS through LinkedIn,0,synthetic,established,English,2026-05-31
+"Oracle career opportunity: Business Analyst position, apply on company website",0,synthetic,established,English,2026-05-31
+"Adobe career opportunity: Data Scientist position, apply on company website",0,synthetic,established,English,2026-05-31
+Oracle internship program for QA Engineer - Apply with portfolio,0,synthetic,IT,English,2026-05-31
+DevOps Engineer position at Google - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Official job posting: Software Engineer at Microsoft through LinkedIn,0,synthetic,government,English,2026-05-31
+Infosys recruitment drive for Full Stack Developer - Visit official job portal,0,synthetic,IT,English,2026-05-31
+Software Engineer position at Microsoft - 3-5 years experience required,0,synthetic,IT,English,2026-05-31
+Job opening: Software Engineer at Accenture - Send resume to hr@microsoft.com,0,synthetic,government,English,2026-05-31
+Cybersecurity Analyst vacancy at Google - Interview scheduled at office,0,synthetic,established,English,2026-05-31
+"IBM career opportunity: Full Stack Developer position, apply on company website",0,synthetic,established,English,2026-05-31
+Product Manager vacancy at Deloitte - Interview scheduled at office,0,synthetic,government,English,2026-05-31
+Google internship program for QA Engineer - Apply with portfolio,0,synthetic,established,English,2026-05-31
+Full Stack Developer position at Capgemini - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Job opening: Full Stack Developer at Google - Send resume to hr@tcs.com,0,synthetic,government,English,2026-05-31
+Oracle is hiring Product Manager - Apply via careers.techmahindra.com,0,synthetic,government,English,2026-05-31
+Oracle internship program for Software Engineer - Apply with portfolio,0,synthetic,established,English,2026-05-31
+Job opening: Software Engineer at Microsoft - Send resume to hr@hcl.com,0,synthetic,established,English,2026-05-31
+Official job posting: Cloud Architect at IBM through LinkedIn,0,synthetic,IT,English,2026-05-31
+Capgemini internship program for Cloud Architect - Apply with portfolio,0,synthetic,IT,English,2026-05-31
+Government job: Machine Learning Engineer recruitment via official UPSC portal,0,synthetic,government,English,2026-05-31
+Business Analyst vacancy at Microsoft - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Software Engineer vacancy at Cognizant - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Infosys recruitment drive for DevOps Engineer - Visit official job portal,0,synthetic,government,English,2026-05-31
+Official job posting: UX Designer at Deloitte through LinkedIn,0,synthetic,IT,English,2026-05-31
+Microsoft is hiring DevOps Engineer - Apply via careers.microsoft.com,0,synthetic,established,English,2026-05-31
+"Google career opportunity: Cybersecurity Analyst position, apply on company website",0,synthetic,IT,English,2026-05-31
+Official job posting: DevOps Engineer at Wipro through LinkedIn,0,synthetic,IT,English,2026-05-31
+Tech Mahindra recruitment drive for QA Engineer - Visit official job portal,0,synthetic,IT,English,2026-05-31
+"IBM career opportunity: Cloud Architect position, apply on company website",0,synthetic,IT,English,2026-05-31
+Software Engineer position at Capgemini - 3-5 years experience required,0,synthetic,IT,English,2026-05-31
+Oracle internship program for QA Engineer - Apply with portfolio,0,synthetic,IT,English,2026-05-31
+Job opening: Full Stack Developer at Accenture - Send resume to hr@techmahindra.com,0,synthetic,IT,English,2026-05-31
+Campus placement: Capgemini hiring Cybersecurity Analyst for 2024 batch,0,synthetic,IT,English,2026-05-31
+Government job: Business Analyst recruitment via official UPSC portal,0,synthetic,established,English,2026-05-31
+Campus placement: Deloitte hiring Software Engineer for 2024 batch,0,synthetic,government,English,2026-05-31
+Official job posting: Software Engineer at HCL through LinkedIn,0,synthetic,government,English,2026-05-31
+Software Engineer position at Microsoft - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+"Adobe career opportunity: Full Stack Developer position, apply on company website",0,synthetic,established,English,2026-05-31
+Adobe recruitment drive for UX Designer - Visit official job portal,0,synthetic,established,English,2026-05-31
+Accenture recruitment drive for Business Analyst - Visit official job portal,0,synthetic,government,English,2026-05-31
+Official job posting: Business Analyst at Deloitte through LinkedIn,0,synthetic,government,English,2026-05-31
+"IBM career opportunity: Full Stack Developer position, apply on company website",0,synthetic,government,English,2026-05-31
+Campus placement: Cognizant hiring Software Engineer for 2024 batch,0,synthetic,IT,English,2026-05-31
+Tech Mahindra internship program for QA Engineer - Apply with portfolio,0,synthetic,established,English,2026-05-31
+Job opening: Full Stack Developer at HCL - Send resume to hr@google.com,0,synthetic,established,English,2026-05-31
+Software Engineer position at Accenture - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+Deloitte is hiring Full Stack Developer - Apply via careers.microsoft.com,0,synthetic,IT,English,2026-05-31
+Amazon is hiring DevOps Engineer - Apply via careers.wipro.com,0,synthetic,IT,English,2026-05-31
+Government job: DevOps Engineer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Full Stack Developer vacancy at Tech Mahindra - Interview scheduled at office,0,synthetic,established,English,2026-05-31
+Cybersecurity Analyst position at Capgemini - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+Data Scientist vacancy at IBM - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+DevOps Engineer position at Oracle - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Machine Learning Engineer position at TCS - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+Campus placement: Amazon hiring Full Stack Developer for 2024 batch,0,synthetic,established,English,2026-05-31
+"Oracle career opportunity: QA Engineer position, apply on company website",0,synthetic,government,English,2026-05-31
+Job opening: Product Manager at IBM - Send resume to hr@wipro.com,0,synthetic,IT,English,2026-05-31
+IBM recruitment drive for Product Manager - Visit official job portal,0,synthetic,established,English,2026-05-31
+Accenture recruitment drive for UX Designer - Visit official job portal,0,synthetic,IT,English,2026-05-31
+Product Manager vacancy at Google - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+"Amazon career opportunity: QA Engineer position, apply on company website",0,synthetic,IT,English,2026-05-31
+TCS internship program for Product Manager - Apply with portfolio,0,synthetic,IT,English,2026-05-31
+Campus placement: Accenture hiring Cloud Architect for 2024 batch,0,synthetic,government,English,2026-05-31
+Infosys recruitment drive for Business Analyst - Visit official job portal,0,synthetic,IT,English,2026-05-31
+Cloud Architect position at Wipro - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+IBM internship program for Full Stack Developer - Apply with portfolio,0,synthetic,IT,English,2026-05-31
+Cybersecurity Analyst vacancy at TCS - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Job opening: Cloud Architect at Infosys - Send resume to hr@tcs.com,0,synthetic,IT,English,2026-05-31
+Government job: Machine Learning Engineer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Official job posting: Product Manager at Amazon through LinkedIn,0,synthetic,established,English,2026-05-31
+Campus placement: HCL hiring UX Designer for 2024 batch,0,synthetic,IT,English,2026-05-31
+Job opening: UX Designer at Accenture - Send resume to hr@microsoft.com,0,synthetic,government,English,2026-05-31
+Software Engineer vacancy at Accenture - Interview scheduled at office,0,synthetic,established,English,2026-05-31
+Government job: Software Engineer recruitment via official UPSC portal,0,synthetic,government,English,2026-05-31
+Government job: QA Engineer recruitment via official UPSC portal,0,synthetic,established,English,2026-05-31
+"Accenture career opportunity: QA Engineer position, apply on company website",0,synthetic,government,English,2026-05-31
+Job opening: Cybersecurity Analyst at Capgemini - Send resume to hr@google.com,0,synthetic,government,English,2026-05-31
+Campus placement: Adobe hiring Data Scientist for 2024 batch,0,synthetic,government,English,2026-05-31
+Government job: Data Scientist recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Full Stack Developer position at Adobe - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+Government job: UX Designer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+"Cognizant career opportunity: Business Analyst position, apply on company website",0,synthetic,government,English,2026-05-31
+Amazon internship program for Cloud Architect - Apply with portfolio,0,synthetic,established,English,2026-05-31
+TCS internship program for Business Analyst - Apply with portfolio,0,synthetic,government,English,2026-05-31
+UX Designer position at Deloitte - 3-5 years experience required,0,synthetic,IT,English,2026-05-31
+"Deloitte career opportunity: Data Scientist position, apply on company website",0,synthetic,government,English,2026-05-31
+Capgemini recruitment drive for Cloud Architect - Visit official job portal,0,synthetic,government,English,2026-05-31
+Data Scientist vacancy at Oracle - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Government job: DevOps Engineer recruitment via official UPSC portal,0,synthetic,government,English,2026-05-31
+Government job: Software Engineer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Product Manager vacancy at Infosys - Interview scheduled at office,0,synthetic,government,English,2026-05-31
+IBM is hiring DevOps Engineer - Apply via careers.infosys.com,0,synthetic,IT,English,2026-05-31
+HCL internship program for Product Manager - Apply with portfolio,0,synthetic,government,English,2026-05-31
+Infosys internship program for Software Engineer - Apply with portfolio,0,synthetic,government,English,2026-05-31
+DevOps Engineer position at Capgemini - 3-5 years experience required,0,synthetic,IT,English,2026-05-31
+HCL recruitment drive for QA Engineer - Visit official job portal,0,synthetic,established,English,2026-05-31
+Cybersecurity Analyst vacancy at Oracle - Interview scheduled at office,0,synthetic,established,English,2026-05-31
+Official job posting: DevOps Engineer at Capgemini through LinkedIn,0,synthetic,government,English,2026-05-31
+Campus placement: HCL hiring Business Analyst for 2024 batch,0,synthetic,established,English,2026-05-31
+Official job posting: Data Scientist at Google through LinkedIn,0,synthetic,government,English,2026-05-31
+Software Engineer vacancy at Infosys - Interview scheduled at office,0,synthetic,government,English,2026-05-31
+Amazon internship program for Data Scientist - Apply with portfolio,0,synthetic,established,English,2026-05-31
+Job opening: Business Analyst at Microsoft - Send resume to hr@tcs.com,0,synthetic,established,English,2026-05-31
+Capgemini internship program for Cloud Architect - Apply with portfolio,0,synthetic,government,English,2026-05-31
+Full Stack Developer position at Amazon - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Job opening: Machine Learning Engineer at Accenture - Send resume to hr@google.com,0,synthetic,government,English,2026-05-31
+Tech Mahindra recruitment drive for Machine Learning Engineer - Visit official job portal,0,synthetic,established,English,2026-05-31
+Official job posting: Data Scientist at Adobe through LinkedIn,0,synthetic,IT,English,2026-05-31
+Google internship program for Cybersecurity Analyst - Apply with portfolio,0,synthetic,IT,English,2026-05-31
+"Tech Mahindra career opportunity: Cybersecurity Analyst position, apply on company website",0,synthetic,government,English,2026-05-31
+Data Scientist vacancy at Cognizant - Interview scheduled at office,0,synthetic,IT,English,2026-05-31
+Cloud Architect position at TCS - 3-5 years experience required,0,synthetic,established,English,2026-05-31
+QA Engineer position at HCL - 3-5 years experience required,0,synthetic,government,English,2026-05-31
+Government job: UX Designer recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Government job: Product Manager recruitment via official UPSC portal,0,synthetic,IT,English,2026-05-31
+Software Engineer vacancy at Adobe - Interview scheduled at office,0,synthetic,government,English,2026-05-31
+Google recruitment drive for Cybersecurity Analyst - Visit official job portal,0,synthetic,government,English,2026-05-31
+TCS recruitment drive for QA Engineer - Visit official job portal,0,synthetic,government,English,2026-05-31
+Wipro is hiring Cybersecurity Analyst - Apply via careers.techmahindra.com,0,synthetic,established,English,2026-05-31
+"Infosys career opportunity: Data Scientist position, apply on company website",0,synthetic,IT,English,2026-05-31
+Microsoft internship program for QA Engineer - Apply with portfolio,0,synthetic,IT,English,2026-05-31
+Cognizant internship program for DevOps Engineer - Apply with portfolio,0,synthetic,established,English,2026-05-31
+"Infosys career opportunity: DevOps Engineer position, apply on company website",0,synthetic,established,English,2026-05-31
+Official job posting: Cybersecurity Analyst at Wipro through LinkedIn,0,synthetic,government,English,2026-05-31
+Wipro recruitment drive for DevOps Engineer - Visit official job portal,0,synthetic,IT,English,2026-05-31
+Data Scientist vacancy at Tech Mahindra - Interview scheduled at office,0,synthetic,established,English,2026-05-31
+Job opening: UX Designer at Infosys - Send resume to hr@microsoft.com,0,synthetic,government,English,2026-05-31
+"घर से काम कस्टमर सपोर्ट - ₹40,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: डेटा एंट्री ऑपरेटर पद, ₹60,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम कस्टमर सपोर्ट - ₹40,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: डेटा एंट्री ऑपरेटर पद, ₹60,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम कस्टमर सपोर्ट - ₹40,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹500 रजिस्ट्रेशन फी दो और ₹40,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम सॉफ्टवेयर इंजीनियर - ₹60,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती डेटा एंट्री ऑपरेटर के लिए - ₹60,000/महीना, ट्रेनिंग के लिए ₹1000 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: कस्टमर सपोर्ट पद, ₹60,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती डेटा एंट्री ऑपरेटर के लिए - ₹60,000/महीना, ट्रेनिंग के लिए ₹1000 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम कस्टमर सपोर्ट - ₹40,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम सॉफ्टवेयर इंजीनियर - ₹60,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: डेटा एंट्री ऑपरेटर पद, ₹40,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम डेटा एंट्री ऑपरेटर - ₹40,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: सॉफ्टवेयर इंजीनियर पद, ₹40,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹500 रजिस्ट्रेशन फी दो और ₹40,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम डेटा एंट्री ऑपरेटर - ₹40,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹500 रजिस्ट्रेशन फी दो और ₹50,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: कस्टमर सपोर्ट पद, ₹50,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती कस्टमर सपोर्ट के लिए - ₹40,000/महीना, ट्रेनिंग के लिए ₹2000 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती डेटा एंट्री ऑपरेटर के लिए - ₹40,000/महीना, ट्रेनिंग के लिए ₹500 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती डेटा एंट्री ऑपरेटर के लिए - ₹40,000/महीना, ट्रेनिंग के लिए ₹500 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम सॉफ्टवेयर इंजीनियर - ₹60,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹1000 रजिस्ट्रेशन फी दो और ₹40,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती डेटा एंट्री ऑपरेटर के लिए - ₹60,000/महीना, ट्रेनिंग के लिए ₹1000 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: सॉफ्टवेयर इंजीनियर पद, ₹50,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹1000 रजिस्ट्रेशन फी दो और ₹50,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹2000 रजिस्ट्रेशन फी दो और ₹60,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: सॉफ्टवेयर इंजीनियर पद, ₹40,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: कस्टमर सपोर्ट पद, ₹50,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती कस्टमर सपोर्ट के लिए - ₹40,000/महीना, ट्रेनिंग के लिए ₹500 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम सॉफ्टवेयर इंजीनियर - ₹50,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹500 रजिस्ट्रेशन फी दो और ₹40,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: सॉफ्टवेयर इंजीनियर पद, ₹40,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम सॉफ्टवेयर इंजीनियर - ₹50,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹1000 रजिस्ट्रेशन फी दो और ₹60,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती सॉफ्टवेयर इंजीनियर के लिए - ₹60,000/महीना, ट्रेनिंग के लिए ₹1000 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: कस्टमर सपोर्ट पद, ₹50,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: सॉफ्टवेयर इंजीनियर पद, ₹60,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"घर से काम सॉफ्टवेयर इंजीनियर - ₹50,000/महीना कमाओ, कोई अनुभव नहीं चाहिए",1,synthetic,mixed,Hindi,2026-05-31
+"सीमित समय ऑफर: डेटा एंट्री ऑपरेटर पद, ₹40,000/महीना, अभी आवेदन करो",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती डेटा एंट्री ऑपरेटर के लिए - ₹40,000/महीना, ट्रेनिंग के लिए ₹2000 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती कस्टमर सपोर्ट के लिए - ₹60,000/महीना, ट्रेनिंग के लिए ₹2000 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹1000 रजिस्ट्रेशन फी दो और ₹50,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹2000 रजिस्ट्रेशन फी दो और ₹60,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती डेटा एंट्री ऑपरेटर के लिए - ₹40,000/महीना, ट्रेनिंग के लिए ₹2000 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹1000 रजिस्ट्रेशन फी दो और ₹50,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"तुरंत भर्ती कस्टमर सपोर्ट के लिए - ₹60,000/महीना, ट्रेनिंग के लिए ₹500 भेजो",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹1000 रजिस्ट्रेशन फी दो और ₹40,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+"जल्दी करो! ₹500 रजिस्ट्रेशन फी दो और ₹40,000/महीने की नौकरी पाओ",1,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: सॉफ्टवेयर इंजीनियर भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+Wipro में सॉफ्टवेयर इंजीनियर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+TCS में कस्टमर सपोर्ट पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Wipro में सॉफ्टवेयर इंजीनियर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+TCS में सॉफ्टवेयर इंजीनियर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: कस्टमर सपोर्ट भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+Wipro कस्टमर सपोर्ट के लिए भर्ती कर रहा है - careers.infosys.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Infosys में डेटा एंट्री ऑपरेटर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Infosys में डेटा एंट्री ऑपरेटर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Wipro कस्टमर सपोर्ट के लिए भर्ती कर रहा है - careers.wipro.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Infosys डेटा एंट्री ऑपरेटर के लिए भर्ती कर रहा है - careers.wipro.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: सॉफ्टवेयर इंजीनियर भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: सॉफ्टवेयर इंजीनियर भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+TCS में डेटा एंट्री ऑपरेटर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+TCS में डेटा एंट्री ऑपरेटर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Wipro कस्टमर सपोर्ट के लिए भर्ती कर रहा है - careers.tcs.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Wipro कस्टमर सपोर्ट के लिए भर्ती कर रहा है - careers.wipro.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Wipro में कस्टमर सपोर्ट पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Wipro सॉफ्टवेयर इंजीनियर के लिए भर्ती कर रहा है - careers.wipro.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+TCS सॉफ्टवेयर इंजीनियर के लिए भर्ती कर रहा है - careers.infosys.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: सॉफ्टवेयर इंजीनियर भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+TCS में सॉफ्टवेयर इंजीनियर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Infosys में सॉफ्टवेयर इंजीनियर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Wipro सॉफ्टवेयर इंजीनियर के लिए भर्ती कर रहा है - careers.infosys.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Infosys सॉफ्टवेयर इंजीनियर के लिए भर्ती कर रहा है - careers.tcs.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Infosys में डेटा एंट्री ऑपरेटर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Wipro में सॉफ्टवेयर इंजीनियर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+TCS में कस्टमर सपोर्ट पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: कस्टमर सपोर्ट भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+TCS कस्टमर सपोर्ट के लिए भर्ती कर रहा है - careers.tcs.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: डेटा एंट्री ऑपरेटर भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: सॉफ्टवेयर इंजीनियर भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+TCS में डेटा एंट्री ऑपरेटर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: डेटा एंट्री ऑपरेटर भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+TCS डेटा एंट्री ऑपरेटर के लिए भर्ती कर रहा है - careers.infosys.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: डेटा एंट्री ऑपरेटर भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: कस्टमर सपोर्ट भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
+Infosys में सॉफ्टवेयर इंजीनियर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+TCS डेटा एंट्री ऑपरेटर के लिए भर्ती कर रहा है - careers.infosys.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Infosys कस्टमर सपोर्ट के लिए भर्ती कर रहा है - careers.wipro.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Wipro में डेटा एंट्री ऑपरेटर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Wipro कस्टमर सपोर्ट के लिए भर्ती कर रहा है - careers.tcs.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Infosys में डेटा एंट्री ऑपरेटर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+Infosys में सॉफ्टवेयर इंजीनियर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+TCS सॉफ्टवेयर इंजीनियर के लिए भर्ती कर रहा है - careers.wipro.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+TCS सॉफ्टवेयर इंजीनियर के लिए भर्ती कर रहा है - careers.tcs.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Infosys डेटा एंट्री ऑपरेटर के लिए भर्ती कर रहा है - careers.tcs.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+TCS डेटा एंट्री ऑपरेटर के लिए भर्ती कर रहा है - careers.wipro.com पर आवेदन करें,0,synthetic,mixed,Hindi,2026-05-31
+Infosys में सॉफ्टवेयर इंजीनियर पद - 3-5 साल का अनुभव आवश्यक,0,synthetic,mixed,Hindi,2026-05-31
+सरकारी नौकरी: डेटा एंट्री ऑपरेटर भर्ती आधिकारिक पोर्टल के माध्यम से,0,synthetic,mixed,Hindi,2026-05-31
