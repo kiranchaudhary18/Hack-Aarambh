@@ -4,7 +4,6 @@ import { gsap } from "gsap";
 import { Sidebar } from "@/components/Sidebar";
 import { ClayBlobs } from "@/components/ClayBlobs";
 import { FadeIn, StaggerChildren } from "@/components/Animated";
-import { EmptyState } from "@/components/EmptyState";
 import { api } from "@/lib/api";
 import { resultStore } from "@/lib/resultStore";
 import {
@@ -16,8 +15,6 @@ import {
   Share2,
   FileDown,
   Flag,
-  Loader2,
-  Database,
 } from "lucide-react";
 
 export const Route = createFileRoute("/result")({
@@ -33,64 +30,55 @@ export const Route = createFileRoute("/result")({
   component: Result,
 });
 
+interface Reason {
+  label: string;
+  severity: "high" | "med" | "low";
+  detail: string;
+}
+
+interface JobCheck {
+  id: string;
+  title: string;
+  company: string;
+  snippet: string;
+  verdict: "scam" | "suspicious" | "safe";
+  score: number;
+  date: string;
+  source?: "text" | "pdf" | "url";
+  reasons?: Reason[];
+}
+
 function Result() {
   const { id } = useSearch({ from: "/result" });
-  const [check, setCheck] = useState<any>(null);
+  const [check, setCheck] = useState<JobCheck | null>(null);
   const [loading, setLoading] = useState(true);
-
   const meterRef = useRef<HTMLDivElement>(null);
   const numRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
       try {
         if (id) {
-          // Fetch specific history item by ID
-          const history = await api.getHistory();
-          const item = history.find((h: any) => h.id === id);
-          if (item) {
-            const transformed = {
-              id: item.id,
-              title: item.input?.split("\n")[0]?.slice(0, 60) || "Job offer",
-              company: "Unknown sender",
-              snippet: item.input?.slice(0, 160) || "",
-              date: item.createdAt || new Date().toISOString().slice(0, 10),
-              score: item.result?.score || 0,
-              verdict: item.result?.isFake ? "scam" : "safe",
-              reasons:
-                item.result?.reasons?.map((r: string) => ({
-                  label: r,
-                  severity: item.result?.isFake ? "high" : "low",
-                  detail: r,
-                })) || [],
-            };
-            setCheck(transformed);
-          } else {
-            // Fallback to resultStore if not found in history
-            const stored = resultStore.get();
-            if (stored) {
-              setCheck(stored);
-            }
-          }
+          const data = await api.getHistoryById(id);
+          setCheck(data);
         } else {
-          // No ID provided, use resultStore
           const stored = resultStore.get();
           if (stored) {
             setCheck(stored);
+          } else {
+            // Fallback to recent history
+            const history = await api.getHistory();
+            setCheck(history[0] || null);
           }
         }
       } catch (error) {
         console.error("Failed to fetch result:", error);
-        // Fallback to resultStore on error
         const stored = resultStore.get();
-        if (stored) {
-          setCheck(stored);
-        }
+        if (stored) setCheck(stored);
       } finally {
         setLoading(false);
       }
-    };
-
+    }
     fetchData();
   }, [id]);
 
@@ -107,32 +95,21 @@ function Result() {
       duration: 1.4,
       ease: "power3.out",
       onUpdate: () => {
-        if (numRef.current) numRef.current.textContent = String(Math.round(obj.v));
+        if (numRef.current) numRef.current.textContent = Math.round(obj.v).toString();
       },
     });
-  }, [check?.score]);
+  }, [check]);
 
-  if (loading) {
+  if (loading || !check) {
     return (
-      <div className="relative min-h-screen overflow-hidden flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="h-12 w-12 animate-spin text-[oklch(0.62_0.18_295)] mx-auto" />
-          <p className="text-sm font-bold text-muted-foreground">Loading result...</p>
+      <div className="relative h-screen overflow-hidden">
+        <ClayBlobs />
+        <div className="relative mx-auto flex h-full max-w-[1380px] gap-6 p-6">
+          <Sidebar />
+          <main className="min-w-0 flex-1 flex items-center justify-center">
+            <p className="text-muted-foreground">Loading result...</p>
+          </main>
         </div>
-      </div>
-    );
-  }
-
-  if (!check) {
-    return (
-      <div className="relative min-h-screen overflow-hidden flex items-center justify-center">
-        <EmptyState
-          icon={<Database className="h-7 w-7" />}
-          title="Result not found"
-          description="The analysis result you're looking for doesn't exist or has been deleted."
-          actionLabel="Go to History"
-          actionTo="/history"
-        />
       </div>
     );
   }
@@ -163,11 +140,11 @@ function Result() {
           };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative h-screen overflow-hidden">
       <ClayBlobs />
-      <div className="relative mx-auto flex max-w-[1380px] gap-6 p-6">
+      <div className="relative mx-auto flex h-full max-w-[1380px] gap-6 p-6">
         <Sidebar />
-        <main className="min-w-0 flex-1 space-y-6">
+        <main className="hide-scrollbar min-w-0 flex-1 space-y-6 overflow-y-auto pb-6">
           <FadeIn>
             <Link
               to="/analyze"
@@ -248,40 +225,49 @@ function Result() {
             <div className="flex items-end justify-between">
               <h2 className="font-display text-3xl font-bold">Why we flagged it</h2>
               <p className="text-sm text-muted-foreground">
-                {check.reasons.length} signal{check.reasons.length === 1 ? "" : "s"} detected
+                {check.reasons?.length || 0} signal{(check.reasons?.length || 0) === 1 ? "" : "s"}{" "}
+                detected
               </p>
             </div>
           </FadeIn>
 
           <StaggerChildren className="grid gap-4 md:grid-cols-2">
-            {check.reasons.map((r, i) => {
-              const sevColor =
-                r.severity === "high"
-                  ? "var(--clay-pink)"
-                  : r.severity === "med"
-                    ? "var(--clay-yellow)"
-                    : "var(--clay-green)";
-              const SevIcon = r.severity === "low" ? ShieldCheck : AlertTriangle;
-              return (
-                <div key={i} className="clay p-6">
-                  <div className="flex items-start gap-4">
-                    <span
-                      className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl"
-                      style={{ background: sevColor }}
-                    >
-                      <SevIcon className="h-5 w-5" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-display text-lg font-bold">{r.label}</h3>
-                        <span className="clay-pill text-[10px] uppercase">{r.severity}</span>
+            {check.reasons && check.reasons.length > 0 ? (
+              check.reasons.map((r, i) => {
+                const sevColor =
+                  r.severity === "high"
+                    ? "var(--clay-pink)"
+                    : r.severity === "med"
+                      ? "var(--clay-yellow)"
+                      : "var(--clay-green)";
+                const SevIcon = r.severity === "low" ? ShieldCheck : AlertTriangle;
+                return (
+                  <div key={i} className="clay p-6">
+                    <div className="flex items-start gap-4">
+                      <span
+                        className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl"
+                        style={{ background: sevColor }}
+                      >
+                        <SevIcon className="h-5 w-5" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-display text-lg font-bold">{r.label}</h3>
+                          <span className="clay-pill text-[10px] uppercase">{r.severity}</span>
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">{r.detail}</p>
                       </div>
-                      <p className="mt-1 text-sm text-muted-foreground">{r.detail}</p>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div className="clay p-12 text-center">
+                <p className="text-muted-foreground">
+                  No specific signals detected for this analysis.
+                </p>
+              </div>
+            )}
           </StaggerChildren>
 
           <FadeIn delay={0.2}>

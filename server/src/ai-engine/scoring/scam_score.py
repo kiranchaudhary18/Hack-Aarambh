@@ -32,7 +32,8 @@ class HybridScorer:
                 prob = self.roberta_scorer.predict_proba(text)
                 return prob * 100  # Convert to 0-100 scale
             except Exception as e:
-                print(f"RoBERTa scoring error: {e}")
+                import sys
+                print(f"RoBERTa scoring error: {e}", file=sys.stderr)
                 # Fallback to Logistic Regression
                 return self._get_lr_score(text)
         else:
@@ -45,7 +46,8 @@ class HybridScorer:
             prob = self.ml_trainer.predict_proba(text)
             return prob * 100  # Convert to 0-100 scale
         except Exception as e:
-            print(f"LR scoring error: {e}")
+            import sys
+            print(f"LR scoring error: {e}", file=sys.stderr)
             return 50  # Default to neutral score
 
     def get_rule_score(self, text: str) -> float:

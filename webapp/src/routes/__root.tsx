@@ -8,8 +8,8 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
-import { FrontendMotion } from "@/components/Animated";
 import { ShieldOff, Home, ScanSearch } from "lucide-react";
+
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -105,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300..700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
       },
     ],
   }),
@@ -134,10 +134,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <FrontendMotion />
-      <main data-gsap-page>
-        <Outlet />
-      </main>
+      <Outlet />
       <Toaster position="top-right" richColors />
     </QueryClientProvider>
   );
