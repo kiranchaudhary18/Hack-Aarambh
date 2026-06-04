@@ -27,18 +27,20 @@ class RoBERTaScorer:
         """Load fine-tuned RoBERTa model"""
         if os.path.exists(self.model_path):
             try:
-                print(f"Loading RoBERTa model from {self.model_path}")
+                # Use stderr for logging to avoid interfering with JSON output
+                import sys
+                print(f"Loading RoBERTa model from {self.model_path}", file=sys.stderr)
                 self.tokenizer = RobertaTokenizer.from_pretrained(self.model_path)
                 self.model = RobertaForSequenceClassification.from_pretrained(self.model_path)
                 self.model.to(self.device)
                 self.model.eval()
-                print("RoBERTa model loaded successfully")
+                print("RoBERTa model loaded successfully", file=sys.stderr)
             except Exception as e:
-                print(f"Error loading RoBERTa model: {e}")
-                print("Falling back to rule-based scoring only")
+                print(f"Error loading RoBERTa model: {e}", file=sys.stderr)
+                print("Falling back to rule-based scoring only", file=sys.stderr)
         else:
-            print(f"RoBERTa model not found at {self.model_path}")
-            print("Using Logistic Regression fallback in hybrid scoring")
+            print(f"RoBERTa model not found at {self.model_path}", file=sys.stderr)
+            print("Using Logistic Regression fallback in hybrid scoring", file=sys.stderr)
     
     def is_available(self) -> bool:
         """Check if RoBERTa model is available"""
@@ -73,7 +75,8 @@ class RoBERTaScorer:
             return fake_probability
             
         except Exception as e:
-            print(f"Error in RoBERTa prediction: {e}")
+            import sys
+            print(f"Error in RoBERTa prediction: {e}", file=sys.stderr)
             return 0.5  # Neutral score on error
     
     def predict(self, text: str) -> Dict:
@@ -120,7 +123,8 @@ class RoBERTaScorer:
             }
             
         except Exception as e:
-            print(f"Error in RoBERTa prediction: {e}")
+            import sys
+            print(f"Error in RoBERTa prediction: {e}", file=sys.stderr)
             return {
                 "predicted_class": 0,
                 "confidence": 0.5,
