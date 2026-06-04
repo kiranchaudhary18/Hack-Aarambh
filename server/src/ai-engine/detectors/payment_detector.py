@@ -1,6 +1,7 @@
 import json
 import re
 from typing import Dict, List
+from pathlib import Path
 
 
 class PaymentDetector:
@@ -13,7 +14,7 @@ class PaymentDetector:
     def _load_keywords(self, path: str = None) -> Dict:
         """Load keywords configuration"""
         if path is None:
-            path = "/home/developer21/Documents/WebDev/HackAarambh/server/src/ai-engine/config/keywords.json"
+            path = Path(__file__).resolve().parents[1] / "config" / "keywords.json"
 
         try:
             with open(path, "r") as f:
@@ -25,10 +26,11 @@ class PaymentDetector:
     def detect_payment_demand(self, text: str) -> tuple:
         """Detect if payment is being demanded"""
         payment_keywords = self.keywords.get("payment_keywords", [])
+        normalized_text = text.lower()
 
         found_keywords = []
         for keyword in payment_keywords:
-            if keyword in text:
+            if keyword.lower() in normalized_text:
                 found_keywords.append(keyword)
 
         return len(found_keywords) > 0, found_keywords

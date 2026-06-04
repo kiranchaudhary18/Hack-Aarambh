@@ -1,6 +1,7 @@
 import json
 import re
 from typing import Dict
+from pathlib import Path
 
 
 class EmailDetector:
@@ -21,7 +22,7 @@ class EmailDetector:
     def _load_keywords(self, path: str = None) -> Dict:
         """Load keywords configuration"""
         if path is None:
-            path = "/home/developer21/Documents/WebDev/HackAarambh/server/src/ai-engine/config/keywords.json"
+            path = Path(__file__).resolve().parents[1] / "config" / "keywords.json"
 
         try:
             with open(path, "r") as f:
