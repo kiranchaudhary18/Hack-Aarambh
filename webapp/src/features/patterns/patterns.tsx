@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { Navbar } from "@/layouts/Navbar";
 import { Footer } from "@/layouts/Footer";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
@@ -12,21 +12,7 @@ import {
   Mail,
   AlertTriangle,
 } from "lucide-react";
-
-export const Route = createFileRoute("/patterns")({
-  head: () => ({
-    meta: [
-      { title: "Scam Patterns — ScamSniff" },
-      {
-        name: "description",
-        content:
-          "Library of common job scam patterns: fake HR calls, Telegram jobs, payment scams, and more.",
-      },
-      { property: "og:title", content: "Common job scam patterns" },
-    ],
-  }),
-  component: Patterns,
-});
+import { useEffect } from "react";
 
 const patterns = [
   {
@@ -81,7 +67,10 @@ const patterns = [
   },
 ];
 
-function Patterns() {
+export function Patterns() {
+  useEffect(() => {
+    document.title = "Scam Patterns — ScamSniff";
+  }, []);
   return (
     <div className="relative min-h-screen overflow-hidden">
       <ClayBlobs />

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
 import {
@@ -26,17 +26,7 @@ import {
 } from "recharts";
 import { api } from "@/shared/lib/api";
 
-export const Route = createFileRoute("/admin/")({
-  head: () => ({
-    meta: [
-      { title: "Admin — ScamSniff" },
-      { name: "description", content: "System overview and moderation dashboard." },
-    ],
-  }),
-  component: AdminHome,
-});
-
-function AdminHome() {
+export function Admin() {
   const [adminStats, setAdminStats] = useState<any>({
     totalScans: 0,
     scamsDetected: 0,
@@ -46,6 +36,10 @@ function AdminHome() {
   const [recentChecks, setRecentChecks] = useState<any[]>([]);
   const [trendData, setTrendData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    document.title = "Admin — ScamSniff";
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -191,8 +185,7 @@ function AdminHome() {
                 .slice(0, 4)
                 .map((c) => (
                   <Link
-                    to="/result"
-                    search={{ id: c.id }}
+                    to={`/result?id=${c.id}`}
                     key={c.id}
                     className="clay-sm flex items-center gap-3 p-3 transition hover:-translate-y-0.5"
                   >

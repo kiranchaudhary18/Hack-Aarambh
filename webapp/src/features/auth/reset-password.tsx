@@ -1,28 +1,21 @@
-import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { ShieldCheck, ArrowLeft, ArrowRight, Loader2, Check, X } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/reset-password")({
-  head: () => ({
-    meta: [
-      {
-        title: "Reset Password — ScamSniff",
-      },
-      { name: "description", content: "Reset your ScamSniff password." },
-    ],
-  }),
-  component: ResetPassword,
-});
+export function ResetPassword() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email") || "";
+  const code = searchParams.get("code") || "";
 
-function ResetPassword() {
-  const nav = useNavigate();
-  const search = useSearch({ from: "/reset-password" });
-  const email = (search as { email?: string }).email || "";
-  const code = (search as { code?: string }).code || "";
+  useEffect(() => {
+    document.title = "Reset Password — ScamSniff";
+  }, []);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +56,7 @@ function ResetPassword() {
     try {
       await api.resetPassword(email, code, newPassword, confirmPassword);
       toast.success("Password updated successfully");
-      nav({ to: "/login" });
+      navigate("/login");
     } catch (error: any) {
       toast.error(error.message || "Failed to reset password");
     } finally {
@@ -76,7 +69,10 @@ function ResetPassword() {
       <ClayBlobs />
       <div className="relative mx-auto grid min-h-screen max-w-md place-items-center p-6">
         <FadeIn className="w-full">
-          <Link to="/verify-code" search={{ email } as any} className="mb-8 flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary">
+          <Link
+            to={`/verify-code?email=${email}`}
+            className="mb-8 flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary"
+          >
             <ArrowLeft className="h-4 w-4" /> Back
           </Link>
 

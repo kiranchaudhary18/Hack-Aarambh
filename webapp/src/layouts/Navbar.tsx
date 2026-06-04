@@ -1,9 +1,10 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router-dom";
 import { ShieldCheck, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 export function Navbar() {
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const location = useLocation();
+  const path = location.pathname;
   const [open, setOpen] = useState(false);
   const links = [
     { to: "/", label: "Home" },

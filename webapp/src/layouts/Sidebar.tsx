@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   ScanSearch,
@@ -18,7 +18,8 @@ const items = [
 ];
 
 export function Sidebar() {
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const location = useLocation();
+  const path = location.pathname;
 
   const user = {
     name: "User",

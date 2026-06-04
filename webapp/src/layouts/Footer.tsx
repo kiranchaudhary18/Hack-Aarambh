@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { ShieldCheck, Github, Twitter, Linkedin } from "lucide-react";
 
 export function Footer() {

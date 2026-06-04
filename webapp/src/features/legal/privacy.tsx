@@ -1,24 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/layouts/Navbar";
 import { Footer } from "@/layouts/Footer";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { Lock } from "lucide-react";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/privacy")({
-  head: () => ({
-    meta: [
-      { title: "Privacy Policy — ScamSniff" },
-      {
-        name: "description",
-        content: "How ScamSniff handles your data. Spoiler: we don't store sensitive content.",
-      },
-    ],
-  }),
-  component: Privacy,
-});
-
-function Privacy() {
+export function Privacy() {
+  useEffect(() => {
+    document.title = "Privacy Policy — ScamSniff";
+  }, []);
   return (
     <div className="relative min-h-screen overflow-hidden">
       <ClayBlobs />

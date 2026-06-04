@@ -1,21 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { ShieldCheck, Mail, ArrowRight, MailCheck } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
-import { Field } from "@/features/auth/login";
+import { Field } from "./login";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/forgot-password")({
-  head: () => ({
-    meta: [
-      { title: "Reset password — ScamSniff" },
-      { name: "description", content: "Reset your ScamSniff password via email verification." },
-    ],
-  }),
-  component: Forgot,
-});
-
-function Forgot() {
+export function ForgotPassword() {
+  useEffect(() => {
+    document.title = "Reset password — ScamSniff";
+  }, []);
   const [sent, setSent] = useState(false);
   return (
     <div className="relative min-h-screen overflow-hidden">

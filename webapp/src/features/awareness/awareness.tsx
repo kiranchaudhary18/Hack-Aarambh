@@ -1,22 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
 import * as Icons from "lucide-react";
 import { BookOpen, ShieldAlert, Sparkles } from "lucide-react";
-
-export const Route = createFileRoute("/awareness")({
-  head: () => ({
-    meta: [
-      { title: "Awareness — ScamSniff" },
-      {
-        name: "description",
-        content: "Red flags, scam patterns, and safety tips for job seekers.",
-      },
-    ],
-  }),
-  component: Awareness,
-});
+import { useEffect } from "react";
 
 const tips = [
   {
@@ -90,7 +77,10 @@ const scamPatterns = [
   },
 ];
 
-function Awareness() {
+export function Awareness() {
+  useEffect(() => {
+    document.title = "Awareness — ScamSniff";
+  }, []);
   return (
     <div className="relative h-screen overflow-hidden">
       <ClayBlobs />

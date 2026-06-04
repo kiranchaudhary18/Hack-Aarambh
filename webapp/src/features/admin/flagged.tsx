@@ -1,22 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
 import { Flag, AlertTriangle, ShieldOff, CheckCircle2, ArrowRight } from "lucide-react";
 
-export const Route = createFileRoute("/admin/flagged")({
-  head: () => ({
-    meta: [
-      { title: "Flagged cases — ScamSniff Admin" },
-      { name: "description", content: "High-risk job offers needing review." },
-    ],
-  }),
-  component: Flagged,
-});
-
-function Flagged() {
+export function AdminFlagged() {
   const [flaggedCases, setFlaggedCases] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    document.title = "Flagged cases — ScamSniff Admin";
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -88,8 +82,7 @@ function Flagged() {
               </div>
               <div className="flex flex-row gap-2 md:flex-col">
                 <Link
-                  to="/result"
-                  search={{ id: c.id }}
+                  to={`/result?id=${c.id}`}
                   className="clay-btn inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold"
                 >
                   Details <ArrowRight className="h-3.5 w-3.5" />

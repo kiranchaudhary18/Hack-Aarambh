@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { FadeIn } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
@@ -18,20 +17,14 @@ import {
   Line,
 } from "recharts";
 
-export const Route = createFileRoute("/admin/analytics")({
-  head: () => ({
-    meta: [
-      { title: "Analytics — ScamSniff Admin" },
-      { name: "description", content: "Trends and fraud patterns over time." },
-    ],
-  }),
-  component: Analytics,
-});
-
-function Analytics() {
+export function AdminAnalytics() {
   const [scamTypes, setScamTypes] = useState<any[]>([]);
   const [trendData, setTrendData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    document.title = "Analytics — ScamSniff Admin";
+  }, []);
 
   useEffect(() => {
     async function fetchData() {

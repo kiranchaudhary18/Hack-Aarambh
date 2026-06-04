@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
@@ -17,16 +17,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-export const Route = createFileRoute("/history")({
-  head: () => ({
-    meta: [
-      { title: "History — ScamSniff" },
-      { name: "description", content: "Every offer you've scanned, sorted and searchable." },
-    ],
-  }),
-  component: History,
-});
-
 type FilterT = "all" | "scam" | "suspicious" | "safe";
 type View = "list" | "kanban";
 
@@ -41,12 +31,16 @@ interface JobCheck {
   source?: "text" | "pdf" | "url";
 }
 
-function History() {
+export function History() {
   const [q, setQ] = useState("");
   const [f, setF] = useState<FilterT>("all");
   const [view, setView] = useState<View>("list");
   const [recentChecks, setRecentChecks] = useState<JobCheck[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    document.title = "History — ScamSniff";
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -252,7 +246,7 @@ const colMeta: Record<
   },
 };
 
-function KanbanCol({ verdict, items }: { verdict: "scam" | "suspicious" | "safe"; items: JobCheck[] }) {
+function KanbanCol({verdict, items }: { verdict: "scam" | "suspicious" | "safe"; items: JobCheck[] }) {
   const meta = colMeta[verdict];
   const Icon = meta.icon;
   const tone = toneFor(verdict);

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import {
@@ -18,25 +18,13 @@ import { Footer } from "@/layouts/Footer";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "ScamSniff — Spot job scams in seconds" },
-      {
-        name: "description",
-        content:
-          "Paste any job offer. Get an instant scam score, red-flag breakdown, and safety tips. Free, friendly, and built to protect job seekers.",
-      },
-      { property: "og:title", content: "ScamSniff — Spot job scams in seconds" },
-      { property: "og:description", content: "Instant scam detection for job offers." },
-    ],
-  }),
-  component: Landing,
-});
-
-function Landing() {
+export function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.title = "ScamSniff — Spot job scams in seconds";
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

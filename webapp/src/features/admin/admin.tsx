@@ -1,12 +1,8 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Outlet } from "react-router-dom";
 import { AdminSidebar } from "@/layouts/AdminSidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 
-export const Route = createFileRoute("/admin")({
-  component: AdminLayout,
-});
-
-function AdminLayout() {
+export function AdminLayout() {
   return (
     <div className="relative h-screen overflow-hidden">
       <ClayBlobs />

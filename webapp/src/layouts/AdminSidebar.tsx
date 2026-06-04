@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router-dom";
 import { Gauge, Flag, BarChart3, ShieldCheck, ArrowLeft } from "lucide-react";
 
 const items = [
@@ -8,7 +8,8 @@ const items = [
 ];
 
 export function AdminSidebar() {
-  const path = useRouterState({ select: (s) => s.location.pathname });
+  const location = useLocation();
+  const path = location.pathname;
   return (
     <aside className="hidden w-[260px] shrink-0 lg:block">
       <div className="clay flex h-full flex-col gap-2 p-5">

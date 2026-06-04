@@ -1,27 +1,20 @@
-import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { ShieldCheck, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/verify-code")({
-  head: () => ({
-    meta: [
-      {
-        title: "Verify Code — ScamSniff",
-      },
-      { name: "description", content: "Verify your password reset code." },
-    ],
-  }),
-  component: VerifyCode,
-});
+export function VerifyCode() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email") || "";
 
-function VerifyCode() {
-  const nav = useNavigate();
-  const search = useSearch({ from: "/verify-code" });
-  const email = (search as { email?: string }).email || "";
+  useEffect(() => {
+    document.title = "Verify Code — ScamSniff";
+  }, []);
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,7 +29,7 @@ function VerifyCode() {
     try {
       await api.verifyCode(email, code);
       toast.success("Code verified successfully");
-      nav({ to: "/reset-password", search: { email, code } as any });
+      navigate(`/reset-password?email=${email}&code=${code}`);
     } catch (error: any) {
       toast.error(error.message || "Invalid or expired code");
     } finally {
@@ -49,7 +42,10 @@ function VerifyCode() {
       <ClayBlobs />
       <div className="relative mx-auto grid min-h-screen max-w-md place-items-center p-6">
         <FadeIn className="w-full">
-          <Link to="/forgot-password" className="mb-8 flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary">
+          <Link
+            to={`/forgot-password?email=${email}`}
+            className="mb-8 flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary"
+          >
             <ArrowLeft className="h-4 w-4" /> Back
           </Link>
 
@@ -106,8 +102,7 @@ function VerifyCode() {
             <p className="mt-6 text-center text-sm text-muted-foreground">
               Didn't receive code?{" "}
               <Link
-                to="/forgot-password"
-                search={{ email } as any}
+                to={`/forgot-password?email=${email}`}
                 className="font-semibold text-primary hover:underline"
               >
                 Resend

@@ -1,23 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Navbar } from "@/layouts/Navbar";
 import { Footer } from "@/layouts/Footer";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { ChevronDown, LifeBuoy, BookOpen, Zap } from "lucide-react";
-
-export const Route = createFileRoute("/help")({
-  head: () => ({
-    meta: [
-      { title: "Help Center — ScamSniff" },
-      {
-        name: "description",
-        content: "Frequently asked questions about ScamSniff, how detection works, and accuracy.",
-      },
-    ],
-  }),
-  component: Help,
-});
+import { useEffect } from "react";
 
 const faqs = [
   {
@@ -50,8 +37,12 @@ const faqs = [
   },
 ];
 
-function Help() {
+export function Help() {
   const [open, setOpen] = useState<number | null>(0);
+
+  useEffect(() => {
+    document.title = "Help Center — ScamSniff";
+  }, []);
 
   return (
     <div className="relative min-h-screen overflow-hidden">

@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Navbar } from "@/layouts/Navbar";
@@ -6,26 +5,17 @@ import { Footer } from "@/layouts/Footer";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { Flag, Loader2, ShieldAlert } from "lucide-react";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/report")({
-  head: () => ({
-    meta: [
-      { title: "Report a Scam — ScamSniff" },
-      {
-        name: "description",
-        content:
-          "Submit a scam job offer you've received. Helps train our AI and protect future job seekers.",
-      },
-    ],
-  }),
-  component: Report,
-});
-
-function Report() {
+export function Report() {
   const [jobText, setJobText] = useState("");
   const [desc, setDesc] = useState("");
   const [type, setType] = useState("Advance-fee");
   const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    document.title = "Report a Scam — ScamSniff";
+  }, []);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();

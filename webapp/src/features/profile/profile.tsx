@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
@@ -6,16 +6,6 @@ import { FadeIn } from "@/shared/components/Animated";
 import { Camera, X, Pencil } from "lucide-react";
 import { User, Mail, Bell, Trash2, LogOut, ShieldCheck, KeyRound, CreditCard } from "lucide-react";
 import { api } from "@/shared/lib/api";
-
-export const Route = createFileRoute("/profile")({
-  head: () => ({
-    meta: [
-      { title: "Profile — ScamSniff" },
-      { name: "description", content: "Manage your account, plan, and data." },
-    ],
-  }),
-  component: Profile,
-});
 
 interface ProfileData {
   name?: string;
@@ -26,7 +16,7 @@ interface ProfileData {
   scansLimit?: number;
 }
 
-function Profile() {
+export function Profile() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,6 +25,10 @@ function Profile() {
   const [editedEmail, setEditedEmail] = useState("");
   const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    document.title = "Profile — ScamSniff";
+  }, []);
 
   useEffect(() => {
     async function fetchProfile() {

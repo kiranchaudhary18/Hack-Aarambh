@@ -1,25 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/layouts/Navbar";
 import { Footer } from "@/layouts/Footer";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { Scale, AlertTriangle } from "lucide-react";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/terms")({
-  head: () => ({
-    meta: [
-      { title: "Terms & Conditions — ScamSniff" },
-      {
-        name: "description",
-        content:
-          "Terms of service for using ScamSniff. AI may not be 100% accurate — use judgment.",
-      },
-    ],
-  }),
-  component: Terms,
-});
-
-function Terms() {
+export function Terms() {
+  useEffect(() => {
+    document.title = "Terms & Conditions — ScamSniff";
+  }, []);
   return (
     <div className="relative min-h-screen overflow-hidden">
       <ClayBlobs />

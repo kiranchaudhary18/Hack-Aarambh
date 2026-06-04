@@ -1,24 +1,19 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ShieldCheck, Mail, Lock, User, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
-import { Field, GoogleIcon } from "@/routes/login";
+import { Field, GoogleIcon } from "./login";
 import { api } from "@/shared/lib/api";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/signup")({
-  head: () => ({
-    meta: [
-      { title: "Sign up — ScamSniff" },
-      { name: "description", content: "Create your free ScamSniff account." },
-    ],
-  }),
-  component: Signup,
-});
+export function Signup() {
+  const navigate = useNavigate();
 
-function Signup() {
-  const nav = useNavigate();
+  useEffect(() => {
+    document.title = "Sign up — ScamSniff";
+  }, []);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +29,7 @@ function Signup() {
     try {
       await api.register(email, password, name);
       toast.success("Account created successfully!");
-      nav({ to: "/login" });
+      navigate("/login");
     } catch (error) {
       console.error("Signup failed:", error);
       toast.error(error instanceof Error ? error.message : "Signup failed. Please try again.");

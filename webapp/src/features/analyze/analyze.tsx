@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Sidebar } from "@/layouts/Sidebar";
@@ -8,24 +8,17 @@ import { LoadingScreen } from "@/shared/components/Loading";
 import { api } from "@/shared/lib/api";
 import { resultStore } from "@/shared/lib/resultStore";
 import { FileText, Link2, Type, ScanSearch, Upload, Loader2, Lightbulb } from "lucide-react";
-
-export const Route = createFileRoute("/analyze")({
-  head: () => ({
-    meta: [
-      { title: "Analyze offer — ScamSniff" },
-      {
-        name: "description",
-        content: "Paste, upload, or link a job offer for instant scam analysis.",
-      },
-    ],
-  }),
-  component: Analyze,
-});
+import { useEffect } from "react";
 
 type Tab = "text" | "pdf" | "url";
 
-function Analyze() {
-  const nav = useNavigate();
+export function Analyze() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "Analyze offer — ScamSniff";
+  }, []);
+
   const [tab, setTab] = useState<Tab>("text");
   const [text, setText] = useState("");
   const [url, setUrl] = useState("");
@@ -64,7 +57,7 @@ function Analyze() {
 
       resultStore.set(result);
       toast.success("Analysis complete");
-      nav({ to: "/result", search: { id: result.id || undefined } });
+      navigate(`/result?id=${result.id || ""}`);
     } catch (error) {
       console.error("Analysis failed:", error);
       toast.error(error instanceof Error ? error.message : "Analysis failed. Please try again.");

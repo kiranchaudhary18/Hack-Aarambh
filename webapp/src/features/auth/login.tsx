@@ -1,23 +1,18 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ShieldCheck, Mail, Lock, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/login")({
-  head: () => ({
-    meta: [
-      { title: "Login — ScamSniff" },
-      { name: "description", content: "Sign in to your ScamSniff account." },
-    ],
-  }),
-  component: Login,
-});
+export function Login() {
+  const navigate = useNavigate();
 
-function Login() {
-  const nav = useNavigate();
+  useEffect(() => {
+    document.title = "Login — ScamSniff";
+  }, []);
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +28,7 @@ function Login() {
     try {
       await api.login(email, password);
       toast.success("Login successful!");
-      nav({ to: "/dashboard" });
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
       toast.error(error instanceof Error ? error.message : "Login failed. Please try again.");

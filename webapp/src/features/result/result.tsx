@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { Link, useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { Sidebar } from "@/layouts/Sidebar";
@@ -16,19 +16,6 @@ import {
   FileDown,
   Flag,
 } from "lucide-react";
-
-export const Route = createFileRoute("/result")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    id: typeof s.id === "string" ? s.id : undefined,
-  }),
-  head: () => ({
-    meta: [
-      { title: "Result — ScamSniff" },
-      { name: "description", content: "Scam-detection result with reasoning." },
-    ],
-  }),
-  component: Result,
-});
 
 interface Reason {
   label: string;
@@ -48,11 +35,16 @@ interface JobCheck {
   reasons?: Reason[];
 }
 
-function Result() {
-  const { id } = useSearch({ from: "/result" });
+export function Result() {
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id") || undefined;
   const [check, setCheck] = useState<JobCheck | null>(null);
   const [loading, setLoading] = useState(true);
   const meterRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.title = "Analysis Result — ScamSniff";
+  }, []);
   const numRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {

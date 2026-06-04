@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
@@ -21,34 +21,25 @@ import {
   DollarSign,
 } from "lucide-react";
 
-export const Route = createFileRoute("/dashboard")({
-  head: () => ({
-    meta: [
-      { title: "Dashboard — ScamSniff" },
-      { name: "description", content: "Your scam-detection control center." },
-    ],
-  }),
-  component: Dashboard,
-});
-
 const spark = (seed: number) =>
   Array.from({ length: 12 }).map((_, i) => ({
     x: i,
     v: 30 + Math.round(Math.abs(Math.sin((i + seed) * 0.7)) * 60 + (i % 3) * 5),
   }));
 
-function Dashboard() {
+export function Dashboard() {
   const [recentChecks, setRecentChecks] = useState<any[]>([]);
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Dashboard — ScamSniff";
+  }, []);
+
+  useEffect(() => {
     async function fetchData() {
       try {
-        const [historyData, profileData] = await Promise.all([
-          api.getHistory(),
-          api.getProfile(),
-        ]);
+        const [historyData, profileData] = await Promise.all([api.getHistory(), api.getProfile()]);
         setRecentChecks(historyData || []);
         setProfile(profileData);
       } catch (error) {
@@ -64,12 +55,12 @@ function Dashboard() {
   const suspiciousCount = recentChecks.filter((c) => c.verdict === "suspicious").length;
   const safeCount = recentChecks.filter((c) => c.verdict === "safe").length;
   const totalScans = recentChecks.length;
-  
+
   // Calculate average risk score
-  const avgScore = totalScans > 0 
+  const avgScore = totalScans > 0
     ? Math.round(recentChecks.reduce((sum, c) => sum + (c.score || 0), 0) / totalScans)
-    : 0;
-  
+: 0;
+
   // Calculate money saved (assuming each scam would cost $416 on average)
   const moneySaved = scamCount * 416;
 
@@ -96,7 +87,9 @@ function Dashboard() {
           <FadeIn>
             <header className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="clay-pill inline-block">Welcome back, {profile?.name?.split(' ')[0] || "User"}</p>
+                <p className="clay-pill inline-block">
+                  Welcome back, {profile?.name?.split(' ')[0]}
+                </p>
                 <h1 className="mt-3 font-display text-4xl font-bold sm:text-5xl">
                   Your scam dashboard
                 </h1>
@@ -168,9 +161,8 @@ function Dashboard() {
                 <div className="mt-5 divide-y divide-border">
                   {recentChecks.slice(0, 5).map((c) => (
                     <Link
-                      to="/result"
+                      to={`/result?id=${c.id}`}
                       key={c.id}
-                      search={{ id: c.id }}
                       className="flex items-center gap-4 py-4 transition hover:translate-x-1"
                     >
                       <span
@@ -254,7 +246,9 @@ function Dashboard() {
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Safety streak
                   </p>
-                  <p className="font-display text-2xl font-bold">{safeCount > 0 ? `${safeCount} days` : "0 days"}</p>
+                  <p className="font-display text-2xl font-bold">
+                    {safeCount > 0 ? `${safeCount} days` : "0 days"}
+                  </p>
                 </div>
               </div>
               <div className="mt-4 flex gap-1.5">

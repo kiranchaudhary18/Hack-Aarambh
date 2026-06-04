@@ -1,27 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { Navbar } from "@/layouts/Navbar";
 import { Footer } from "@/layouts/Footer";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
 import { ShieldCheck, Target, Sparkles, Users } from "lucide-react";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "About — ScamSniff" },
-      {
-        name: "description",
-        content:
-          "ScamSniff helps job seekers detect scam offers in seconds with AI-powered red flag analysis.",
-      },
-      { property: "og:title", content: "About ScamSniff" },
-      { property: "og:description", content: "Our mission: protect every job seeker from fraud." },
-    ],
-  }),
-  component: About,
-});
-
-function About() {
+export function About() {
+  useEffect(() => {
+    document.title = "About — ScamSniff";
+  }, []);
   return (
     <div className="relative min-h-screen overflow-hidden">
       <ClayBlobs />
