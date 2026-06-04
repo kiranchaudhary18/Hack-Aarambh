@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { History } from "../history/history.entity";
 import * as pdfParse from "pdf-parse";
+import { PDFDocument } from "pdf-lib";
 import { AIEngineService } from "./ai-engine.service";
 
 @Injectable()
@@ -33,8 +34,64 @@ export class AnalysisService {
   }
 
   async analyzePdf(buffer: Buffer, userId?: string, jobId?: string) {
-    const parsed = await pdfParse(buffer);
-    const text = parsed.text || "";
+    let text = "";
+    let parseMethod = "";
+
+    // Try to repair PDF first if it's corrupted
+    let repairedBuffer = buffer;
+    try {
+      const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
+      const pdfBytes = await pdfDoc.save();
+      repairedBuffer = Buffer.from(pdfBytes);
+      console.log("PDF repaired successfully using pdf-lib");
+    } catch (repairError: any) {
+      console.warn("PDF repair failed, trying original:", repairError?.message || repairError);
+      // Continue with original buffer if repair fails
+    }
+
+    // Try pdf-parse with repaired buffer
+    try {
+      const parsed = await pdfParse(repairedBuffer);
+      text = parsed.text || "";
+      parseMethod = "pdf-parse (repaired)";
+      console.log(`PDF parsed successfully, extracted ${text.length} characters`);
+    } catch (pdfError: any) {
+      console.error("PDF parsing failed:", pdfError?.message || pdfError);
+      // Return error result if PDF cannot be parsed
+      const errorResult = {
+        isFake: false,
+        score: 0,
+        reasons: ["PDF file is corrupted or cannot be parsed. Please try a different file."],
+      };
+      const rec = this.repo.create({
+        input: "[PDF parsing failed]",
+        result: errorResult,
+        userId,
+        status: "failed",
+        processedAt: new Date(),
+      });
+      await this.repo.save(rec);
+      return errorResult;
+    }
+
+    // Check if extracted text is too short (indicates parsing failure)
+    if (text.length < 50) {
+      console.warn("Extracted PDF text is too short, may be corrupted");
+      const errorResult = {
+        isFake: false,
+        score: 0,
+        reasons: ["Could not extract text from PDF. The file may be corrupted or password-protected."],
+      };
+      const rec = this.repo.create({
+        input: text || "[Empty PDF]",
+        result: errorResult,
+        userId,
+        status: "failed",
+        processedAt: new Date(),
+      });
+      await this.repo.save(rec);
+      return errorResult;
+    }
 
     // Try AI engine first, fallback to basic scoring
     let result;

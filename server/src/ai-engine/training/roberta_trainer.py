@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from transformers import (
-    RobertaTokenizer, 
+    RobertaTokenizer,
     RobertaForSequenceClassification,
     Trainer,
     TrainingArguments,
@@ -19,15 +19,19 @@ from datasets import Dataset
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, classification_report
 import json
 
+# Disable CUDA entirely to avoid OOM errors
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
 
 class RoBERTaTrainer:
     """Fine-tune RoBERTa for scam detection"""
     
-    def __init__(self, model_name: str = "roberta-base"):
+    def __init__(self, model_name: str = "roberta-base", use_cpu: bool = True):
         self.model_name = model_name
         self.tokenizer = None
         self.model = None
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # Force CPU to avoid CUDA OOM errors on systems with limited GPU memory
+        self.device = torch.device("cpu") if use_cpu else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print(f"Using device: {self.device}")
         
         self.base_dir = Path(__file__).resolve().parents[1]
@@ -119,8 +123,8 @@ class RoBERTaTrainer:
         training_args = TrainingArguments(
             output_dir=os.path.join(self.models_dir, "roberta_checkpoints"),
             num_train_epochs=3,
-            per_device_train_batch_size=16,
-            per_device_eval_batch_size=16,
+            per_device_train_batch_size=8,  # Reduced batch size for CPU
+            per_device_eval_batch_size=8,   # Reduced batch size for CPU
             warmup_steps=500,
             weight_decay=0.01,
             logging_dir=os.path.join(self.models_dir, "roberta_logs"),
@@ -131,7 +135,8 @@ class RoBERTaTrainer:
             metric_for_best_model="f1",
             greater_is_better=True,
             learning_rate=2e-5,
-            fp16=torch.cuda.is_available(),  # Use mixed precision if GPU available
+            fp16=False,  # Disable fp16 for CPU training
+            no_cuda=True,  # Force CPU usage
             report_to="none",  # Disable wandb/tensorboard
         )
         
@@ -250,7 +255,8 @@ def main():
     print("PHASE 2.2-2.3: ROBERTA MODEL TRAINING")
     print("="*80)
     
-    trainer = RoBERTaTrainer(model_name="roberta-base")
+    # Force CPU training to avoid CUDA OOM errors
+    trainer = RoBERTaTrainer(model_name="roberta-base", use_cpu=True)
     
     # Load tokenizer and model
     trainer.load_tokenizer_and_model()

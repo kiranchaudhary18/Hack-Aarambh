@@ -23,10 +23,12 @@ export class UsersService {
   }
 
   findById(id: string) {
+    if (!id) return null;
     return this.repo.findOne({ where: { id } });
   }
 
   async updateProfile(id: string, data: { name?: string; avatar?: string }) {
+    if (!id) return null;
     const user = await this.findById(id);
     if (!user) return null;
 
@@ -37,6 +39,7 @@ export class UsersService {
   }
 
   async incrementScans(id: string) {
+    if (!id) return null;
     const user = await this.findById(id);
     if (!user) return null;
 
@@ -45,6 +48,7 @@ export class UsersService {
   }
 
   async getProfile(id: string) {
+    if (!id) return null;
     const user = await this.findById(id);
     if (!user) return null;
 
