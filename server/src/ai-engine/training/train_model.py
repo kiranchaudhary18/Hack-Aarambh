@@ -1,8 +1,9 @@
 import os
 import pickle
 import sys
+import csv
+from pathlib import Path
 
-import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix
@@ -17,37 +18,40 @@ class ModelTrainer:
     """Phase 4: Model Training"""
 
     def __init__(self, dataset_path: str = None):
-        self.dataset_path = (
-            dataset_path
-            or "/home/developer21/Documents/WebDev/HackAarambh/server/src/ai-engine/datasets/fake_jobs.csv"
+        self.base_dir = Path(__file__).resolve().parents[1]
+        default_dataset = self.base_dir / "datasets" / "expanded_fake_jobs.csv"
+        fallback_dataset = self.base_dir / "datasets" / "fake_jobs.csv"
+        self.dataset_path = Path(dataset_path) if dataset_path else (
+            default_dataset if default_dataset.exists() else fallback_dataset
         )
         self.model = None
         self.vectorizer = None
         self.preprocessor = TextPreprocessor()
-        self.models_dir = (
-            "/home/developer21/Documents/WebDev/HackAarambh/server/src/ai-engine/models"
-        )
+        self.models_dir = self.base_dir / "models"
 
     def load_dataset(self):
         """Load training dataset"""
         try:
-            df = pd.read_csv(self.dataset_path)
-            # Drop rows with NaN values in label column
-            df = df.dropna(subset=['label'])
-            print(f"Loaded {len(df)} samples")
-            return df
+            rows = []
+            with open(self.dataset_path, "r", encoding="utf-8", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    text = (row.get("text") or "").strip()
+                    label = (row.get("label") or "").strip()
+                    if not text or label == "":
+                        continue
+                    rows.append({"text": text, "label": int(float(label))})
+
+            print(f"Loaded {len(rows)} samples from {self.dataset_path}")
+            return rows
         except Exception as e:
             print(f"Error loading dataset: {e}")
             return None
 
-    def prepare_data(self, df):
+    def prepare_data(self, rows):
         """Prepare data for training"""
-        # Clean text
-        df["text_clean"] = df["text"].apply(self.preprocessor.preprocess_pipeline)
-
-        X = df["text_clean"].values
-        y = df["label"].values
-
+        X = [self.preprocessor.preprocess_pipeline(row["text"]) for row in rows]
+        y = [row["label"] for row in rows]
         return X, y
 
     def train(self):
@@ -62,16 +66,27 @@ class ModelTrainer:
 
         print("Step 3: Splitting data...")
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=42
+            X, y, test_size=0.2, random_state=42, stratify=y
         )
 
         print("Step 4: Vectorizing text (TF-IDF)...")
-        self.vectorizer = TfidfVectorizer(max_features=100, ngram_range=(1, 2))
+        self.vectorizer = TfidfVectorizer(
+            max_features=4000,
+            ngram_range=(1, 3),
+            min_df=1,
+            sublinear_tf=True,
+            strip_accents="unicode",
+        )
         X_train_vec = self.vectorizer.fit_transform(X_train)
         X_test_vec = self.vectorizer.transform(X_test)
 
         print("Step 5: Training Logistic Regression model...")
-        self.model = LogisticRegression(max_iter=1000, random_state=42)
+        self.model = LogisticRegression(
+            max_iter=2000,
+            random_state=42,
+            class_weight="balanced",
+            C=2.0,
+        )
         self.model.fit(X_train_vec, y_train)
 
         print("Step 6: Evaluating model...")
@@ -95,8 +110,8 @@ class ModelTrainer:
 
         os.makedirs(self.models_dir, exist_ok=True)
 
-        model_path = os.path.join(self.models_dir, "scam_classifier.pkl")
-        vectorizer_path = os.path.join(self.models_dir, "vectorizer.pkl")
+        model_path = self.models_dir / "scam_classifier.pkl"
+        vectorizer_path = self.models_dir / "vectorizer.pkl"
 
         with open(model_path, "wb") as f:
             pickle.dump(self.model, f)
@@ -110,8 +125,8 @@ class ModelTrainer:
 
     def load_model(self):
         """Load trained model and vectorizer"""
-        model_path = os.path.join(self.models_dir, "scam_classifier.pkl")
-        vectorizer_path = os.path.join(self.models_dir, "vectorizer.pkl")
+        model_path = self.models_dir / "scam_classifier.pkl"
+        vectorizer_path = self.models_dir / "vectorizer.pkl"
 
         try:
             with open(model_path, "rb") as f:
