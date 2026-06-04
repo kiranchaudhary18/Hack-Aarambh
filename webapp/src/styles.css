@@ -173,6 +173,11 @@
     border-color: var(--color-border);
   }
 
+  *:focus-visible {
+    outline: 2px solid color-mix(in oklch, var(--color-primary) 60%, white);
+    outline-offset: 3px;
+  }
+
   body {
     background: transparent;
     color: var(--color-foreground);
@@ -218,18 +223,33 @@
     background: var(--card);
     box-shadow: var(--shadow-clay);
     border-radius: var(--radius);
+    transition:
+      transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 260ms ease,
+      background 260ms ease;
   }
 
   .clay-sm {
     background: var(--card);
     box-shadow: var(--shadow-clay-sm);
     border-radius: calc(var(--radius) - 0.5rem);
+    transition:
+      transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 260ms ease,
+      background 260ms ease;
   }
 
   .clay-lg {
     background: var(--card);
     box-shadow: var(--shadow-clay-lg);
     border-radius: calc(var(--radius) + 0.5rem);
+    transition:
+      transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 260ms ease,
+      background 260ms ease;
   }
 
   .clay-inset {
@@ -242,11 +262,44 @@
     background: var(--card);
     box-shadow: var(--shadow-clay-sm);
     border-radius: 999px;
-    transition: transform 180ms ease, box-shadow 180ms ease;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 220ms ease,
+      background 220ms ease;
   }
 
-  .clay-btn:hover {
-    transform: translateY(-2px);
+  .clay-btn::after,
+  .clay-primary::after {
+    content: "";
+    position: absolute;
+    inset: -40% -70%;
+    z-index: -1;
+    background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.45), transparent 65%);
+    transform: translateX(-60%) rotate(8deg);
+    opacity: 0;
+    transition:
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 220ms ease;
+  }
+
+  .clay-btn:hover,
+  .clay-btn:focus-visible {
+    box-shadow:
+      6px 10px 24px rgba(120, 80, 200, 0.16),
+      -6px -6px 18px rgba(255, 255, 255, 0.92),
+      inset 0 1px 3px rgba(255, 255, 255, 0.95);
+  }
+
+  .clay-btn:hover::after,
+  .clay-primary:hover::after,
+  .clay-btn:focus-visible::after,
+  .clay-primary:focus-visible::after {
+    opacity: 1;
+    transform: translateX(62%) rotate(8deg);
   }
 
   .clay-btn:active {
@@ -263,11 +316,23 @@
       inset 0 -2px 4px rgba(80, 40, 160, 0.35),
       inset 0 2px 4px rgba(255, 255, 255, 0.4);
     border-radius: 999px;
-    transition: transform 180ms ease;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      filter 220ms ease;
   }
 
-  .clay-primary:hover {
-    transform: translateY(-2px);
+  .clay-primary:hover,
+  .clay-primary:focus-visible {
+    filter: saturate(1.08) brightness(1.03);
+    box-shadow:
+      10px 14px 28px rgba(120, 80, 200, 0.38),
+      -5px -5px 16px rgba(255, 255, 255, 0.72),
+      inset 0 -2px 4px rgba(80, 40, 160, 0.35),
+      inset 0 2px 5px rgba(255, 255, 255, 0.46);
   }
 
   .clay-primary:active {
@@ -280,6 +345,57 @@
     font-size: 0.75rem;
     font-weight: 600;
     box-shadow: var(--shadow-clay-sm);
+    transition:
+      transform 220ms ease,
+      box-shadow 220ms ease,
+      background 220ms ease;
+  }
+
+  .clay:hover,
+  .clay-sm:hover,
+  .clay-lg:hover {
+    box-shadow:
+      12px 16px 38px rgba(120, 80, 200, 0.18),
+      -10px -10px 26px rgba(255, 255, 255, 0.9),
+      inset 0 -2px 5px rgba(180, 160, 200, 0.12),
+      inset 0 2px 5px rgba(255, 255, 255, 0.94);
+  }
+
+  button,
+  a[href],
+  [role="button"],
+  input,
+  textarea,
+  select {
+    transition:
+      transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 220ms ease,
+      border-color 220ms ease,
+      color 180ms ease,
+      background-color 180ms ease,
+      opacity 180ms ease;
+  }
+
+  button:not(:disabled),
+  a[href],
+  [role="button"] {
+    will-change: transform;
+  }
+
+  input:hover,
+  textarea:hover,
+  select:hover {
+    border-color: color-mix(in oklch, var(--color-primary) 34%, var(--color-border));
+    box-shadow: 0 10px 24px rgba(120, 80, 200, 0.08);
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--color-primary);
+    box-shadow:
+      0 0 0 4px color-mix(in oklch, var(--color-primary) 14%, transparent),
+      0 12px 28px rgba(120, 80, 200, 0.1);
   }
 }
 
@@ -298,6 +414,17 @@
     position: absolute;
     pointer-events: none;
     z-index: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
   }
 }
 
