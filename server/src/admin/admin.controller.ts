@@ -16,4 +16,9 @@ export class AdminController {
   async flagged(@Req() req: any) {
     return this.svc.getFlagged();
   }
+
+  @Get("analytics")
+  async analytics(@Req() req: any) {
+    return this.svc.getAnalytics();
+  }
 }
