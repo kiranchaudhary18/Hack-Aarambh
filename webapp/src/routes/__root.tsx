@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
+import { FrontendMotion } from "@/components/Animated";
 import { ShieldOff, Home, ScanSearch } from "lucide-react";
 import appCss from "../styles.css?url";
 
@@ -133,7 +134,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <FrontendMotion />
+      <main data-gsap-page>
+        <Outlet />
+      </main>
       <Toaster position="top-right" richColors />
     </QueryClientProvider>
   );

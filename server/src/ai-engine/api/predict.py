@@ -26,15 +26,16 @@ class PredictionEngine:
                 "reasons": ["No text provided for analysis"]
             }
 
-        # Step 2: Preprocess
-        cleaned_text = self.preprocessor.preprocess_pipeline(text)
+        # Step 2: Normalize only for input sanity; scoring keeps raw evidence for rules.
+        self.preprocessor.preprocess_pipeline(text)
 
-        # Step 3: Get hybrid score
-        score_result = self.scorer.calculate_hybrid_score(cleaned_text)
+        # Step 3: Get hybrid score. The ML model preprocesses internally, while
+        # rule detectors need the original text to preserve emails, URLs and symbols.
+        score_result = self.scorer.calculate_hybrid_score(text)
 
         # Step 4: Generate reasons
-        reasons = self.reasons_generator.generate_reasons(cleaned_text)
-        detailed_reasons = self.reasons_generator.generate_detailed_reasons(cleaned_text)
+        reasons = self.reasons_generator.generate_reasons(text)
+        detailed_reasons = self.reasons_generator.generate_detailed_reasons(text)
 
         # Step 5: Determine is_fake
         is_fake = score_result['verdict'] != "Likely Real"
@@ -52,7 +53,8 @@ class PredictionEngine:
                 "ml_score": score_result['ml_score'],
                 "rule_score": score_result['rule_score'],
                 "ml_weight": score_result['ml_weight'],
-                "rule_weight": score_result['rule_weight']
+                "rule_weight": score_result['rule_weight'],
+                "model_used": score_result.get('model_used', 'logistic_regression')
             },
             "confidence": "high" if score_result['final_score'] > 80 or score_result['final_score'] < 20 else "medium"
         }

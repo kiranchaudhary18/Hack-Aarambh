@@ -1,5 +1,6 @@
 import json
 from typing import Dict, List
+from pathlib import Path
 
 
 class KeywordDetector:
@@ -12,7 +13,7 @@ class KeywordDetector:
     def _load_keywords(self, path: str = None) -> Dict:
         """Load keywords from JSON config"""
         if path is None:
-            path = "/home/developer21/Documents/WebDev/HackAarambh/server/src/ai-engine/config/keywords.json"
+            path = Path(__file__).resolve().parents[1] / "config" / "keywords.json"
 
         try:
             with open(path, "r") as f:
@@ -25,10 +26,12 @@ class KeywordDetector:
         """Detect payment-related keywords"""
         count = 0
         found_keywords = []
+        normalized_text = text.lower()
 
         for keyword in self.keywords.get("payment_keywords", []):
-            if keyword in text:
-                count += keyword.count(keyword)
+            normalized_keyword = keyword.lower()
+            if normalized_keyword in normalized_text:
+                count += normalized_text.count(normalized_keyword)
                 if keyword not in found_keywords:
                     found_keywords.append(keyword)
 
@@ -38,10 +41,12 @@ class KeywordDetector:
         """Detect urgency-related keywords"""
         count = 0
         found_keywords = []
+        normalized_text = text.lower()
 
         for keyword in self.keywords.get("urgency_keywords", []):
-            if keyword in text:
-                count += text.count(keyword)
+            normalized_keyword = keyword.lower()
+            if normalized_keyword in normalized_text:
+                count += normalized_text.count(normalized_keyword)
                 if keyword not in found_keywords:
                     found_keywords.append(keyword)
 
@@ -51,10 +56,12 @@ class KeywordDetector:
         """Detect suspicious job phrases"""
         count = 0
         found_phrases = []
+        normalized_text = text.lower()
 
         for phrase in self.keywords.get("suspicious_phrases", []):
-            if phrase in text:
-                count += text.count(phrase)
+            normalized_phrase = phrase.lower()
+            if normalized_phrase in normalized_text:
+                count += normalized_text.count(normalized_phrase)
                 if phrase not in found_phrases:
                     found_phrases.append(phrase)
 
