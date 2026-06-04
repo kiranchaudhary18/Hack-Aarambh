@@ -3,7 +3,7 @@ import sys
 import json
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from api.predict import PredictionEngine
+from api.predict_hybrid_v2 import PredictionEngineV2
 
 def analyze_job_text(text: str) -> dict:
     """
@@ -11,7 +11,7 @@ def analyze_job_text(text: str) -> dict:
     Accepts text via stdin and returns JSON result
     """
     try:
-        engine = PredictionEngine()
+        engine = PredictionEngineV2(use_roberta=True)
         result = engine.predict(text)
         return result
     except Exception as e:
