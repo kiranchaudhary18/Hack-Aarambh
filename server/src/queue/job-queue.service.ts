@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { AnalysisService } from "../analysis/analysis.service";
 
-type Job = { id: string; buffer: Buffer; userId?: string };
+type Job = { id: string; buffer: Buffer; userId?: string; pdfUrl?: string };
 
 @Injectable()
 export class JobQueueService implements OnModuleInit, OnModuleDestroy {
@@ -23,7 +23,7 @@ export class JobQueueService implements OnModuleInit, OnModuleDestroy {
 
   async processOne(job: Job) {
     try {
-      await this.analysis.analyzePdf(job.buffer, job.userId, job.id);
+      await this.analysis.analyzePdf(job.buffer, job.userId, job.id, job.pdfUrl);
       this.logger.log(`Processed job ${job.id}`);
     } catch (e) {
       this.logger.error(`Failed job ${job.id}: ${e}`);
