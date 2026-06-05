@@ -15,6 +15,11 @@ import {
   Share2,
   FileDown,
   Flag,
+  Building2,
+  Calendar,
+  Globe,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 
 interface Reason {
@@ -33,6 +38,28 @@ interface JobCheck {
   date: string;
   source?: "text" | "pdf" | "url";
   reasons?: Reason[];
+  companyVerification?: {
+    verified: boolean;
+    registry?: string;
+    status?: string;
+  };
+  domainAge?: {
+    years: number;
+    created: string;
+    risk: "low" | "medium" | "high";
+  };
+  salaryComparison?: {
+    offered: number;
+    market: number;
+    difference: number;
+    currency: string;
+  };
+  socialVerification?: {
+    linkedin?: boolean;
+    twitter?: boolean;
+    facebook?: boolean;
+    totalVerified: number;
+  };
 }
 
 export function Result() {
@@ -213,6 +240,21 @@ export function Result() {
             </div>
           </FadeIn>
 
+          <FadeIn delay={0.1}>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {check.companyVerification && (
+                <CompanyVerificationBadge verification={check.companyVerification} />
+              )}
+              {check.domainAge && <DomainAgeDisplay domainAge={check.domainAge} />}
+              {check.salaryComparison && (
+                <SalaryComparison comparison={check.salaryComparison} />
+              )}
+              {check.socialVerification && (
+                <SocialVerification verification={check.socialVerification} />
+              )}
+            </div>
+          </FadeIn>
+
           <FadeIn delay={0.15}>
             <div className="flex items-end justify-between">
               <h2 className="font-display text-3xl font-bold">Why we flagged it</h2>
@@ -279,6 +321,162 @@ export function Result() {
             </div>
           </FadeIn>
         </main>
+      </div>
+    </div>
+  );
+}
+
+function CompanyVerificationBadge({
+  verification,
+}: {
+  verification: { verified: boolean; registry?: string; status?: string };
+}) {
+  return (
+    <div className="clay p-5">
+      <div className="flex items-center gap-3">
+        <span
+          className="grid h-10 w-10 place-items-center rounded-2xl"
+          style={{ background: verification.verified ? "var(--clay-green)" : "var(--clay-pink)" }}
+        >
+          <Building2 className="h-5 w-5" />
+        </span>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Company
+          </p>
+          <p className="font-display text-lg font-bold">
+            {verification.verified ? "Verified" : "Unverified"}
+          </p>
+        </div>
+      </div>
+      {verification.verified && verification.registry && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          Registered with {verification.registry} · {verification.status}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function DomainAgeDisplay({
+  domainAge,
+}: {
+  domainAge: { years: number; created: string; risk: "low" | "medium" | "high" };
+}) {
+  const riskColor =
+    domainAge.risk === "low"
+      ? "var(--clay-green)"
+      : domainAge.risk === "medium"
+        ? "var(--clay-yellow)"
+        : "var(--clay-pink)";
+
+  return (
+    <div className="clay p-5">
+      <div className="flex items-center gap-3">
+        <span
+          className="grid h-10 w-10 place-items-center rounded-2xl"
+          style={{ background: riskColor }}
+        >
+          <Calendar className="h-5 w-5" />
+        </span>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Domain age
+          </p>
+          <p className="font-display text-lg font-bold">{domainAge.years} years</p>
+        </div>
+      </div>
+      <p className="mt-3 text-xs text-muted-foreground">
+        Created {domainAge.created} · Risk: {domainAge.risk}
+      </p>
+    </div>
+  );
+}
+
+function SalaryComparison({
+  comparison,
+}: {
+  comparison: { offered: number; market: number; difference: number; currency: string };
+}) {
+  const isAboveMarket = comparison.offered > comparison.market;
+  const percentageDiff = Math.round((comparison.difference / comparison.market) * 100);
+
+  return (
+    <div className="clay p-5">
+      <div className="flex items-center gap-3">
+        <span
+          className="grid h-10 w-10 place-items-center rounded-2xl"
+          style={{
+            background: isAboveMarket && percentageDiff > 50 ? "var(--clay-pink)" : "var(--clay-blue)",
+          }}
+        >
+          <Globe className="h-5 w-5" />
+        </span>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Salary vs market
+          </p>
+          <p className="font-display text-lg font-bold">
+            {comparison.currency}{comparison.offered.toLocaleString()}
+          </p>
+        </div>
+      </div>
+      <p className="mt-3 text-xs text-muted-foreground">
+        Market: {comparison.currency}
+        {comparison.market.toLocaleString()} ·{" "} {isAboveMarket ? "+" : ""}
+        {percentageDiff}% difference
+      </p>
+    </div>
+  );
+}
+
+function SocialVerification({
+  verification,
+}: {
+  verification: {
+    linkedin?: boolean;
+    twitter?: boolean;
+    facebook?: boolean;
+    totalVerified: number;
+  };
+}) {
+  return (
+    <div className="clay p-5">
+      <div className="flex items-center gap-3">
+        <span
+          className="grid h-10 w-10 place-items-center rounded-2xl"
+          style={{
+            background:
+              verification.totalVerified >= 2
+                ? "var(--clay-green)"
+                : verification.totalVerified === 1
+                  ? "var(--clay-yellow)"
+                  : "var(--clay-pink)",
+          }}
+        >
+          {verification.totalVerified >= 2 ? (
+            <CheckCircle2 className="h-5 w-5" />
+          ) : (
+            <XCircle className="h-5 w-5" />
+          )}
+        </span>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Social presence
+          </p>
+          <p className="font-display text-lg font-bold">{verification.totalVerified}/3 verified</p>
+        </div>
+      </div>
+      <div className="mt-3 flex gap-2">
+        {verification.linkedin && (
+          <span className="clay-pill text-[10px]">LinkedIn ✓</span>
+        )}
+        {verification.twitter && (
+          <span className="clay-pill text-[10px]">Twitter ✓</span>
+        )}
+        {verification.facebook && (
+          <span className="clay-pill text-[10px]">Facebook ✓</span>
+        )}
       </div>
     </div>
   );
