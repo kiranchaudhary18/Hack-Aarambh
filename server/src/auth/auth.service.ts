@@ -6,6 +6,8 @@ import { EmailService } from "../email/email.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { PasswordReset } from "./password-reset.entity";
+import { EmailVerification } from "../email/email-verification.entity";
+import { EmailUpdateVerification } from "./email-update-verification.entity";
 
 @Injectable()
 export class AuthService {
@@ -14,6 +16,8 @@ export class AuthService {
     private jwt: JwtService,
     private email: EmailService,
     @InjectRepository(PasswordReset) private passwordResetRepo: Repository<PasswordReset>,
+    @InjectRepository(EmailVerification) private emailVerificationRepo: Repository<EmailVerification>,
+    @InjectRepository(EmailUpdateVerification) private emailUpdateVerificationRepo: Repository<EmailUpdateVerification>,
   ) {}
 
   async register(email: string, password: string, name?: string) {
@@ -21,17 +25,52 @@ export class AuthService {
     try {
       console.log("Checking if email exists...");
       const existing = await this.users.findByEmail(email);
+      
       if (existing) {
-        console.log("Email already in use");
-        throw new UnauthorizedException("Email already in use");
+        console.log("Email already exists, checking verification status");
+        // If user exists but is not verified, allow re-registration
+        if (!existing.isVerified) {
+          console.log("User not verified, deleting old account and creating new one");
+          // Delete associated password reset entries
+          await this.passwordResetRepo.delete({ userId: existing.id });
+          // Delete associated email verification entries
+          await this.emailVerificationRepo.delete({ userId: existing.id });
+          // Delete old user
+          await this.users["repo"].delete({ id: existing.id });
+        } else {
+          console.log("Email already in use and verified");
+          throw new UnauthorizedException("Email already in use");
+        }
       }
+      
       console.log("Creating user...");
       const user = await this.users.create(email, password, name);
       console.log("User created:", { id: user.id, email: user.email });
-      console.log("Generating token...");
-      const token = this.sign(user.id, user.email, user.role);
-      console.log("Token generated successfully");
-      return { user: { id: user.id, email: user.email }, token };
+
+      // Generate verification token
+      const token = this.generateVerificationToken();
+
+      // Calculate expiry (24 hours from now)
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      // Store verification token
+      await this.emailVerificationRepo.save({
+        userId: user.id,
+        token,
+        expiresAt,
+        used: false,
+      });
+
+      // Send verification email
+      await this.email.sendVerificationEmail(email, token);
+
+      console.log("Verification email sent");
+
+      return {
+        success: true,
+        message: "Registration successful. Please check your email to verify your account.",
+        user: { id: user.id, email: user.email }
+      };
     } catch (error) {
       console.error("Error in register:", error);
       throw error;
@@ -41,10 +80,71 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.users.findByEmail(email);
     if (!user) throw new UnauthorizedException("Invalid credentials");
+
+    // Check if email is verified
+    if (!user.isVerified) {
+      throw new UnauthorizedException("Please verify your email before logging in");
+    }
+
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) throw new UnauthorizedException("Invalid credentials");
     const token = this.sign(user.id, user.email, user.role);
     return { user: { id: user.id, email: user.email }, token };
+  }
+
+  async verifyEmail(token: string) {
+    const verification = await this.emailVerificationRepo.findOne({
+      where: { token, used: false },
+    });
+
+    if (!verification || verification.expiresAt < new Date()) {
+      throw new UnauthorizedException("Invalid or expired verification token");
+    }
+
+    // Update user verification status
+    const user = await this.users["repo"].findOne({ where: { id: verification.userId } });
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    user.isVerified = true;
+    await this.users["repo"].save(user);
+
+    // Mark token as used
+    verification.used = true;
+    await this.emailVerificationRepo.save(verification);
+
+    return { success: true, message: "Email verified successfully" };
+  }
+
+  async resendVerificationEmail(email: string) {
+    const user = await this.users.findByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException("Email not found");
+    }
+
+    if (user.isVerified) {
+      throw new UnauthorizedException("Email is already verified");
+    }
+
+    // Generate new verification token
+    const token = this.generateVerificationToken();
+
+    // Calculate expiry (24 hours from now)
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    // Store verification token
+    await this.emailVerificationRepo.save({
+      userId: user.id,
+      token,
+      expiresAt,
+      used: false,
+    });
+
+    // Send verification email
+    await this.email.sendVerificationEmail(email, token);
+
+    return { success: true, message: "Verification email sent" };
   }
 
   sign(id: string, email: string, role: string) {
@@ -144,6 +244,10 @@ export class AuthService {
     return { success: true, message: "Password updated successfully" };
   }
 
+  private generateVerificationToken(): string {
+    return require('crypto').randomBytes(32).toString('hex');
+  }
+
   private generateCode(): string {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Removed I, O, 0, 1 for clarity
     let code = "";
@@ -169,5 +273,60 @@ export class AuthService {
     if (uniqueLetters.size < 2) return false;
 
     return true;
+  }
+
+  async requestEmailUpdate(userId: string, newEmail: string) {
+    // Check if new email already exists
+    const existingUser = await this.users.findByEmail(newEmail);
+    if (existingUser) {
+      throw new UnauthorizedException("Email already in use");
+    }
+
+    // Generate verification token
+    const token = this.generateVerificationToken();
+
+    // Calculate expiry (24 hours from now)
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    // Store verification token
+    await this.emailUpdateVerificationRepo.save({
+      userId,
+      newEmail,
+      token,
+      expiresAt,
+      used: false,
+    });
+
+    // Send verification email
+    await this.email.sendEmailUpdateVerification(newEmail, token);
+
+    return { success: true, message: "Verification email sent to new email address" };
+  }
+
+  async verifyEmailUpdate(token: string) {
+    const verification = await this.emailUpdateVerificationRepo.findOne({
+      where: { token, used: false },
+    });
+
+    if (!verification || verification.expiresAt < new Date()) {
+      throw new UnauthorizedException("Invalid or expired verification token");
+    }
+
+    // Get user
+    const user = await this.users["repo"].findOne({ where: { id: verification.userId } });
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    // Update user email
+    user.email = verification.newEmail;
+    user.isVerified = false; // Require re-verification after email change
+    await this.users["repo"].save(user);
+
+    // Mark token as used
+    verification.used = true;
+    await this.emailUpdateVerificationRepo.save(verification);
+
+    return { success: true, message: "Email updated successfully. Please verify your new email." };
   }
 }

@@ -35,6 +35,9 @@ export class User {
   @Column({ default: "free" })
   plan!: string;
 
+  @Column({ default: false })
+  isVerified!: boolean;
+
   @CreateDateColumn()
   createdAt!: Date;
 

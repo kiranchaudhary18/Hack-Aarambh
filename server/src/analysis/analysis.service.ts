@@ -33,7 +33,7 @@ export class AnalysisService {
     return result;
   }
 
-  async analyzePdf(buffer: Buffer, userId?: string, jobId?: string) {
+  async analyzePdf(buffer: Buffer, userId?: string, jobId?: string, pdfUrl?: string) {
     let text = "";
     let parseMethod = "";
 
@@ -69,6 +69,7 @@ export class AnalysisService {
         userId,
         status: "failed",
         processedAt: new Date(),
+        pdfUrl,
       });
       await this.repo.save(rec);
       return errorResult;
@@ -88,6 +89,7 @@ export class AnalysisService {
         userId,
         status: "failed",
         processedAt: new Date(),
+        pdfUrl,
       });
       await this.repo.save(rec);
       return errorResult;
@@ -114,6 +116,7 @@ export class AnalysisService {
       userId,
       status: "processed",
       processedAt: new Date(),
+      pdfUrl,
     });
     await this.repo.save(rec);
     return result;
