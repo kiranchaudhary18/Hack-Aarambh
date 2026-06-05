@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   ScanSearch,
@@ -8,6 +9,7 @@ import {
   ShieldCheck,
   LogOut,
 } from "lucide-react";
+import { api } from "@/shared/lib/api";
 
 const items = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -21,11 +23,27 @@ export function Sidebar() {
   const location = useLocation();
   const path = location.pathname;
 
-  const user = {
+  const [user, setUser] = useState<{ name: string; email: string; avatar: string | null }>({
     name: "User",
     email: "user@example.com",
     avatar: null,
-  };
+  });
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const data = await api.getProfile();
+        setUser({
+          name: data.name || "User",
+          email: data.email || "user@example.com",
+          avatar: data.avatar || null,
+        });
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    }
+    fetchUser();
+  }, []);
 
   function initials(name: string): string {
     return name
