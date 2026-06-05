@@ -27,8 +27,11 @@ export function Signup() {
 
     setLoading(true);
     try {
-      await api.register(email, password, name);
-      toast.success("Account created successfully!");
+      const result = await api.register(email, password, name);
+      toast.success(
+        result.message ||
+          "Account created successfully! Please check your email to verify your account.",
+      );
       navigate("/login");
     } catch (error) {
       console.error("Signup failed:", error);
@@ -81,7 +84,7 @@ export function Signup() {
                 <Field
                   icon={<User className="h-4 w-4" />}
                   label="Full name"
-                  placeholder="Aisha Khan"
+                  placeholder="Enter you full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -90,7 +93,7 @@ export function Signup() {
                   icon={<Mail className="h-4 w-4" />}
                   label="Email"
                   type="email"
-                  placeholder="you@email.com"
+                  placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -99,7 +102,7 @@ export function Signup() {
                   icon={<Lock className="h-4 w-4" />}
                   label="Password"
                   type="password"
-                  placeholder="At least 8 characters"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
