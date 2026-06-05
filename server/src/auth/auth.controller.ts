@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, Get, Query, Req } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 
 class RegisterDto {
@@ -28,6 +28,14 @@ class ResetPasswordDto {
   confirmPassword!: string;
 }
 
+class ResendVerificationDto {
+  email!: string;
+}
+
+class RequestEmailUpdateDto {
+  newEmail!: string;
+}
+
 @Controller("auth")
 export class AuthController {
   constructor(private auth: AuthService) {}
@@ -46,6 +54,16 @@ export class AuthController {
     return this.auth.login(body.email, body.password);
   }
 
+  @Get("verify-email")
+  verifyEmail(@Query("token") token: string) {
+    return this.auth.verifyEmail(token);
+  }
+
+  @Post("resend-verification")
+  resendVerification(@Body() body: ResendVerificationDto) {
+    return this.auth.resendVerificationEmail(body.email);
+  }
+
   @Post("forgot-password")
   forgotPassword(@Body() body: ForgotPasswordDto) {
     return this.auth.forgotPassword(body.email);
@@ -58,6 +76,22 @@ export class AuthController {
 
   @Post("reset-password")
   resetPassword(@Body() body: ResetPasswordDto) {
-    return this.auth.resetPassword(body.email, body.code, body.newPassword, body.confirmPassword);
+    return this.auth.resetPassword(
+      body.email,
+      body.code,
+      body.newPassword,
+      body.confirmPassword,
+    );
+  }
+
+  @Post("request-email-update")
+  requestEmailUpdate(@Req() req: any, @Body() body: RequestEmailUpdateDto) {
+    const userId = req.user?.sub;
+    return this.auth.requestEmailUpdate(userId, body.newEmail);
+  }
+
+  @Get("verify-email-update")
+  verifyEmailUpdate(@Query("token") token: string) {
+    return this.auth.verifyEmailUpdate(token);
   }
 }
