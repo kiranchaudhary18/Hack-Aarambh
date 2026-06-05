@@ -1,12 +1,20 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export async function apiRequest(endpoint: string, options: RequestInit = {}) {
+  const token = localStorage.getItem("token");
+
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
+
+  if (token) {
+    (headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
+    headers: headers as HeadersInit,
   });
 
   if (!response.ok) {
@@ -68,9 +76,16 @@ export const api = {
   analyzePdf: (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
+    const token = localStorage.getItem("token");
+
+    const headers: HeadersInit = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
 
     return fetch(`${API_BASE_URL}/analysis/pdf`, {
       method: "POST",
+      headers,
       body: formData,
     }).then((res) => res.json());
   },
@@ -99,6 +114,26 @@ export const api = {
       body: JSON.stringify({ email, code, newPassword, confirmPassword }),
     }),
 
+  // Email Verification
+  verifyEmail: (token: string) =>
+    apiRequest(`/auth/verify-email?token=${token}`, {
+      method: "GET",
+    }),
+  resendVerificationEmail: (email: string) =>
+    apiRequest("/auth/resend-verification", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
+  requestEmailUpdate: (newEmail: string) =>
+    apiRequest("/auth/request-email-update", {
+      method: "POST",
+      body: JSON.stringify({ newEmail }),
+    }),
+  verifyEmailUpdate: (token: string) =>
+    apiRequest(`/auth/verify-email-update?token=${token}`, {
+      method: "GET",
+    }),
+
   // Profile
   getProfile: () => apiRequest("/users/profile"),
   updateProfile: (data: { name?: string; email?: string; avatar?: string }) =>
@@ -109,9 +144,16 @@ export const api = {
   uploadAvatar: (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
+    const token = localStorage.getItem("token");
+
+    const headers: HeadersInit = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
 
     return fetch(`${API_BASE_URL}/users/avatar`, {
       method: "POST",
+      headers,
       body: formData,
     }).then((res) => res.json());
   },

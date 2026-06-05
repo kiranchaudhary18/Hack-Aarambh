@@ -1,10 +1,14 @@
 import { Controller, Get, Put, Body, Req, Post, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UsersService } from "./users.service";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
 
 @Controller("users")
 export class UsersController {
-  constructor(private svc: UsersService) {}
+  constructor(
+    private svc: UsersService,
+    private cloudinaryService: CloudinaryService,
+  ) {}
 
   @Get("profile")
   async getProfile(@Req() req: any) {
@@ -19,7 +23,7 @@ export class UsersController {
   @Put("profile")
   async updateProfile(
     @Req() req: any,
-    @Body() body: { name?: string; avatar?: string },
+    @Body() body: { name?: string; avatar?: string; email?: string },
   ) {
     const userId = req.user?.sub;
     const profile = await this.svc.updateProfile(userId, body);
@@ -38,15 +42,21 @@ export class UsersController {
       return { error: "No file uploaded" };
     }
 
-    // Convert image to base64 string for storage
-    const base64 = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
-    const profile = await this.svc.updateProfile(userId, { avatar: base64 });
-    
-    if (!profile) {
-      return { error: "User not found" };
+    try {
+      // Upload to Cloudinary
+      const avatarUrl = await this.cloudinaryService.uploadImage(file.buffer, 'avatars');
+      
+      const profile = await this.svc.updateProfile(userId, { avatar: avatarUrl });
+      
+      if (!profile) {
+        return { error: "User not found" };
+      }
+      
+      const { password, ...profileData } = profile;
+      return profileData;
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      return { error: "Failed to upload avatar" };
     }
-    
-    const { password, ...profileData } = profile;
-    return profileData;
   }
 }

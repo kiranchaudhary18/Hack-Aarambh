@@ -4,7 +4,20 @@ import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
-import { Area, AreaChart, ResponsiveContainer } from "recharts";
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 import {
   ScanSearch,
   ArrowRight,
@@ -21,10 +34,10 @@ import {
   DollarSign,
 } from "lucide-react";
 
-const spark = (seed: number) =>
+const spark = (seed: number, value: number = 0) =>
   Array.from({ length: 12 }).map((_, i) => ({
     x: i,
-    v: 30 + Math.round(Math.abs(Math.sin((i + seed) * 0.7)) * 60 + (i % 3) * 5),
+    v: value,
   }));
 
 export function Dashboard() {
@@ -63,6 +76,50 @@ export function Dashboard() {
 
   // Calculate money saved (assuming each scam would cost $416 on average)
   const moneySaved = scamCount * 416;
+
+  // Generate risk trend data (mock data for now)
+  const riskTrendData = Array.from({ length: 7 }, (_, i) => ({
+    day: i === 0 ? "Today" : i === 1 ? "Yesterday" : `${i} days ago`,
+    avgScore: Math.max(0, avgScore - i * 5 + Math.floor(Math.random() * 10)),
+  })).reverse();
+
+  // Generate scam pattern breakdown data (mock data for now)
+  const scamPatternData = [
+    {
+      name: "Advance-fee fraud",
+      value: scamCount > 0 ? Math.round(scamCount * 0.35) : 0,
+      color: "oklch(0.62 0.18 295)",
+    },
+    {
+      name: "Brand impersonation",
+      value: scamCount > 0 ? Math.round(scamCount * 0.25) : 0,
+      color: "oklch(0.65 0.22 15)",
+    },
+    {
+      name: "Crypto wallet scam",
+      value: scamCount > 0 ? Math.round(scamCount * 0.20) : 0,
+      color: "oklch(0.74 0.16 60)",
+    },
+    {
+      name: "Fake HR call",
+      value: scamCount > 0 ? Math.round(scamCount * 0.12) : 0,
+      color: "oklch(0.72 0.16 155)",
+    },
+    {
+      name: "Other",
+      value: scamCount > 0 ? Math.round(scamCount * 0.08) : 0,
+      color: "oklch(0.82 0.1 230)",
+    },
+  ].filter((item) => item.value > 0);
+
+  // Generate geographic distribution data (mock data for now)
+  const geoDistributionData = [
+    { country: "Pakistan", count: Math.round(scamCount * 0.38), flag: "🇵🇰" },
+    { country: "India", count: Math.round(scamCount * 0.27), flag: "🇮🇳" },
+    { country: "Nigeria", count: Math.round(scamCount * 0.14), flag: "🇳🇬" },
+    { country: "Philippines", count: Math.round(scamCount * 0.11), flag: "🇵🇭" },
+    { country: "Other", count: Math.round(scamCount * 0.10), flag: "🌍" },
+  ].filter((item) => item.count > 0);
 
   if (loading) {
     return (
@@ -114,7 +171,7 @@ export function Dashboard() {
               sub="This month"
               color="var(--clay-purple)"
               line="oklch(0.62 0.18 295)"
-              data={spark(1)}
+              data={spark(1, profile?.scansUsed || 0)}
               trend="+18%"
             />
             <StatCard
@@ -124,7 +181,7 @@ export function Dashboard() {
               sub={`-$${moneySaved.toLocaleString()} saved`}
               color="var(--clay-pink)"
               line="oklch(0.65 0.22 15)"
-              data={spark(4)}
+              data={spark(4, scamCount)}
               trend="+3"
             />
             <StatCard
@@ -134,7 +191,7 @@ export function Dashboard() {
               sub="Verified hires"
               color="var(--clay-green)"
               line="oklch(0.72 0.16 155)"
-              data={spark(7)}
+              data={spark(7, safeCount)}
               trend="+9%"
             />
             <StatCard
@@ -144,10 +201,163 @@ export function Dashboard() {
               sub="Trending down"
               color="var(--clay-orange)"
               line="oklch(0.74 0.16 60)"
-              data={spark(11)}
+              data={spark(11, avgScore)}
               trend="−6%"
             />
           </StaggerChildren>
+
+          <FadeIn delay={0.05}>
+            <div className="clay p-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-2xl font-bold">Risk trend (7 days)</h2>
+                <span className="clay-pill text-[10px]">Your average scam score</span>
+              </div>
+              <div className="mt-4 h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={riskTrendData}>
+                    <defs>
+                      <linearGradient id="riskGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="oklch(0.62 0.18 295)" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="oklch(0.62 0.18 295)" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid stroke="var(--border)" strokeDasharray="3 4" vertical={false} />
+                    <XAxis
+                      dataKey="day"
+                      stroke="var(--muted-foreground)"
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis
+                      stroke="var(--muted-foreground)"
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fontSize: 12 }}
+                      domain={[0, 100]}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: "var(--card)",
+                        border: "none",
+                        borderRadius: 16,
+                        boxShadow: "var(--shadow-clay-sm)",
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="avgScore"
+                      stroke="oklch(0.62 0.18 295)"
+                      strokeWidth={3}
+                      dot={{ fill: "oklch(0.62 0.18 295)", r: 5, strokeWidth: 2 }}
+                      activeDot={{ r: 7 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <div className="clay p-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-2xl font-bold">Scam pattern breakdown</h2>
+                <span className="clay-pill text-[10px]">Types detected in your scans</span>
+              </div>
+              <div className="mt-4 grid gap-6 md:grid-cols-2">
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={scamPatternData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        innerRadius={50}
+                        paddingAngle={4}
+                      >
+                        {scamPatternData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={entry.color}
+                            stroke="var(--card)"
+                            strokeWidth={3}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          background: "var(--card)",
+                          border: "none",
+                          borderRadius: 16,
+                          boxShadow: "var(--shadow-clay-sm)",
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="space-y-3">
+                  {scamPatternData.length > 0 ? (
+                    scamPatternData.map((pattern, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span
+                            className="h-3 w-3 rounded-full"
+                            style={{ background: pattern.color }}
+                          />
+                          <span className="text-sm font-semibold">{pattern.name}</span>
+                        </div>
+                        <span className="text-sm text-muted-foreground">{pattern.value}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No scam patterns detected yet.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.15}>
+            <div className="clay p-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-2xl font-bold">Geographic distribution</h2>
+                <span className="clay-pill text-[10px]">Where scams originate</span>
+              </div>
+              <div className="mt-4 space-y-3">
+                {geoDistributionData.length > 0 ? (
+                  geoDistributionData.map((geo, index) => {
+                    const maxCount = Math.max(...geoDistributionData.map((g) => g.count));
+                    const percentage = (geo.count / maxCount) * 100;
+                    return (
+                      <div key={index} className="flex items-center gap-4">
+                        <span className="text-2xl">{geo.flag}</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-semibold">{geo.country}</span>
+                            <span className="text-muted-foreground">{geo.count}</span>
+                          </div>
+                          <div className="clay-inset mt-1.5 h-2 overflow-hidden rounded-full">
+                            <div
+                              className="h-full rounded-full transition-all"
+                              style={{
+                                width: `${percentage}%`,
+                                background: "var(--clay-purple)",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-sm text-muted-foreground">No geographic data available yet.</p>
+                )}
+              </div>
+            </div>
+          </FadeIn>
 
           <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
             <FadeIn delay={0.1}>
@@ -268,7 +478,9 @@ export function Dashboard() {
                 ))}
               </div>
               <p className="mt-3 text-xs text-muted-foreground">
-                {14 - safeCount > 0 ? `${14 - safeCount} days from a personal best.` : "Personal best!"}
+                {14 - safeCount > 0
+                  ? `${14 - safeCount} days from a personal best.`
+                  : "Personal best!"}
               </p>
             </div>
 
@@ -290,7 +502,11 @@ export function Dashboard() {
               <ul className="mt-4 space-y-2 text-sm">
                 {[
                   { l: "Upfront fee", v: scamCount > 0 ? 64 : 0, c: "var(--destructive)" },
-                  { l: "Urgency pressure", v: suspiciousCount > 0 ? 42 : 0, c: "var(--clay-orange)" },
+                  {
+                    l: "Urgency pressure",
+                    v: suspiciousCount > 0 ? 42 : 0,
+                    c: "var(--clay-orange)",
+                  },
                   { l: "Gmail recruiter", v: scamCount > 0 ? 28 : 0, c: "var(--clay-yellow)" },
                 ].map((x) => (
                   <li key={x.l}>

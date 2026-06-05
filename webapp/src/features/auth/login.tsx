@@ -26,12 +26,36 @@ export function Login() {
 
     setLoading(true);
     try {
-      await api.login(email, password);
+      const response = await api.login(email, password);
+      // Store the token in localStorage
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+      }
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
-      toast.error(error instanceof Error ? error.message : "Login failed. Please try again.");
+      const errorMessage =
+        error instanceof Error ? error.message : "Login failed. Please try again.";
+
+      // Check if error is due to unverified email
+      if (errorMessage.includes("verify your email") || errorMessage.includes("not verified")) {
+        toast.error(errorMessage, {
+          action: {
+            label: "Resend Verification",
+            onClick: async () => {
+              try {
+                await api.resendVerificationEmail(email);
+                toast.success("Verification email sent! Please check your inbox.");
+              } catch (resendError) {
+                toast.error("Failed to resend verification email");
+              }
+            },
+          },
+        });
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
