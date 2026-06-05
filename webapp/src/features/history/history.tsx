@@ -15,9 +15,19 @@ import {
   ShieldAlert,
   AlertTriangle,
   ShieldCheck,
+  Calendar,
+  X,
+  ChevronDown,
+  Trash2,
+  Download,
+  Check,
+  CheckSquare,
+  Square,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 
-type FilterT = "all" | "scam" | "suspicious" | "safe";
+type FilterT = "all" | "scam" | "suspicious" | "safe" | "bookmarked";
 type View = "list" | "kanban";
 
 interface JobCheck {
@@ -37,6 +47,73 @@ export function History() {
   const [view, setView] = useState<View>("list");
   const [recentChecks, setRecentChecks] = useState<JobCheck[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [dateRange, setDateRange] = useState<{ from: string; to: string }>({ from: "", to: "" });
+  const [scoreRange, setScoreRange] = useState<{ min: number; max: number }>({ min: 0, max: 100 });
+  const [sourceFilter, setSourceFilter] = useState<"all" | "text" | "pdf" | "url">("all");
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [bookmarkedItems, setBookmarkedItems] = useState<Set<string>>(new Set());
+
+  const toggleSelection = (id: string) => {
+    const newSelection = new Set(selectedItems);
+    if (newSelection.has(id)) {
+      newSelection.delete(id);
+    } else {
+      newSelection.add(id);
+    }
+    setSelectedItems(newSelection);
+  };
+
+  const toggleBookmark = (id: string) => {
+    const newBookmarks = new Set(bookmarkedItems);
+    if (newBookmarks.has(id)) {
+      newBookmarks.delete(id);
+    } else {
+      newBookmarks.add(id);
+    }
+    setBookmarkedItems(newBookmarks);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.size === filtered.length) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(filtered.map((c) => c.id)));
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedItems.size === 0) return;
+    if (confirm(`Delete ${selectedItems.size} selected items?`)) {
+      setRecentChecks(recentChecks.filter((c) => !selectedItems.has(c.id)));
+      setSelectedItems(new Set());
+    }
+  };
+
+  const handleBulkExport = () => {
+    if (selectedItems.size === 0) return;
+    const selectedData = filtered.filter((c) => selectedItems.has(c.id));
+    const csv = [
+      ["Title", "Company", "Score", "Verdict", "Date", "Source"],
+      ...selectedData.map((c) => [
+        c.title,
+        c.company,
+        c.score,
+        c.verdict,
+        c.date,
+        c.source || "text",
+      ]),
+    ]
+      .map((row) => row.join(","))
+      .join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "scam-history-export.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     document.title = "History — ScamSniff";
@@ -64,7 +141,29 @@ export function History() {
     const searchText = `${c.title || ""} ${c.company || ""} ${c.snippet || ""}`.toLowerCase();
     return searchText.includes(q.toLowerCase());
   });
-  const filtered = searched.filter((c) => (f === "all" ? true : c.verdict === f));
+
+  const filtered = searched.filter((c) => {
+    // Bookmark filter (only show bookmarked if f is "bookmarked")
+    if (f === "bookmarked" && !bookmarkedItems.has(c.id)) return false;
+
+    // Verdict filter (skip if f is "bookmarked")
+    if (f !== "all" && f !== "bookmarked" && c.verdict !== f) return false;
+
+    // Source filter
+    if (sourceFilter !== "all" && c.source !== sourceFilter) return false;
+
+    // Score range filter
+    if (c.score < scoreRange.min || c.score > scoreRange.max) return false;
+
+    // Date range filter
+    if (dateRange.from || dateRange.to) {
+      const itemDate = new Date(c.date);
+      if (dateRange.from && itemDate < new Date(dateRange.from)) return false;
+      if (dateRange.to && itemDate > new Date(dateRange.to)) return false;
+    }
+
+    return true;
+  });
 
   return (
     <div className="relative h-screen overflow-hidden">
@@ -95,7 +194,18 @@ export function History() {
               </div>
               {view === "list" && (
                 <div className="clay-inset inline-flex gap-1 p-1">
-                  {(["all", "scam", "suspicious", "safe"] as FilterT[]).map((opt) => (
+                  <button
+                    onClick={toggleSelectAll}
+                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition text-muted-foreground hover:text-foreground"
+                  >
+                    {selectedItems.size === filtered.length && filtered.length > 0 ? (
+                      <CheckSquare className="h-3.5 w-3.5" />
+                    ) : (
+                      <Square className="h-3.5 w-3.5" />
+                    )}
+                    Select all
+                  </button>
+                  {(["all", "scam", "suspicious", "safe", "bookmarked"] as FilterT[]).map((opt) => (
                     <button
                       key={opt}
                       onClick={() => setF(opt)}
@@ -120,11 +230,127 @@ export function History() {
                   <LayoutGrid className="h-3.5 w-3.5" /> Kanban
                 </button>
               </div>
-              <button className="clay-btn inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold">
-                <Filter className="h-4 w-4" /> Date
+              <button
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                className={`clay-btn inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold ${showAdvancedFilters ? "clay-primary" : ""}`}
+              >
+                <Filter className="h-4 w-4" /> Advanced
+                <ChevronDown className={`h-4 w-4 transition ${showAdvancedFilters ? "rotate-180" : ""}`} />
               </button>
             </div>
           </FadeIn>
+
+          {showAdvancedFilters && (
+            <FadeIn delay={0.05}>
+              <div className="clay p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-display text-lg font-bold">Advanced Filters</h3>
+                  <button
+                    onClick={() => {
+                      setDateRange({ from: "", to: "" });
+                      setScoreRange({ min: 0, max: 100 });
+                      setSourceFilter("all");
+                    }}
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    Clear all
+                  </button>
+                </div>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div>
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Date Range
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="date"
+                        value={dateRange.from}
+                        onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
+                        className="clay-inset flex-1 px-3 py-2 text-sm"
+                      />
+                      <input
+                        type="date"
+                        value={dateRange.to}
+                        onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
+                        className="clay-inset flex-1 px-3 py-2 text-sm"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Score Range ({scoreRange.min}% - {scoreRange.max}%)
+                    </label>
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={scoreRange.min}
+                        onChange={(e) => setScoreRange({ ...scoreRange, min: parseInt(e.target.value) })}
+                        className="flex-1"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={scoreRange.max}
+                        onChange={(e) => setScoreRange({ ...scoreRange, max: parseInt(e.target.value) })}
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Source
+                    </label>
+                    <div className="clay-inset inline-flex gap-1 p-1">
+                      {(["all", "text", "pdf", "url"] as const).map((opt) => (
+                        <button
+                          key={opt}
+                          onClick={() => setSourceFilter(opt)}
+                          className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition ${sourceFilter === opt ? "clay-primary" : "text-muted-foreground"}`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          )}
+
+          {selectedItems.size > 0 && (
+            <FadeIn delay={0.05}>
+              <div className="clay p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold">{selectedItems.size} selected</span>
+                    <button
+                      onClick={() => setSelectedItems(new Set())}
+                      className="text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      Clear selection
+                    </button>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleBulkExport}
+                      className="clay-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold"
+                    >
+                      <Download className="h-4 w-4" /> Export
+                    </button>
+                    <button
+                      onClick={handleBulkDelete}
+                      className="clay-btn inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-[color:var(--destructive)]"
+                    >
+                      <Trash2 className="h-4 w-4" /> Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          )}
 
           {loading ? (
             <div className="clay p-12 text-center">
@@ -145,7 +371,14 @@ export function History() {
             <StaggerChildren className="grid gap-4">
               {filtered.length === 0 && <EmptyState />}
               {filtered.map((c) => (
-                <ListRow key={c.id} c={c} />
+                <ListRow
+                  key={c.id}
+                  c={c}
+                  isSelected={selectedItems.has(c.id)}
+                  onToggle={() => toggleSelection(c.id)}
+                  isBookmarked={bookmarkedItems.has(c.id)}
+                  onBookmark={() => toggleBookmark(c.id)}
+                />
               ))}
             </StaggerChildren>
           ) : (
@@ -183,49 +416,77 @@ function toneFor(v: "scam" | "suspicious" | "safe") {
       : "var(--clay-green)";
 }
 
-function ListRow({ c }: { c: JobCheck }) {
+function ListRow({ c, isSelected, onToggle, isBookmarked, onBookmark }: { c: JobCheck; isSelected: boolean; onToggle: () => void; isBookmarked: boolean; onBookmark: () => void }) {
   const tone = toneFor(c.verdict);
   return (
-    <Link
-      to="/result"
-      search={{ id: c.id }}
-      className="clay flex items-center gap-4 p-5 transition hover:-translate-y-0.5"
-    >
-      <span
-        className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl"
-        style={{ background: tone }}
+    <div className="clay flex items-center gap-4 p-5 transition hover:-translate-y-0.5">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+        className="shrink-0"
       >
-        {c.source === "pdf" ? (
-          <FileText className="h-6 w-6" />
-        ) : c.source === "url" ? (
-          <Link2 className="h-6 w-6" />
+        {isSelected ? (
+          <CheckSquare className="h-5 w-5 text-[color:var(--primary)]" />
         ) : (
-          <ScanSearch className="h-6 w-6" />
+          <Square className="h-5 w-5 text-muted-foreground" />
         )}
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <h3 className="font-display text-lg font-bold">{c.title}</h3>
-          <span className="clay-pill text-[10px] uppercase">{c.source}</span>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          {c.company} · {c.date}
-        </p>
-        <p className="mt-2 line-clamp-1 text-sm text-muted-foreground">{c.snippet}</p>
-      </div>
-      <div className="text-right">
-        <p className="font-display text-3xl font-bold">
-          {c.score}
-          <span className="text-base text-muted-foreground">%</span>
-        </p>
+      </button>
+      <Link
+        to="/result"
+        search={{ id: c.id }}
+        className="flex min-w-0 flex-1 items-center gap-4"
+      >
         <span
-          className="clay-pill mt-1 inline-block text-[10px] uppercase"
+          className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl"
           style={{ background: tone }}
         >
-          {c.verdict}
+          {c.source === "pdf" ? (
+            <FileText className="h-6 w-6" />
+          ) : c.source === "url" ? (
+            <Link2 className="h-6 w-6" />
+          ) : (
+            <ScanSearch className="h-6 w-6" />
+          )}
         </span>
-      </div>
-    </Link>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-display text-lg font-bold">{c.title}</h3>
+            <span className="clay-pill text-[10px] uppercase">{c.source}</span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {c.company} · {c.date}
+          </p>
+          <p className="mt-2 line-clamp-1 text-sm text-muted-foreground">{c.snippet}</p>
+        </div>
+        <div className="text-right">
+          <p className="font-display text-3xl font-bold">
+            {c.score}
+            <span className="text-base text-muted-foreground">%</span>
+          </p>
+          <span
+            className="clay-pill mt-1 inline-block text-[10px] uppercase"
+            style={{ background: tone }}
+          >
+            {c.verdict}
+          </span>
+        </div>
+      </Link>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onBookmark();
+        }}
+        className="shrink-0"
+      >
+        {isBookmarked ? (
+          <BookmarkCheck className="h-5 w-5 text-[color:var(--primary)]" />
+        ) : (
+          <Bookmark className="h-5 w-5 text-muted-foreground" />
+        )}
+      </button>
+    </div>
   );
 }
 
