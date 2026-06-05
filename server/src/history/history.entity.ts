@@ -25,6 +25,9 @@ export class History {
   @Column({ nullable: true })
   processedAt!: Date;
 
+  @Column({ nullable: true })
+  pdfUrl!: string;
+
   @CreateDateColumn()
   createdAt!: Date;
 }
