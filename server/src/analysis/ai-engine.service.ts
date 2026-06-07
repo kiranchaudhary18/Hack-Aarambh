@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { spawn } from 'child_process';
-import * as path from 'path';
+import { Injectable } from "@nestjs/common";
+import { spawn } from "child_process";
+import * as path from "path";
 
 interface AIAnalysisResult {
   success: boolean;
@@ -22,27 +22,28 @@ export class AIEngineService {
     return new Promise((resolve, reject) => {
       const pythonScriptPath = path.join(
         __dirname,
-        '..',
-        'ai-engine',
-        'api',
-        'predict.py'
+        "..",
+        "ai-engine",
+        "api",
+        "cli.py",
       );
 
       // Spawn Python process
-      const pythonProcess = spawn('python3', [pythonScriptPath, text]);
+      const pythonCmd = process.platform === "win32" ? "python" : "python3";
+      const pythonProcess = spawn(pythonCmd, [pythonScriptPath]);
 
-      let output = '';
-      let error = '';
+      let output = "";
+      let error = "";
 
-      pythonProcess.stdout.on('data', (data) => {
+      pythonProcess.stdout.on("data", (data) => {
         output += data.toString();
       });
 
-      pythonProcess.stderr.on('data', (data) => {
+      pythonProcess.stderr.on("data", (data) => {
         error += data.toString();
       });
 
-      pythonProcess.on('close', (code) => {
+      pythonProcess.on("close", (code) => {
         if (code !== 0) {
           // Fallback to rule-based scoring if Python fails
           console.warn(`Python process exited with code ${code}: ${error}`);
@@ -53,7 +54,7 @@ export class AIEngineService {
           const result = JSON.parse(output);
           resolve(result);
         } catch (e) {
-          console.error('Error parsing AI result:', e);
+          console.error("Error parsing AI result:", e);
           resolve(this.fallbackAnalysis(text));
         }
       });
@@ -65,7 +66,7 @@ export class AIEngineService {
       // Timeout after 10 seconds
       setTimeout(() => {
         pythonProcess.kill();
-        reject(new Error('AI analysis timeout'));
+        reject(new Error("AI analysis timeout"));
       }, 10000);
     });
   }
@@ -75,15 +76,16 @@ export class AIEngineService {
    */
   private fallbackAnalysis(text: string): AIAnalysisResult {
     const score = this.calculateBasicScore(text);
-    
+
     return {
       success: true,
       is_fake: score > 60,
       scam_score: score,
-      verdict: score > 70 ? 'Likely Scam' : score > 50 ? 'Suspicious' : 'Likely Real',
+      verdict:
+        score > 70 ? "Likely Scam" : score > 50 ? "Suspicious" : "Likely Real",
       reasons: this.extractBasicReasons(text),
       detailed_reasons: [],
-      confidence: score > 80 || score < 20 ? 'high' : 'medium'
+      confidence: score > 80 || score < 20 ? "high" : "medium",
     };
   }
 
@@ -92,20 +94,25 @@ export class AIEngineService {
     const textLower = text.toLowerCase();
 
     // Payment keywords
-    if (textLower.includes('pay') || textLower.includes('fee')) score += 20;
-    if (textLower.includes('registration')) score += 15;
+    if (textLower.includes("pay") || textLower.includes("fee")) score += 20;
+    if (textLower.includes("registration")) score += 15;
 
     // Urgency
-    if (textLower.includes('urgent') || textLower.includes('limited time')) score += 15;
+    if (textLower.includes("urgent") || textLower.includes("limited time"))
+      score += 15;
 
     // Salary suspicious patterns
     if (textLower.match(/₹\s*[0-9]{5,}/)) score += 15;
 
     // Email checks
-    if (textLower.includes('gmail') || textLower.includes('yahoo')) score += 10;
+    if (textLower.includes("gmail") || textLower.includes("yahoo")) score += 10;
 
     // Phrase checks
-    if (textLower.includes('work from home') || textLower.includes('easy money')) score += 10;
+    if (
+      textLower.includes("work from home") ||
+      textLower.includes("easy money")
+    )
+      score += 10;
 
     return Math.min(score, 100);
   }
@@ -114,17 +121,17 @@ export class AIEngineService {
     const reasons: string[] = [];
     const textLower = text.toLowerCase();
 
-    if (textLower.includes('pay') || textLower.includes('fee')) {
-      reasons.push('Payment request detected');
+    if (textLower.includes("pay") || textLower.includes("fee")) {
+      reasons.push("Payment request detected");
     }
-    if (textLower.includes('urgent')) {
-      reasons.push('Urgency tactics detected');
+    if (textLower.includes("urgent")) {
+      reasons.push("Urgency tactics detected");
     }
     if (textLower.match(/₹\s*[0-9]{5,}/)) {
-      reasons.push('Unrealistic salary claim');
+      reasons.push("Unrealistic salary claim");
     }
-    if (textLower.includes('gmail') || textLower.includes('yahoo')) {
-      reasons.push('Free email domain used');
+    if (textLower.includes("gmail") || textLower.includes("yahoo")) {
+      reasons.push("Free email domain used");
     }
 
     return reasons;

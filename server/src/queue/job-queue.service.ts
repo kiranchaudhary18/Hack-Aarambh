@@ -1,13 +1,18 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
-import { AnalysisService } from '../analysis/analysis.service';
+import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+  Logger,
+} from "@nestjs/common";
+import { AnalysisService } from "../analysis/analysis.service";
 
-type Job = { id: string; buffer: Buffer; userId?: string };
+type Job = { id: string; buffer: Buffer; userId?: string; pdfUrl?: string };
 
 @Injectable()
 export class JobQueueService implements OnModuleInit, OnModuleDestroy {
-  private logger = new Logger('JobQueue');
+  private logger = new Logger("JobQueue");
   private queue: Job[] = [];
-  private timer: NodeJS.Timeout;
+  private timer!: NodeJS.Timeout;
 
   constructor(private analysis: AnalysisService) {}
 
@@ -18,7 +23,7 @@ export class JobQueueService implements OnModuleInit, OnModuleDestroy {
 
   async processOne(job: Job) {
     try {
-      await this.analysis.analyzePdf(job.buffer, job.userId, job.id);
+      await this.analysis.analyzePdf(job.buffer, job.userId, job.id, job.pdfUrl);
       this.logger.log(`Processed job ${job.id}`);
     } catch (e) {
       this.logger.error(`Failed job ${job.id}: ${e}`);

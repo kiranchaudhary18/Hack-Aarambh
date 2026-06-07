@@ -2,9 +2,10 @@ import re
 import string
 from typing import List
 
+
 class TextPreprocessor:
     """Phase 2: Input Processing Pipeline - Text Cleaning"""
-    
+
     @staticmethod
     def clean_text(text: str) -> str:
         """
@@ -16,34 +17,35 @@ class TextPreprocessor:
         """
         # Convert to lowercase
         text = text.lower()
-        
+
         # Remove URLs
-        text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
-        
+        text = re.sub(r"http\S+|www\S+|https\S+", "", text, flags=re.MULTILINE)
+
         # Remove email addresses
-        text = re.sub(r'\S+@\S+', '', text)
-        
+        text = re.sub(r"\S+@\S+", "", text)
+
         # Remove extra whitespace
-        text = re.sub(r'\s+', ' ', text)
-        
+        text = re.sub(r"\s+", " ", text)
+
         # Remove punctuation but keep some context
-        text = re.sub(r'[^\w\s₹]', ' ', text)
-        
+        text = re.sub(r"[^\w\s₹]", " ", text)
+
         # Remove extra spaces again
-        text = re.sub(r'\s+', ' ', text).strip()
-        
+        text = re.sub(r"\s+", " ", text).strip()
+
         return text
-    
+
     @staticmethod
     def tokenize(text: str) -> List[str]:
         """Split text into tokens (words)"""
         return text.split()
-    
+
     @staticmethod
     def preprocess_pipeline(text: str) -> str:
         """Complete preprocessing pipeline"""
         cleaned = TextPreprocessor.clean_text(text)
         return cleaned
+
 
 # Example usage
 if __name__ == "__main__":
