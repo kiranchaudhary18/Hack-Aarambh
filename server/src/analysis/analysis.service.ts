@@ -5,12 +5,14 @@ import { History } from "../history/history.entity";
 import * as pdfParse from "pdf-parse";
 import { PDFDocument } from "pdf-lib";
 import { AIEngineService } from "./ai-engine.service";
+import { HistoryService } from "../history/history.service";
 
 @Injectable()
 export class AnalysisService {
   constructor(
     @InjectRepository(History) private repo: Repository<History>,
     private aiEngine: AIEngineService,
+    private historyService: HistoryService,
   ) {}
 
   async analyzeText(input: string, userId?: string) {
@@ -30,7 +32,7 @@ export class AnalysisService {
 
     const rec = this.repo.create({ input, result, userId });
     await this.repo.save(rec);
-    return result;
+    return this.historyService.transformToFrontendFormat(rec);
   }
 
   async analyzePdf(buffer: Buffer, userId?: string, jobId?: string, pdfUrl?: string) {
@@ -72,7 +74,7 @@ export class AnalysisService {
         pdfUrl,
       });
       await this.repo.save(rec);
-      return errorResult;
+      return this.historyService.transformToFrontendFormat(rec);
     }
 
     // Check if extracted text is too short (indicates parsing failure)
@@ -92,7 +94,7 @@ export class AnalysisService {
         pdfUrl,
       });
       await this.repo.save(rec);
-      return errorResult;
+      return this.historyService.transformToFrontendFormat(rec);
     }
 
     // Try AI engine first, fallback to basic scoring
@@ -119,7 +121,7 @@ export class AnalysisService {
       pdfUrl,
     });
     await this.repo.save(rec);
-    return result;
+    return this.historyService.transformToFrontendFormat(rec);
   }
 
   score(text: string) {

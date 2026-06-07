@@ -1,4 +1,5 @@
 import json
+import sys
 from typing import Dict
 
 from scoring.rule_scorer import RuleBasedScorer
@@ -32,7 +33,6 @@ class HybridScorer:
                 prob = self.roberta_scorer.predict_proba(text)
                 return prob * 100  # Convert to 0-100 scale
             except Exception as e:
-                import sys
                 print(f"RoBERTa scoring error: {e}", file=sys.stderr)
                 # Fallback to Logistic Regression
                 return self._get_lr_score(text)
@@ -46,7 +46,6 @@ class HybridScorer:
             prob = self.ml_trainer.predict_proba(text)
             return prob * 100  # Convert to 0-100 scale
         except Exception as e:
-            import sys
             print(f"LR scoring error: {e}", file=sys.stderr)
             return 50  # Default to neutral score
 

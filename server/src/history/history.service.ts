@@ -22,7 +22,7 @@ export class HistoryService {
     return records.map((record) => this.transformToFrontendFormat(record));
   }
 
-  private transformToFrontendFormat(record: History) {
+  transformToFrontendFormat(record: History) {
     const result = record.result || {};
     const isFake = result.isFake || false;
     const score = result.score || 0;
@@ -53,8 +53,13 @@ export class HistoryService {
     // Create snippet from input
     const snippet = record.input?.substring(0, 150) || "";
 
-    // Determine source (default to text, could be enhanced to detect pdf/url)
-    const source: "text" | "pdf" | "url" = "text";
+    // Determine source
+    let source: "text" | "pdf" | "url" = "text";
+    if (record.pdfUrl) {
+      source = "pdf";
+    } else if (record.input?.startsWith("Job link:")) {
+      source = "url";
+    }
 
     // Transform reasons to match frontend format (with severity and detail)
     const transformedReasons = reasons.map((reason: string, index: number) => ({

@@ -29,7 +29,8 @@ export class AIEngineService {
       );
 
       // Spawn Python process
-      const pythonProcess = spawn("python3", [pythonScriptPath]);
+      const pythonCmd = process.platform === "win32" ? "python" : "python3";
+      const pythonProcess = spawn(pythonCmd, [pythonScriptPath]);
 
       let output = "";
       let error = "";

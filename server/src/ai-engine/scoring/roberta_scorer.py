@@ -4,6 +4,7 @@ Integrates RoBERTa model with the hybrid scoring system
 """
 
 import os
+import sys
 import torch
 from typing import Dict, Optional
 from transformers import RobertaTokenizer, RobertaForSequenceClassification
@@ -28,7 +29,6 @@ class RoBERTaScorer:
         if os.path.exists(self.model_path):
             try:
                 # Use stderr for logging to avoid interfering with JSON output
-                import sys
                 print(f"Loading RoBERTa model from {self.model_path}", file=sys.stderr)
                 self.tokenizer = RobertaTokenizer.from_pretrained(self.model_path)
                 self.model = RobertaForSequenceClassification.from_pretrained(self.model_path)
@@ -75,7 +75,6 @@ class RoBERTaScorer:
             return fake_probability
             
         except Exception as e:
-            import sys
             print(f"Error in RoBERTa prediction: {e}", file=sys.stderr)
             return 0.5  # Neutral score on error
     
@@ -123,7 +122,6 @@ class RoBERTaScorer:
             }
             
         except Exception as e:
-            import sys
             print(f"Error in RoBERTa prediction: {e}", file=sys.stderr)
             return {
                 "predicted_class": 0,
