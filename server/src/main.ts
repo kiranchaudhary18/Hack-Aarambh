@@ -12,7 +12,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(jwtMiddleware);
   app.useGlobalPipes(new ValidationPipe({ whitelist: false }));
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
 
   if (process.env.VERCEL) {
     await app.init();
