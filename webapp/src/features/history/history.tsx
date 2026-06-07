@@ -235,7 +235,9 @@ export function History() {
                 className={`clay-btn inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold ${showAdvancedFilters ? "clay-primary" : ""}`}
               >
                 <Filter className="h-4 w-4" /> Advanced
-                <ChevronDown className={`h-4 w-4 transition ${showAdvancedFilters ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  className={`h-4 w-4 transition ${showAdvancedFilters ? "rotate-180" : ""}`}
+                />
               </button>
             </div>
           </FadeIn>
@@ -286,7 +288,9 @@ export function History() {
                         min="0"
                         max="100"
                         value={scoreRange.min}
-                        onChange={(e) => setScoreRange({ ...scoreRange, min: parseInt(e.target.value) })}
+                        onChange={(e) =>
+                          setScoreRange({ ...scoreRange, min: parseInt(e.target.value) })
+                        }
                         className="flex-1"
                       />
                       <input
@@ -294,7 +298,9 @@ export function History() {
                         min="0"
                         max="100"
                         value={scoreRange.max}
-                        onChange={(e) => setScoreRange({ ...scoreRange, max: parseInt(e.target.value) })}
+                        onChange={(e) =>
+                          setScoreRange({ ...scoreRange, max: parseInt(e.target.value) })
+                        }
                         className="flex-1"
                       />
                     </div>
@@ -433,11 +439,7 @@ function ListRow({ c, isSelected, onToggle, isBookmarked, onBookmark }: { c: Job
           <Square className="h-5 w-5 text-muted-foreground" />
         )}
       </button>
-      <Link
-        to="/result"
-        search={{ id: c.id }}
-        className="flex min-w-0 flex-1 items-center gap-4"
-      >
+      <Link to={`/result?id=${c.id}`} className="flex min-w-0 flex-1 items-center gap-4">
         <span
           className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl"
           style={{ background: tone }}
@@ -534,8 +536,7 @@ function KanbanCol({verdict, items }: { verdict: "scam" | "suspicious" | "safe";
         )}
         {items.map((c) => (
           <Link
-            to="/result"
-            search={{ id: c.id }}
+            to={`/result?id=${c.id}`}
             key={c.id}
             className="clay-sm block p-4 transition hover:-translate-y-0.5"
           >
