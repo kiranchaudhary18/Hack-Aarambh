@@ -41,12 +41,14 @@ export class AuthController {
   constructor(private auth: AuthService) {}
 
   @Post("register")
-  register(@Body() body: RegisterDto) {
+  register(@Body() body: RegisterDto, @Req() req: any) {
     console.log("Register request body:", body);
     if (!body.email || !body.password) {
       throw new Error("Email and password are required");
     }
-    return this.auth.register(body.email, body.password, body.name);
+    const origin = req.headers.origin || req.headers.referer;
+    const sanitizedOrigin = origin ? origin.replace(/\/$/, "") : undefined;
+    return this.auth.register(body.email, body.password, body.name, sanitizedOrigin);
   }
 
   @Post("login")
@@ -60,8 +62,10 @@ export class AuthController {
   }
 
   @Post("resend-verification")
-  resendVerification(@Body() body: ResendVerificationDto) {
-    return this.auth.resendVerificationEmail(body.email);
+  resendVerification(@Body() body: ResendVerificationDto, @Req() req: any) {
+    const origin = req.headers.origin || req.headers.referer;
+    const sanitizedOrigin = origin ? origin.replace(/\/$/, "") : undefined;
+    return this.auth.resendVerificationEmail(body.email, sanitizedOrigin);
   }
 
   @Post("forgot-password")
@@ -87,7 +91,9 @@ export class AuthController {
   @Post("request-email-update")
   requestEmailUpdate(@Req() req: any, @Body() body: RequestEmailUpdateDto) {
     const userId = req.user?.sub;
-    return this.auth.requestEmailUpdate(userId, body.newEmail);
+    const origin = req.headers.origin || req.headers.referer;
+    const sanitizedOrigin = origin ? origin.replace(/\/$/, "") : undefined;
+    return this.auth.requestEmailUpdate(userId, body.newEmail, sanitizedOrigin);
   }
 
   @Get("verify-email-update")

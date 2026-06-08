@@ -20,8 +20,8 @@ export class AuthService {
     @InjectRepository(EmailUpdateVerification) private emailUpdateVerificationRepo: Repository<EmailUpdateVerification>,
   ) {}
 
-  async register(email: string, password: string, name?: string) {
-    console.log("AuthService.register called with:", { email, name });
+  async register(email: string, password: string, name?: string, origin?: string) {
+    console.log("AuthService.register called with:", { email, name, origin });
     try {
       console.log("Checking if email exists...");
       const existing = await this.users.findByEmail(email);
@@ -62,7 +62,7 @@ export class AuthService {
       });
 
       // Send verification email
-      await this.email.sendVerificationEmail(email, token);
+      await this.email.sendVerificationEmail(email, token, origin);
 
       console.log("Verification email sent");
 
@@ -117,7 +117,7 @@ export class AuthService {
     return { success: true, message: "Email verified successfully" };
   }
 
-  async resendVerificationEmail(email: string) {
+  async resendVerificationEmail(email: string, origin?: string) {
     const user = await this.users.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException("Email not found");
@@ -142,7 +142,7 @@ export class AuthService {
     });
 
     // Send verification email
-    await this.email.sendVerificationEmail(email, token);
+    await this.email.sendVerificationEmail(email, token, origin);
 
     return { success: true, message: "Verification email sent" };
   }
@@ -275,7 +275,7 @@ export class AuthService {
     return true;
   }
 
-  async requestEmailUpdate(userId: string, newEmail: string) {
+  async requestEmailUpdate(userId: string, newEmail: string, origin?: string) {
     // Check if new email already exists
     const existingUser = await this.users.findByEmail(newEmail);
     if (existingUser) {
@@ -298,7 +298,7 @@ export class AuthService {
     });
 
     // Send verification email
-    await this.email.sendEmailUpdateVerification(newEmail, token);
+    await this.email.sendEmailUpdateVerification(newEmail, token, origin);
 
     return { success: true, message: "Verification email sent to new email address" };
   }

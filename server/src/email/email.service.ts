@@ -32,8 +32,8 @@ export class EmailService {
     }
   }
 
-  async sendVerificationEmail(email: string, token: string) {
-    const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/verify-email?token=${token}`;
+  async sendVerificationEmail(email: string, token: string, origin?: string) {
+    const verificationUrl = `${origin || process.env.FRONTEND_URL || "http://localhost:5173"}/verify-email?token=${token}`;
 
     const mailOptions = {
       from: this.useEthereal
@@ -135,8 +135,8 @@ export class EmailService {
     }
   }
 
-  async sendEmailUpdateVerification(email: string, token: string) {
-    const verificationUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/verify-email-update?token=${token}`;
+  async sendEmailUpdateVerification(email: string, token: string, origin?: string) {
+    const verificationUrl = `${origin || process.env.FRONTEND_URL || "http://localhost:5173"}/verify-email-update?token=${token}`;
 
     const mailOptions = {
       from: this.useEthereal
