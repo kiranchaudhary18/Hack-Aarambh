@@ -92,10 +92,12 @@ export const api = {
 
   // History
   getHistory: () => apiRequest("/history"),
+  getAnalytics: () => apiRequest("/history/analytics"),
 
   // Admin
   getAdminStats: () => apiRequest("/admin/stats"),
   getFlaggedCases: () => apiRequest("/admin/flagged"),
+  getAdminAnalytics: () => apiRequest("/admin/analytics"),
 
   // Password Reset
   forgotPassword: (email: string) =>
@@ -165,6 +167,16 @@ export const api = {
       method: "DELETE",
     }),
 
-  // Analytics (for admin)
-  getAnalytics: () => apiRequest("/admin/analytics"),
+  // API Tokens
+  generateToken: (name?: string, expiresAt?: string) =>
+    apiRequest("/tokens/generate", {
+      method: "POST",
+      body: JSON.stringify({ name, expiresAt }),
+    }),
+  getTokens: () => apiRequest("/tokens"),
+  deleteToken: (tokenId: string) =>
+    apiRequest(`/tokens/${tokenId}`, {
+      method: "DELETE",
+      body: JSON.stringify({ tokenId }),
+    }),
 };
