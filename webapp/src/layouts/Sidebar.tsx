@@ -8,6 +8,7 @@ import {
   User,
   ShieldCheck,
   LogOut,
+  Settings,
 } from "lucide-react";
 import { api } from "@/shared/lib/api";
 
@@ -17,6 +18,7 @@ const items = [
   { to: "/history", label: "History", icon: History },
   { to: "/awareness", label: "Awareness", icon: BookOpen },
   { to: "/profile", label: "Profile", icon: User },
+  { to: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar() {
