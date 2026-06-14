@@ -11,6 +11,12 @@ export class HistoryController {
     return this.svc.getAll(userId);
   }
 
+  @Get("analytics")
+  async getAnalytics(@Req() req: any) {
+    const userId = req.user?.sub;
+    return this.svc.getAnalytics(userId);
+  }
+
   @Get(":id")
   async getById(@Param("id") id: string, @Req() req: any) {
     const userId = req.user?.sub;
