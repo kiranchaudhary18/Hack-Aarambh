@@ -3,15 +3,10 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
-import { JwtService } from "@nestjs/jwt";
+import * as jwt from "jsonwebtoken";
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard("jwt") {
-  constructor(private jwtService: JwtService) {
-    super();
-  }
-
+export class JwtAuthGuard {
   canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
@@ -21,13 +16,12 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
     }
 
     try {
-      const payload = this.jwtService.verify(token);
+      const payload = jwt.verify(token, "ca5d924a04711ae040e1f9118f07908a7a1bcaa02c4337272d52afd7a7b9ea14") as any;
       request["user"] = payload;
+      return true;
     } catch {
       throw new UnauthorizedException();
     }
-
-    return true;
   }
 
   private extractTokenFromHeader(request: any): string | undefined {
