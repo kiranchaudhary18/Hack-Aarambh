@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,19 +8,21 @@ datasource db {
 }
 
 model User {
-  id             String         @id @default(uuid())
-  email          String         @unique
-  password       String
-  role           String         @default("user")
-  name           String?
-  avatar         String?
-  scansUsed      Int            @default(0)
-  scansLimit     Int            @default(20)
-  plan           String         @default("free")
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  histories      History[]
-  passwordResets PasswordReset[]
+  id                String          @id @default(uuid())
+  email             String          @unique
+  password          String
+  role              String          @default("user")
+  name              String?
+  avatar            String?
+  scansUsed         Int             @default(0)
+  scansLimit        Int             @default(20)
+  plan              String          @default("free")
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  apiToken          String?         @unique
+  apiTokenExpiresAt DateTime?
+  histories         History[]
+  passwordResets    PasswordReset[]
 }
 
 model History {
@@ -34,6 +33,8 @@ model History {
   status      String    @default("pending")
   processedAt DateTime?
   createdAt   DateTime  @default(now())
+  pdfUrl      String?
+  source      String?   @default("web")
   user        User?     @relation(fields: [userId], references: [id])
 }
 
@@ -45,4 +46,78 @@ model PasswordReset {
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
+}
+
+model api_token {
+  id            String   @id(map: "PK_d862311c568d175c26f41bc6f98") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  token         String   @unique(map: "UQ_fd02c9ad7dc8459d458139325a2") @db.VarChar
+  userId        String   @db.Uuid
+  name          String?  @db.VarChar
+  dailyLimit    Int      @default(50)
+  usageCount    Int      @default(0)
+  lastResetDate DateTime @default(now()) @db.Timestamp(6)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  user          user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_cbfc4e2b85b78207afb0b2d7fbc")
+}
+
+model email_update_verification {
+  id        String   @id(map: "PK_203b3c21701f5b05d58e2ebf2d1") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String   @db.VarChar
+  newEmail  String   @db.VarChar
+  token     String   @unique(map: "UQ_404cdaac0c5ac1c29e364ce8cc9") @db.VarChar
+  expiresAt DateTime @db.Timestamp(6)
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+}
+
+model email_verification {
+  id        String   @id(map: "PK_b985a8362d9dac51e3d6120d40e") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String   @db.Uuid
+  token     String   @unique(map: "UQ_dfd82813f24e0ba651daa7eb933") @db.VarChar
+  expiresAt DateTime @db.Timestamp(6)
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_95b3bd492c85e471cd5e72277be")
+}
+
+model history {
+  id           String    @id(map: "PK_9384942edf4804b38ca0ee51416") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  input        String
+  result       String?
+  userId       String?   @db.VarChar
+  status       String    @default("pending") @db.VarChar
+  processedAt  DateTime? @db.Timestamp(6)
+  pdfUrl       String?   @db.VarChar
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
+  imageUrl     String?   @db.VarChar
+  analysisType String    @default("text") @db.VarChar
+}
+
+model password_reset {
+  id        String   @id(map: "PK_8515e60a2cc41584fa4784f52ce") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String   @db.Uuid
+  code      String   @unique(map: "UQ_4643729dcb247476da3ec20eafb") @db.VarChar
+  expiresAt DateTime @db.Timestamp(6)
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_05baebe80e9f8fab8207eda250c")
+}
+
+model user {
+  id                 String               @id(map: "PK_cace4a159ff9f2512dd42373760") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email              String               @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar
+  password           String               @db.VarChar
+  role               String               @default("user") @db.VarChar
+  name               String?              @db.VarChar
+  avatar             String?              @db.VarChar
+  scansUsed          Int                  @default(0)
+  scansLimit         Int                  @default(20)
+  plan               String               @default("free") @db.VarChar
+  isVerified         Boolean              @default(false)
+  createdAt          DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime             @default(now()) @db.Timestamp(6)
+  api_token          api_token[]
+  email_verification email_verification[]
+  password_reset     password_reset[]
 }
