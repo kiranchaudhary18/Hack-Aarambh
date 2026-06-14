@@ -16,6 +16,8 @@ import { VerifyEmail } from "./features/auth/verify-email";
 import { VerifyEmailUpdate } from "./features/auth/verify-email-update";
 import { Dashboard } from "./features/dashboard/dashboard";
 import { Profile } from "./features/profile/profile";
+import { Settings } from "./features/settings/settings";
+import { ApiTokens } from "./features/settings/api-tokens";
 import { Analyze } from "./features/analyze/analyze";
 import { Result } from "./features/result/result";
 import { History } from "./features/history/history";
@@ -50,6 +52,8 @@ function App() {
             <Route path="verify-email-update" element={<VerifyEmailUpdate />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="settings/api-tokens" element={<ApiTokens />} />
             <Route path="analyze" element={<Analyze />} />
             <Route path="result" element={<Result />} />
             <Route path="history" element={<History />} />

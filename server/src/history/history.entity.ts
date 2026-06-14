@@ -28,6 +28,12 @@ export class History {
   @Column({ nullable: true })
   pdfUrl!: string;
 
+  @Column({ nullable: true })
+  imageUrl!: string;
+
+  @Column({ default: "text" })
+  analysisType!: "text" | "pdf" | "image";
+
   @CreateDateColumn()
   createdAt!: Date;
 }

@@ -5,6 +5,7 @@ import { AuthModule } from "./auth/auth.module";
 import { AnalysisModule } from "./analysis/analysis.module";
 import { AdminModule } from "./admin/admin.module";
 import { HistoryModule } from "./history/history.module";
+import { TokensModule } from "./tokens/tokens.module";
 import { History } from "./history/history.entity";
 
 @Module({
@@ -25,6 +26,7 @@ import { History } from "./history/history.entity";
     AnalysisModule,
     AdminModule,
     HistoryModule,
+    TokensModule,
   ],
 })
 export class AppModule {}

@@ -246,9 +246,7 @@ export function Result() {
                 <CompanyVerificationBadge verification={check.companyVerification} />
               )}
               {check.domainAge && <DomainAgeDisplay domainAge={check.domainAge} />}
-              {check.salaryComparison && (
-                <SalaryComparison comparison={check.salaryComparison} />
-              )}
+              {check.salaryComparison && <SalaryComparison comparison={check.salaryComparison} />}
               {check.socialVerification && (
                 <SocialVerification verification={check.socialVerification} />
               )}
@@ -407,7 +405,8 @@ function SalaryComparison({
         <span
           className="grid h-10 w-10 place-items-center rounded-2xl"
           style={{
-            background: isAboveMarket && percentageDiff > 50 ? "var(--clay-pink)" : "var(--clay-blue)",
+            background:
+              isAboveMarket && percentageDiff > 50 ? "var(--clay-pink)" : "var(--clay-blue)",
           }}
         >
           <Globe className="h-5 w-5" />
@@ -417,13 +416,14 @@ function SalaryComparison({
             Salary vs market
           </p>
           <p className="font-display text-lg font-bold">
-            {comparison.currency}{comparison.offered.toLocaleString()}
+            {comparison.currency}
+            {comparison.offered.toLocaleString()}
           </p>
         </div>
       </div>
       <p className="mt-3 text-xs text-muted-foreground">
         Market: {comparison.currency}
-        {comparison.market.toLocaleString()} ·{" "} {isAboveMarket ? "+" : ""}
+        {comparison.market.toLocaleString()} · {isAboveMarket ? "+" : ""}
         {percentageDiff}% difference
       </p>
     </div>
@@ -468,15 +468,9 @@ function SocialVerification({
         </div>
       </div>
       <div className="mt-3 flex gap-2">
-        {verification.linkedin && (
-          <span className="clay-pill text-[10px]">LinkedIn ✓</span>
-        )}
-        {verification.twitter && (
-          <span className="clay-pill text-[10px]">Twitter ✓</span>
-        )}
-        {verification.facebook && (
-          <span className="clay-pill text-[10px]">Facebook ✓</span>
-        )}
+        {verification.linkedin && <span className="clay-pill text-[10px]">LinkedIn ✓</span>}
+        {verification.twitter && <span className="clay-pill text-[10px]">Twitter ✓</span>}
+        {verification.facebook && <span className="clay-pill text-[10px]">Facebook ✓</span>}
       </div>
     </div>
   );

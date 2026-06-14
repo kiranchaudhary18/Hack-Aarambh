@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { ApiToken } from "../tokens/api-token.entity";
 
 @Entity()
 export class User {
@@ -43,4 +45,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @OneToMany(() => ApiToken, (apiToken) => apiToken.user)
+  apiTokens!: ApiToken[];
 }
