@@ -22,6 +22,6 @@ import { EmailUpdateVerification } from "./email-update-verification.entity";
   ],
   providers: [AuthService],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
