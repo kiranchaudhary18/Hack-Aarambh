@@ -2,17 +2,22 @@ import { useEffect } from "react";
 
 function RegionCapture() {
   useEffect(() => {
-    // Listen for messages from popup
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    const messageListener = async (request: any, sender: any, sendResponse: any) => {
       if (request.action === "startRegionCapture") {
-        startRegionCapture();
+        await startRegionCapture();
         sendResponse({ success: true });
+        return true;
       }
-      return true;
-    });
+    };
+
+    chrome.runtime.onMessage.addListener(messageListener);
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(messageListener);
+    };
   }, []);
 
-  const startRegionCapture = () => {
+  const startRegionCapture = async () => {
     // Create fullscreen dark overlay
     const overlay = document.createElement("div");
     overlay.style.cssText = `
@@ -22,7 +27,7 @@ function RegionCapture() {
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.5);
-      z-index: 999999;
+      z-index: 2147483647;
       cursor: crosshair;
     `;
 
@@ -59,7 +64,7 @@ function RegionCapture() {
       const currentX = e.clientX;
       const currentY = e.clientY;
       const width = Math.abs(currentX - startX);
-      const height = Math.abs(currentY);
+      const height = Math.abs(currentY - startY);
       const left = Math.min(startX, currentX);
       const top = Math.min(startY, currentY);
 
@@ -75,12 +80,9 @@ function RegionCapture() {
       const currentX = e.clientX;
       const currentY = e.clientY;
       const width = Math.abs(currentX - startX);
-      const height = Math.abs(currentY);
+      const height = Math.abs(currentY - startY);
       const left = Math.min(startX, currentX);
       const top = Math.min(startY, currentY);
-
-      // Remove selection rectangle
-      selectionRect.style.display = 'none';
 
       // If selection is too small, ignore it
       if (width < 10 || height < 10) {
@@ -88,67 +90,95 @@ function RegionCapture() {
         return;
       }
 
-      // Capture the selected region
-      try {
-        // Use html2canvas or similar approach to capture the region
-        // For now, we'll use a simpler approach with html2canvas if available
-        // or fallback to a basic implementation
-        
-        // Create a canvas to capture the region
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        
-        if (ctx) {
-          // Capture the visible portion of the page
-          // This is a simplified version - in production you'd want to use
-          // html2canvas or a similar library for better results
-          
-          // For now, we'll try to capture using the browser's capabilities
-          // This approach has limitations but works for basic use cases
-          
-          // Try to use the Screen Capture API if available
-          try {
-            // Request screen capture of the specific region
-            const stream = await navigator.mediaDevices.getDisplayMedia({
-              video: {
-                displaySurface: "browser",
-              },
-            });
+      // Create confirm button
+      const confirmButton = document.createElement("button");
+      confirmButton.textContent = "Send to AI";
+      confirmButton.style.cssText = `
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        background: linear-gradient(145deg, #8b5cf6, #7c3aed);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        z-index: 2147483648;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      `;
 
-            const video = document.createElement("video");
-            video.srcObject = stream;
-            await video.play();
+      const cancelButton = document.createElement("button");
+      cancelButton.textContent = "Cancel";
+      cancelButton.style.cssText = `
+        position: absolute;
+        bottom: 20px;
+        left: calc(50% + 120px);
+        transform: translateX(-50%);
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #374151;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        z-index: 2147483648;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      `;
 
-            // Capture the frame
-            ctx.drawImage(video, left, top, width, height, 0, 0, width, height);
-            
-            // Stop the stream
-            stream.getTracks().forEach(track => track.stop());
-            
-            const imageData = canvas.toDataURL("image/png");
-            
-            // Send the captured image to popup
-            chrome.runtime.sendMessage({
-              action: "regionCaptured",
-              image: imageData,
-            });
-            
-            overlay.remove();
-          } catch (err) {
-            // Fallback: try to use html2canvas if available
-            console.error("Screen capture failed, trying fallback:", err);
-            
-            // Simple fallback: alert user that screen capture is needed
-            alert("Screen capture permission required. Please allow screen capture when prompted.");
-            overlay.remove();
-          }
-        }
-      } catch (err) {
-        console.error("Region capture failed:", err);
+      cancelButton.onclick = () => {
         overlay.remove();
-      }
+      };
+
+      confirmButton.onclick = async () => {
+        confirmButton.disabled = true;
+        confirmButton.textContent = "Capturing...";
+        cancelButton.disabled = true;
+
+        try {
+          // Capture the entire visible tab first
+          const captureResponse = await chrome.runtime.sendMessage({
+            action: "captureVisibleTab"
+          });
+
+          if (!captureResponse.success) {
+            alert("Failed to capture screen");
+            confirmButton.disabled = false;
+            confirmButton.textContent = "Send to AI";
+            cancelButton.disabled = false;
+            return;
+          }
+
+          // Now crop the captured image to the selected region
+          const croppedImageDataUrl = await cropImage(
+            captureResponse.imageDataUrl,
+            left,
+            top,
+            width,
+            height
+          );
+
+          // Send to sidepanel
+          chrome.runtime.sendMessage({
+            action: "regionCaptured",
+            image: croppedImageDataUrl,
+          });
+
+          overlay.remove();
+        } catch (error) {
+          console.error("Capture failed:", error);
+          alert("Failed to capture region");
+          confirmButton.disabled = false;
+          confirmButton.textContent = "Send to AI";
+          cancelButton.disabled = false;
+        }
+      };
+
+      overlay.appendChild(confirmButton);
+      overlay.appendChild(cancelButton);
     };
 
     // Allow escape key to cancel
@@ -169,7 +199,27 @@ function RegionCapture() {
     document.body.appendChild(overlay);
   };
 
-  return null;
+  const cropImage = async (imageDataUrl: string, x: number, y: number, width: number, height: number): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        
+        if (ctx) {
+          ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/png"));
+        } else {
+          resolve(imageDataUrl);
+        }
+      };
+      img.src = imageDataUrl;
+    });
+  };
+
+  return <></>;
 }
 
 export default RegionCapture;
