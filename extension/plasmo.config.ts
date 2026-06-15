@@ -15,15 +15,19 @@ const config = {
     permissions: [
       "storage",
       "activeTab",
-      "scripting"
+      "scripting",
+      "sidePanel",
+      "tabs"
     ],
     host_permissions: [
       "http://localhost:3000/*",
       "http://localhost:5173/*"
     ],
     action: {
-      default_title: "Open ScamSniff",
-      default_popup: "popup.html"
+      default_title: "Open ScamSniff"
+    },
+    side_panel: {
+      default_path: "sidepanel.html"
     }
   }
 }
