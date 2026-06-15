@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ShieldCheck, Mail, Lock, User, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { Field, GoogleIcon } from "./login";
@@ -49,8 +49,8 @@ export function Signup() {
           <div className="grid gap-8 lg:grid-cols-[1fr_1.05fr] lg:items-center">
             <div>
               <Link to="/" className="mb-8 flex items-center gap-2">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl clay-primary">
-                  <ShieldCheck className="h-6 w-6" strokeWidth={2.5} />
+                <span className="grid h-12 w-12 place-items-center">
+                  <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
                 </span>
                 <span className="font-display text-2xl font-bold">
                   Scam<span className="text-gradient">Sniff</span>
