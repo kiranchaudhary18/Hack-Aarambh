@@ -1,4 +1,8 @@
-export default function Style() {
+type Theme = "light" | "dark";
+
+export default function Style({ theme }: { theme: Theme }) {
+  const isDark = theme === "dark";
+
   return (
     <style>{`
       * {
@@ -6,69 +10,67 @@ export default function Style() {
         padding: 0;
         box-sizing: border-box;
       }
-      
+
       :root {
         --radius: 1.75rem;
-        --background: oklch(0.97 0.018 95);
-        --foreground: oklch(0.24 0.04 270);
-        --card: oklch(0.985 0.012 95);
-        --card-foreground: oklch(0.24 0.04 270);
+        --background: ${isDark ? "oklch(0.15 0.02 270)" : "oklch(0.97 0.018 95)"};
+        --foreground: ${isDark ? "oklch(0.95 0.02 95)" : "oklch(0.24 0.04 270)"};
+        --card: ${isDark ? "oklch(0.18 0.02 270)" : "oklch(0.985 0.012 95)"};
+        --card-foreground: ${isDark ? "oklch(0.95 0.02 95)" : "oklch(0.24 0.04 270)"};
         --primary: oklch(0.62 0.18 295);
         --primary-foreground: oklch(0.99 0.005 95);
-        --secondary: oklch(0.92 0.04 95);
-        --secondary-foreground: oklch(0.3 0.04 270);
-        --muted: oklch(0.94 0.02 95);
-        --muted-foreground: oklch(0.5 0.03 270);
+        --secondary: ${isDark ? "oklch(0.25 0.04 270)" : "oklch(0.92 0.04 95)"};
+        --secondary-foreground: ${isDark ? "oklch(0.95 0.02 95)" : "oklch(0.3 0.04 270)"};
+        --muted: ${isDark ? "oklch(0.25 0.04 270)" : "oklch(0.94 0.02 95)"};
+        --muted-foreground: ${isDark ? "oklch(0.6 0.03 270)" : "oklch(0.5 0.03 270)"};
         --accent: oklch(0.85 0.12 70);
-        --accent-foreground: oklch(0.24 0.04 270);
+        --accent-foreground: ${isDark ? "oklch(0.95 0.02 95)" : "oklch(0.24 0.04 270)"};
         --destructive: oklch(0.66 0.22 22);
         --destructive-foreground: oklch(0.99 0.005 95);
-        --border: oklch(0.88 0.025 95 / 0.7);
-        --input: oklch(0.92 0.02 95);
+        --border: ${isDark ? "oklch(0.3 0.025 270 / 0.7)" : "oklch(0.88 0.025 95 / 0.7)"};
+        --input: ${isDark ? "oklch(0.25 0.04 270)" : "oklch(0.92 0.02 95)"};
         --ring: oklch(0.62 0.18 295);
-        
-        --shadow-clay: 6px 6px 16px rgba(247, 246, 246, 0.04), -6px -6px 16px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(0, 0, 0, 0.02);
-        --shadow-clay-sm: 3px 3px 8px rgba(0, 0, 0, 0.03), -3px -3px 8px rgba(255, 255, 255, 0.8), 0 1px 1px rgba(0, 0, 0, 0.02);
-        --shadow-clay-inset: inset 3px 3px 6px rgba(0, 0, 0, 0.04), inset -3px -3px 6px rgba(255, 255, 255, 0.7);
+
+        --shadow-clay: ${isDark
+          ? "6px 6px 16px rgba(0, 0, 0, 0.3), -6px -6px 16px rgba(255, 255, 255, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)"
+          : "6px 6px 16px rgba(247, 246, 246, 0.04), -6px -6px 16px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(0, 0, 0, 0.02)"};
+        --shadow-clay-sm: ${isDark
+          ? "3px 3px 8px rgba(0, 0, 0, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.05), 0 1px 1px rgba(0, 0, 0, 0.1)"
+          : "3px 3px 8px rgba(0, 0, 0, 0.03), -3px -3px 8px rgba(255, 255, 255, 0.8), 0 1px 1px rgba(0, 0, 0, 0.02)"};
+        --shadow-clay-inset: ${isDark
+          ? "inset 3px 3px 6px rgba(0, 0, 0, 0.3), inset -3px -3px 6px rgba(255, 255, 255, 0.05)"
+          : "inset 3px 3px 6px rgba(0, 0, 0, 0.04), inset -3px -3px 6px rgba(255, 255, 255, 0.7)"};
       }
       
       body {
         font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
         background: var(--background);
         color: var(--foreground);
+        overflow-x: hidden;
+        width: 100%;
+        word-wrap: break-word;
+        word-break: break-word;
       }
       
       .clay {
         background: var(--card);
-        box-shadow: var(--shadow-clay);
         border-radius: var(--radius);
         border: 1px solid rgba(0, 0, 0, 0.02);
       }
-      
+
       .clay-inset {
         background: var(--muted);
-        box-shadow: var(--shadow-clay-inset);
         border-radius: calc(var(--radius) - 0.5rem);
         border: 1px solid rgba(0, 0, 0, 0.02);
       }
-      
+
       .clay-primary {
         background: linear-gradient(145deg, oklch(0.72 0.18 295), oklch(0.55 0.2 305));
         color: var(--primary-foreground);
-        box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.15), -6px -6px 16px rgba(255, 255, 255, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.3);
         border-radius: 999px;
-        transition: transform 180ms ease;
       }
       
-      .clay-primary:hover {
-        transform: translateY(-2px);
-      }
-      
-      .clay-primary:active {
-        transform: translateY(1px);
-      }
-      
-      .w-full { width: 100%; }
+      .w-full { width: 100%; max-width: 100%; }
       .p-6 { padding: 1.5rem; }
       .mb-6 { margin-bottom: 1.5rem; }
       .space-y-4 > * + * { margin-top: 1rem; }
@@ -115,6 +117,30 @@ export default function Style() {
       .border-border { border-color: var(--border); }
       .max-w-\[400px\] { max-width: 400px; }
       .min-h-\[500px\] { min-height: 500px; }
+      .min-h-full { min-height: 100%; }
+      .overflow-x-hidden { overflow-x: hidden; }
+      .h-14 { height: 3.5rem; }
+      .animate-spin { animation: spin 1s linear infinite; }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      
+      input {
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      
+      button {
+        max-width: 100%;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.5;
+        white-space: nowrap;
+        cursor: pointer;
+      }
     `}</style>
   );
 }
