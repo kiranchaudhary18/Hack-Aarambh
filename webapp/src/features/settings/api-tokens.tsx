@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
-import { KeyRound, Plus, Copy, Trash2, X, ChevronLeft, Calendar } from "lucide-react";
+import { KeyRound, Plus, Copy, Trash2, X, ChevronLeft, Calendar, Eye, Check } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { toast } from "sonner";
 
@@ -13,6 +13,8 @@ export function ApiTokens() {
   const [newTokenName, setNewTokenName] = useState("");
   const [generatedToken, setGeneratedToken] = useState<string | null>(null);
   const [expirationDays, setExpirationDays] = useState<number>(30);
+  const [tokenVisibility, setTokenVisibility] = useState<Record<string, "hidden" | "visible">>({});
+  const [copiedTokens, setCopiedTokens] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     document.title = "API Tokens — ScamSniff";
@@ -32,9 +34,13 @@ export function ApiTokens() {
     try {
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + expirationDays);
-      
-      const result = await api.generateToken(newTokenName || "Extension Token", expiresAt.toISOString());
+
+      const result = await api.generateToken(
+        newTokenName || "Extension Token",
+        expiresAt.toISOString(),
+      );
       setGeneratedToken(result.token);
+      setTokenVisibility((prev) => ({ ...prev, generated: "hidden" }));
       setApiTokens([...apiTokens, result]);
       setNewTokenName("");
       setExpirationDays(30);
@@ -67,6 +73,66 @@ export function ApiTokens() {
   function isExpired(expiresAt: string | null) {
     if (!expiresAt) return false;
     return new Date(expiresAt) < new Date();
+  }
+
+  function maskToken(token: string) {
+    if (token.length <= 10) return token;
+    const start = token.substring(0, 8);
+    const end = token.substring(token.length - 4);
+    return `${start}...${end}`;
+  }
+
+  function handleTokenToggle(tokenId: string, token: string) {
+    const currentState = tokenVisibility[tokenId] || "hidden";
+
+    if (currentState === "hidden") {
+      setTokenVisibility((prev) => ({ ...prev, [tokenId]: "visible" }));
+    } else if (currentState === "visible") {
+      try {
+        navigator.clipboard.writeText(token);
+        toast.success("API token copied to clipboard");
+        setCopiedTokens((prev) => ({ ...prev, [tokenId]: true }));
+        setTimeout(() => {
+          setCopiedTokens((prev) => ({ ...prev, [tokenId]: false }));
+        }, 2000);
+      } catch (error) {
+        console.error("Clipboard write failed:", error);
+        toast.error("Failed to copy to clipboard. Please copy manually.");
+      }
+      setTokenVisibility((prev) => ({ ...prev, [tokenId]: "hidden" }));
+    }
+  }
+
+  function handleGeneratedTokenToggle() {
+    const currentState = tokenVisibility["generated"] || "hidden";
+    if (currentState === "hidden") {
+      setTokenVisibility((prev) => ({ ...prev, generated: "visible" }));
+    } else {
+      try {
+        navigator.clipboard.writeText(generatedToken!);
+        toast.success("API token copied to clipboard");
+        setCopiedTokens((prev) => ({ ...prev, generated: true }));
+        setTimeout(() => {
+          setCopiedTokens((prev) => ({ ...prev, generated: false }));
+        }, 2000);
+      } catch (error) {
+        console.error("Clipboard write failed:", error);
+        toast.error("Failed to copy to clipboard. Please copy manually.");
+      }
+      setTokenVisibility((prev) => ({ ...prev, generated: "hidden" }));
+    }
+  }
+
+  function getToggleIcon(tokenId: string, state: "hidden" | "visible") {
+    if (copiedTokens[tokenId]) {
+      return <Check className="h-4 w-4" />;
+    }
+    switch (state) {
+      case "hidden":
+        return <Eye className="h-4 w-4" />;
+      case "visible":
+        return <Copy className="h-4 w-4" />;
+    }
   }
 
   return (
@@ -129,13 +195,10 @@ export function ApiTokens() {
                         </div>
                         <div className="flex gap-2">
                           <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(token.token);
-                              toast.success("API token copied to clipboard");
-                            }}
+                            onClick={() => handleTokenToggle(token.id, token.token)}
                             className="clay-btn p-2"
                           >
-                            <Copy className="h-4 w-4" />
+                            {getToggleIcon(token.id, tokenVisibility[token.id] || "hidden")}
                           </button>
                           <button
                             onClick={() => handleDeleteToken(token.id)}
@@ -147,7 +210,9 @@ export function ApiTokens() {
                       </div>
                       <div className="mt-3 space-y-2">
                         <code className="clay-inset block w-full px-3 py-2 text-xs font-mono">
-                          {token.token}
+                          {tokenVisibility[token.id] === "visible"
+                            ? token.token
+                            : maskToken(token.token)}
                         </code>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <Calendar className="h-3 w-3" />
@@ -176,6 +241,10 @@ export function ApiTokens() {
                 onClick={() => {
                   setShowApiKeyModal(false);
                   setGeneratedToken(null);
+                  setTokenVisibility((prev) => {
+                    const { generated, ...rest } = prev;
+                    return rest;
+                  });
                   setNewTokenName("");
                   setExpirationDays(30);
                 }}
@@ -188,23 +257,23 @@ export function ApiTokens() {
             {generatedToken ? (
               <div className="space-y-4">
                 <div className="clay-inset p-4">
-                  <p className="text-xs text-muted-foreground mb-2">Your API token:</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs text-muted-foreground">Your API token:</p>
+                    <button onClick={handleGeneratedTokenToggle} className="clay-btn p-1">
+                      {getToggleIcon("generated", tokenVisibility["generated"] || "hidden")}
+                    </button>
+                  </div>
                   <code className="block w-full px-3 py-2 text-xs font-mono break-all">
-                    {generatedToken}
+                    {tokenVisibility["generated"] === "visible"
+                      ? generatedToken
+                      : maskToken(generatedToken)}
                   </code>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Copy this token now. You won't be able to see it again.
+                  {tokenVisibility["generated"] === "hidden"
+                    ? "Click the eye icon to view your token, then copy it."
+                    : "Click the copy icon to copy your token."}
                 </p>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(generatedToken);
-                    toast.success("API token copied to clipboard");
-                  }}
-                  className="clay-primary w-full py-2.5 text-sm font-semibold"
-                >
-                  <Copy className="inline h-4 w-4 mr-2" /> Copy Token
-                </button>
               </div>
             ) : (
               <div className="space-y-4">
@@ -229,7 +298,7 @@ export function ApiTokens() {
                     className="clay-inset mt-1 w-full px-4 py-2.5 text-sm font-semibold outline-none"
                   />
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Token will expire in {expirationDays} day{expirationDays !== 1 ? 's' : ''}
+                    Token will expire in {expirationDays} day{expirationDays !== 1 ? "s" : ""}
                   </p>
                 </div>
                 <button
