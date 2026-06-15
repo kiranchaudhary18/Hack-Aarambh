@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Gauge, Flag, BarChart3, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Gauge, Flag, BarChart3, ArrowLeft } from "lucide-react";
 
 const items = [
   { to: "/admin", label: "Overview", icon: Gauge },
@@ -14,8 +14,8 @@ export function AdminSidebar() {
     <aside className="hidden w-[260px] shrink-0 lg:block">
       <div className="clay flex h-full flex-col gap-2 p-5">
         <Link to="/" className="mb-4 flex items-center gap-2 px-2">
-          <span className="grid h-10 w-10 place-items-center rounded-2xl clay-primary">
-            <ShieldCheck className="h-5 w-5" strokeWidth={2.5} />
+          <span className="grid h-10 w-10 place-items-center">
+            <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
           </span>
           <div>
             <p className="font-display text-lg font-bold leading-tight">ScamSniff</p>
