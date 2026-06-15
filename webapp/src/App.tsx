@@ -11,9 +11,7 @@ import { Login } from "./features/auth/login";
 import { Signup } from "./features/auth/signup";
 import { ForgotPassword } from "./features/auth/forgot-password";
 import { ResetPassword } from "./features/auth/reset-password";
-import { VerifyCode } from "./features/auth/verify-code";
-import { VerifyEmail } from "./features/auth/verify-email";
-import { VerifyEmailUpdate } from "./features/auth/verify-email-update";
+import { Verify } from "./features/auth/verify";
 import { Dashboard } from "./features/dashboard/dashboard";
 import { Profile } from "./features/profile/profile";
 import { Settings } from "./features/settings/settings";
@@ -47,9 +45,7 @@ function App() {
             <Route path="signup" element={<Signup />} />
             <Route path="forgot-password" element={<ForgotPassword />} />
             <Route path="reset-password" element={<ResetPassword />} />
-            <Route path="verify-code" element={<VerifyCode />} />
-            <Route path="verify-email" element={<VerifyEmail />} />
-            <Route path="verify-email-update" element={<VerifyEmailUpdate />} />
+            <Route path="verify" element={<Verify />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
