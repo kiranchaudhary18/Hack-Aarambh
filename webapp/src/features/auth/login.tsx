@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ShieldCheck, Mail, Lock, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
@@ -67,8 +67,8 @@ export function Login() {
       <div className="relative mx-auto grid min-h-screen max-w-md place-items-center p-6">
         <FadeIn className="w-full">
           <Link to="/" className="mb-8 flex items-center justify-center gap-2">
-            <span className="grid h-12 w-12 place-items-center rounded-2xl clay-primary">
-              <ShieldCheck className="h-6 w-6" strokeWidth={2.5} />
+            <span className="grid h-12 w-12 place-items-center">
+              <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
             </span>
             <span className="font-display text-2xl font-bold">
               Scam<span className="text-gradient">Sniff</span>
