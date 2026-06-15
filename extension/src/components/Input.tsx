@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { setItem, storageKeys } from "../lib/storage";
+import { Language, getTranslation } from "../lib/translations";
 
-export default function TokenInput({ onNext }: { onNext: () => void }) {
+export default function TokenInput({ onNext, language }: { onNext: () => void; language: Language }) {
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -12,7 +13,7 @@ export default function TokenInput({ onNext }: { onNext: () => void }) {
     setError("");
 
     if (!token.trim()) {
-      setError("Please enter your API token");
+      setError(getTranslation(language, "apiToken"));
       setLoading(false);
       return;
     }
@@ -24,25 +25,25 @@ export default function TokenInput({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <div className="w-full p-6">
+    <div className="w-full p-6 overflow-x-hidden">
       <div className="text-center mb-6">
-        <h2 className="text-xl font-bold text-foreground">Enter API Token</h2>
+        <h2 className="text-xl font-bold text-foreground">{getTranslation(language, "enterApiToken")}</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Get your token from the website settings
+          {getTranslation(language, "enterApiTokenDescription")}
         </p>
       </div>
 
-      <form onSubmit={handleTokenSubmit} className="space-y-4">
+      <form onSubmit={handleTokenSubmit} className="space-y-4 overflow-x-hidden">
         <div>
           <label className="block text-sm font-medium text-foreground mb-1">
-            API Token
+            {getTranslation(language, "apiToken")}
           </label>
           <input
             type="text"
             value={token}
             onChange={(e) => setToken(e.target.value)}
             className="w-full px-4 py-3 clay-inset font-mono text-sm"
-            placeholder="Enter your API token"
+            placeholder={getTranslation(language, "apiToken")}
             required
           />
         </div>
@@ -58,7 +59,7 @@ export default function TokenInput({ onNext }: { onNext: () => void }) {
           disabled={loading}
           className="w-full clay-primary py-3 text-primary-foreground font-medium text-base disabled:opacity-50"
         >
-          {loading ? "Saving..." : "Continue"}
+          {loading ? "Saving..." : getTranslation(language, "continue")}
         </button>
       </form>
 
@@ -68,7 +69,7 @@ export default function TokenInput({ onNext }: { onNext: () => void }) {
           target="_blank"
           className="text-sm text-primary hover:underline"
         >
-          Get API token from website
+          {getTranslation(language, "getApiToken")}
         </a>
       </div>
     </div>
