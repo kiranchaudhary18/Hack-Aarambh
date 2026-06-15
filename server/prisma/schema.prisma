@@ -8,49 +8,58 @@ datasource db {
 }
 
 model User {
-  id                String          @id @default(uuid())
-  email             String          @unique
-  password          String
-  role              String          @default("user")
-  name              String?
-  avatar            String?
-  scansUsed         Int             @default(0)
-  scansLimit        Int             @default(20)
-  plan              String          @default("free")
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  apiToken          String?         @unique
-  apiTokenExpiresAt DateTime?
-  histories         History[]
-  passwordResets    PasswordReset[]
+  id                 String                    @id @default(uuid()) @db.Uuid
+  email              String                    @unique @db.VarChar
+  password           String                    @db.VarChar
+  role               String                    @default("user") @db.VarChar
+  name               String?                   @db.VarChar
+  avatar             String?                   @db.VarChar
+  scansUsed          Int                       @default(0)
+  scansLimit         Int                       @default(20)
+  plan               String                    @default("free") @db.VarChar
+  isVerified         Boolean                   @default(false)
+  createdAt          DateTime                  @default(now()) @db.Timestamp(6)
+  updatedAt          DateTime                  @updatedAt @db.Timestamp(6)
+  apiTokens          ApiToken[]
+  emailVerifications EmailVerification[]
+  passwordResets     PasswordReset[]
+  histories          History[]
+
+  @@map("user")
 }
 
 model History {
-  id          String    @id @default(uuid())
-  input       String
-  result      Json?
-  userId      String?
-  status      String    @default("pending")
-  processedAt DateTime?
-  createdAt   DateTime  @default(now())
-  pdfUrl      String?
-  source      String?   @default("web")
-  user        User?     @relation(fields: [userId], references: [id])
+  id           String    @id @default(uuid()) @db.Uuid
+  input        String    @db.VarChar
+  result       String?   @db.VarChar
+  userId       String?   @db.Uuid
+  status       String    @default("pending") @db.VarChar
+  processedAt  DateTime? @db.Timestamp(6)
+  pdfUrl       String?   @db.VarChar
+  imageUrl     String?   @db.VarChar
+  analysisType String    @default("text") @db.VarChar
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
+  source       String?   @default("web") @db.VarChar
+  user         User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("history")
 }
 
 model PasswordReset {
-  id        String   @id @default(uuid())
-  userId    String
-  code      String   @unique
-  expiresAt DateTime
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  code      String   @unique @db.VarChar
+  expiresAt DateTime @db.Timestamp(6)
   used      Boolean  @default(false)
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("password_reset")
 }
 
-model api_token {
-  id            String   @id(map: "PK_d862311c568d175c26f41bc6f98") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  token         String   @unique(map: "UQ_fd02c9ad7dc8459d458139325a2") @db.VarChar
+model ApiToken {
+  id            String   @id @default(uuid()) @db.Uuid
+  token         String   @unique @db.VarChar
   userId        String   @db.Uuid
   name          String?  @db.VarChar
   dailyLimit    Int      @default(50)
@@ -58,66 +67,31 @@ model api_token {
   lastResetDate DateTime @default(now()) @db.Timestamp(6)
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now()) @db.Timestamp(6)
-  user          user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_cbfc4e2b85b78207afb0b2d7fbc")
+  user          User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("api_token")
 }
 
-model email_update_verification {
-  id        String   @id(map: "PK_203b3c21701f5b05d58e2ebf2d1") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+model EmailUpdateVerification {
+  id        String   @id @default(uuid()) @db.Uuid
   userId    String   @db.VarChar
   newEmail  String   @db.VarChar
-  token     String   @unique(map: "UQ_404cdaac0c5ac1c29e364ce8cc9") @db.VarChar
+  token     String   @unique @db.VarChar
   expiresAt DateTime @db.Timestamp(6)
   used      Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  @@map("email_update_verification")
 }
 
-model email_verification {
-  id        String   @id(map: "PK_b985a8362d9dac51e3d6120d40e") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+model EmailVerification {
+  id        String   @id @default(uuid()) @db.Uuid
   userId    String   @db.Uuid
-  token     String   @unique(map: "UQ_dfd82813f24e0ba651daa7eb933") @db.VarChar
+  token     String   @unique @db.VarChar
   expiresAt DateTime @db.Timestamp(6)
   used      Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamp(6)
-  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_95b3bd492c85e471cd5e72277be")
-}
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-model history {
-  id           String    @id(map: "PK_9384942edf4804b38ca0ee51416") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  input        String
-  result       String?
-  userId       String?   @db.VarChar
-  status       String    @default("pending") @db.VarChar
-  processedAt  DateTime? @db.Timestamp(6)
-  pdfUrl       String?   @db.VarChar
-  createdAt    DateTime  @default(now()) @db.Timestamp(6)
-  imageUrl     String?   @db.VarChar
-  analysisType String    @default("text") @db.VarChar
-}
-
-model password_reset {
-  id        String   @id(map: "PK_8515e60a2cc41584fa4784f52ce") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  userId    String   @db.Uuid
-  code      String   @unique(map: "UQ_4643729dcb247476da3ec20eafb") @db.VarChar
-  expiresAt DateTime @db.Timestamp(6)
-  used      Boolean  @default(false)
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  user      user     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_05baebe80e9f8fab8207eda250c")
-}
-
-model user {
-  id                 String               @id(map: "PK_cace4a159ff9f2512dd42373760") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  email              String               @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar
-  password           String               @db.VarChar
-  role               String               @default("user") @db.VarChar
-  name               String?              @db.VarChar
-  avatar             String?              @db.VarChar
-  scansUsed          Int                  @default(0)
-  scansLimit         Int                  @default(20)
-  plan               String               @default("free") @db.VarChar
-  isVerified         Boolean              @default(false)
-  createdAt          DateTime             @default(now()) @db.Timestamp(6)
-  updatedAt          DateTime             @default(now()) @db.Timestamp(6)
-  api_token          api_token[]
-  email_verification email_verification[]
-  password_reset     password_reset[]
+  @@map("email_verification")
 }
