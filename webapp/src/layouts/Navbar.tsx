@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShieldCheck, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 export function Navbar() {
@@ -18,8 +18,8 @@ export function Navbar() {
     <header className="sticky top-4 z-40 mx-auto w-[min(1180px,94%)]">
       <nav className="clay flex items-center justify-between gap-4 px-5 py-3">
         <Link to="/" className="flex items-center gap-2">
-          <span className="grid h-10 w-10 place-items-center rounded-2xl clay-primary">
-            <ShieldCheck className="h-5 w-5" strokeWidth={2.5} />
+          <span className="grid h-10 w-10 place-items-center">
+            <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
           </span>
           <span className="font-display text-xl font-bold tracking-tight">
             Scam<span className="text-gradient">Sniff</span>

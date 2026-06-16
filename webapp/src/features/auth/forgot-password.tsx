@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { ShieldCheck, Mail, ArrowRight, MailCheck, Loader2 } from "lucide-react";
+import { Mail, ArrowRight, MailCheck, Loader2 } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { Field } from "./login";
@@ -53,8 +53,8 @@ export function ForgotPassword() {
       <div className="relative mx-auto grid min-h-screen max-w-md place-items-center p-6">
         <FadeIn className="w-full">
           <Link to="/" className="mb-8 flex items-center justify-center gap-2">
-            <span className="grid h-12 w-12 place-items-center rounded-2xl clay-primary">
-              <ShieldCheck className="h-6 w-6" strokeWidth={2.5} />
+            <span className="grid h-12 w-12 place-items-center">
+              <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
             </span>
             <span className="font-display text-2xl font-bold">
               Scam<span className="text-gradient">Sniff</span>
@@ -113,7 +113,7 @@ export function ForgotPassword() {
                 We sent a 6-digit code to your email. It expires in 1 minute.
               </p>
               <button
-                onClick={() => navigate(`/verify-code?email=${email}`)}
+                onClick={() => navigate(`/verify?type=resetpassword&email=${email}`)}
                 className="clay-primary mt-4 w-full px-5 py-2.5 text-sm font-semibold"
               >
                 Enter Code

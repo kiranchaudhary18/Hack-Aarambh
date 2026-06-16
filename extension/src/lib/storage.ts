@@ -1,5 +1,8 @@
 export const storageKeys = {
   API_TOKEN: "apiToken",
+  RECENT_SCANS: "recentScans",
+  THEME: "theme",
+  LANGUAGE: "language",
 };
 
 export const setItem = async (key: string, value: any) => {
@@ -17,4 +20,26 @@ export const removeItem = async (key: string) => {
 
 export const clearAll = async () => {
   await chrome.storage.local.clear();
+};
+
+// Recent scans management
+export const addRecentScan = async (imageData: string) => {
+  const recentScans = await getItem(storageKeys.RECENT_SCANS) || [];
+  const newScan = {
+    id: Date.now(),
+    image: imageData,
+    timestamp: new Date().toISOString(),
+  };
+
+  // Add new scan to beginning and keep only last 10
+  const updatedScans = [newScan, ...recentScans].slice(0, 10);
+  await setItem(storageKeys.RECENT_SCANS, updatedScans);
+};
+
+export const getRecentScans = async () => {
+  return await getItem(storageKeys.RECENT_SCANS) || [];
+};
+
+export const clearRecentScans = async () => {
+  await removeItem(storageKeys.RECENT_SCANS);
 };

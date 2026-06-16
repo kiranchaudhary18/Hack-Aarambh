@@ -60,8 +60,8 @@ export function Sidebar() {
     <aside className="hidden w-[260px] shrink-0 lg:block">
       <div className="clay flex h-full flex-col gap-2 p-5">
         <Link to="/" className="mb-4 flex items-center gap-2 px-2">
-          <span className="grid h-10 w-10 place-items-center rounded-2xl clay-primary">
-            <ShieldCheck className="h-5 w-5" strokeWidth={2.5} />
+          <span className="grid h-10 w-10 place-items-center">
+            <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
           </span>
           <span className="font-display text-xl font-bold">
             Scam<span className="text-gradient">Sniff</span>

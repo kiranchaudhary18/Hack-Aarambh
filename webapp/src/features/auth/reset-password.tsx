@@ -1,6 +1,6 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
-import { ShieldCheck, ArrowLeft, ArrowRight, Loader2, Check, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Check, X } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
@@ -70,7 +70,7 @@ export function ResetPassword() {
       <div className="relative mx-auto grid min-h-screen max-w-md place-items-center p-6">
         <FadeIn className="w-full">
           <Link
-            to={`/verify-code?email=${email}`}
+            to={`/verify?type=resetpassword&email=${email}`}
             className="mb-8 flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary"
           >
             <ArrowLeft className="h-4 w-4" /> Back
@@ -79,7 +79,7 @@ export function ResetPassword() {
           <div className="clay-lg p-8">
             <div className="mb-6 flex items-center justify-center">
               <span className="grid h-16 w-16 place-items-center rounded-2xl clay-primary">
-                <ShieldCheck className="h-8 w-8" strokeWidth={2.5} />
+                <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
               </span>
             </div>
             <h1 className="font-display text-center text-3xl font-bold">Reset Password</h1>

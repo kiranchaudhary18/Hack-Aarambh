@@ -56,7 +56,7 @@ export class TokensService {
 
     return tokens.map((token) => ({
       id: token.id,
-      token: this.maskToken(token.token),
+      token: token.token,
       name: token.name,
       dailyLimit: token.dailyLimit,
       usageCount: token.usageCount,

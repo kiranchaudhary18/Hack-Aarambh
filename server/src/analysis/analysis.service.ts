@@ -30,7 +30,7 @@ export class AnalysisService {
       };
     } catch (error) {
       console.warn("AI engine failed, using fallback:", error);
-      result = this.score(input);
+      result = AnalysisService.score(input);
     }
 
     const rec = this.repo.create({ input, result, userId });
@@ -113,7 +113,7 @@ export class AnalysisService {
       };
     } catch (error) {
       console.warn("AI engine failed, using fallback:", error);
-      result = this.score(text);
+      result = AnalysisService.score(text);
     }
 
     // create or update history record: if jobId provided, link by id
@@ -135,7 +135,7 @@ export class AnalysisService {
     return result;
   }
 
-  score(text: string) {
+  static score(text: string) {
     const reasons: string[] = [];
     const lowered = text.toLowerCase();
 
@@ -195,12 +195,12 @@ export class AnalysisService {
 
     const score = Math.min(
       100,
-      20 * reasons.length + this.keywordScore(lowered),
+      20 * reasons.length + AnalysisService.keywordScore(lowered),
     );
     return { isFake: score >= 50, score, reasons };
   }
 
-  keywordScore(lowered: string) {
+  static keywordScore(lowered: string) {
     let s = 0;
     const suspicious = [
       "scam",
@@ -220,8 +220,9 @@ export class AnalysisService {
 
   async analyzeImage(base64Image: string, userId?: string) {
     try {
-      // Convert base64 to buffer
-      const imageBuffer = Buffer.from(base64Image, 'base64');
+      // Convert base64 to buffer, strip data URI prefix if present
+      const base64Data = base64Image.replace(/^data:image\/[a-zA-Z+]+;base64,/, '');
+      const imageBuffer = Buffer.from(base64Data, 'base64');
 
       // Upload image to Cloudinary
       const imageUrl = await this.cloudinaryService.uploadImage(imageBuffer, 'analysis');
@@ -259,16 +260,16 @@ export class AnalysisService {
       // Analyze the extracted text
       let result;
       try {
-        const aiResult = await this.aiEngine.analyzeText(text);
-        result = {
-          isFake: aiResult.is_fake,
-          score: aiResult.scam_score,
-          reasons: aiResult.reasons,
-        };
-      } catch (error) {
-        console.warn("AI engine failed for image text, using fallback:", error);
-        result = this.score(text);
-      }
+      const aiResult = await this.aiEngine.analyzeText(text);
+      result = {
+        isFake: aiResult.is_fake,
+        score: aiResult.scam_score,
+        reasons: aiResult.reasons,
+      };
+    } catch (error) {
+      console.warn("AI engine failed for image text, using fallback:", error);
+      result = AnalysisService.score(text);
+    }
 
       // Save to history
       const rec = this.repo.create({

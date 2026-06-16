@@ -21,14 +21,15 @@ interface ProfileData {
   plan?: string;
   scansUsed?: number;
   scansLimit?: number;
-  isEmailVerified?: boolean;
+  isVerified?: boolean;
 }
 
 export function Profile() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [editedName, setEditedName] = useState("");
   const [editedEmail, setEditedEmail] = useState("");
   const [saving, setSaving] = useState(false);
@@ -57,7 +58,7 @@ export function Profile() {
     fetchProfile();
   }, []);
 
-  async function handleSave() {
+  async function handleSaveName() {
     setSaving(true);
     try {
       const result = await api.updateProfile({ name: editedName });
@@ -66,12 +67,22 @@ export function Profile() {
         return;
       }
       setProfile(result);
-      setIsEditing(false);
+      setIsEditingName(false);
     } catch (error) {
       console.error("Failed to update profile:", error);
     } finally {
       setSaving(false);
     }
+  }
+
+  function handleCancelName() {
+    setEditedName(profile?.name || "");
+    setIsEditingName(false);
+  }
+
+  function handleEditName() {
+    setEditedName(profile?.name || "");
+    setIsEditingName(true);
   }
 
   async function handleEmailUpdate() {
@@ -88,6 +99,7 @@ export function Profile() {
       }
       toast.success("Verification email sent to your new email address");
       setEditedEmail(profile?.email || "");
+      setIsEditingEmail(false);
     } catch (error) {
       console.error("Failed to request email update:", error);
       toast.error("Failed to send verification email");
@@ -96,16 +108,14 @@ export function Profile() {
     }
   }
 
-  function handleCancel() {
-    setEditedName(profile?.name || "");
+  function handleCancelEmail() {
     setEditedEmail(profile?.email || "");
-    setIsEditing(false);
+    setIsEditingEmail(false);
   }
 
-  function handleEdit() {
-    setEditedName(profile?.name || "");
+  function handleEditEmail() {
     setEditedEmail(profile?.email || "");
-    setIsEditing(true);
+    setIsEditingEmail(true);
   }
 
   async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
@@ -253,33 +263,7 @@ export function Profile() {
             <div className="space-y-6">
               <FadeIn delay={0.1}>
                 <div className="clay p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-display text-xl font-bold">Account details</h3>
-                    {!isEditing ? (
-                      <button
-                        onClick={handleEdit}
-                        className="clay-btn flex items-center gap-2 px-3 py-1.5 text-xs font-semibold"
-                      >
-                        <Pencil className="h-3.5 w-3.5" /> Edit
-                      </button>
-                    ) : (
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleCancel}
-                          className="clay-btn px-3 py-1.5 text-xs font-semibold"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleSave}
-                          disabled={saving}
-                          className="clay-primary px-3 py-1.5 text-xs font-semibold"
-                        >
-                          {saving ? "Saving..." : "Save"}
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <h3 className="font-display text-xl font-bold">Account details</h3>
                   <div className="mt-5 space-y-4">
                     <div className="flex items-center justify-between rounded-2xl">
                       <div className="flex w-full items-center gap-3">
@@ -288,17 +272,40 @@ export function Profile() {
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="text-xs text-muted-foreground">Full name</p>
-                          {isEditing ? (
-                            <span className="clay-inset mt-1 inline-flex w-full items-center px-4 py-2.5">
-                              <input
-                                type="text"
-                                value={editedName}
-                                onChange={(e) => setEditedName(e.target.value)}
-                                className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-muted-foreground"
-                              />
-                            </span>
+                          {isEditingName ? (
+                            <div className="mt-1 flex items-center gap-2">
+                              <span className="clay-inset inline-flex w-full items-center px-4 py-2.5">
+                                <input
+                                  type="text"
+                                  value={editedName}
+                                  onChange={(e) => setEditedName(e.target.value)}
+                                  className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-muted-foreground"
+                                />
+                              </span>
+                              <button
+                                onClick={handleSaveName}
+                                disabled={saving}
+                                className="clay-primary shrink-0 px-3 py-2.5 text-xs font-semibold"
+                              >
+                                {saving ? "Saving..." : "Save"}
+                              </button>
+                              <button
+                                onClick={handleCancelName}
+                                className="clay-btn shrink-0 px-3 py-2.5 text-xs font-semibold"
+                              >
+                                Cancel
+                              </button>
+                            </div>
                           ) : (
-                            <p className="text-sm font-semibold">{profile?.name || "User"}</p>
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm font-semibold">{profile?.name || "User"}</p>
+                              <button
+                                onClick={handleEditName}
+                                className="clay-btn flex items-center gap-2 px-3 py-1.5 text-xs font-semibold"
+                              >
+                                <Pencil className="h-3.5 w-3.5" /> Edit
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -310,7 +317,7 @@ export function Profile() {
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="text-xs text-muted-foreground">Email</p>
-                          {isEditing ? (
+                          {isEditingEmail ? (
                             <div className="mt-1 flex items-center gap-2">
                               <span className="clay-inset inline-flex w-full items-center px-4 py-2.5">
                                 <input
@@ -329,23 +336,37 @@ export function Profile() {
                                   {saving ? "Sending..." : "Verify"}
                                 </button>
                               )}
+                              <button
+                                onClick={handleCancelEmail}
+                                className="clay-btn shrink-0 px-3 py-2.5 text-xs font-semibold"
+                              >
+                                Cancel
+                              </button>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2">
-                              <p className="text-sm font-semibold">{profile?.email}</p>
-                              {profile?.isEmailVerified ? (
-                                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                              ) : (
-                                <div className="flex items-center gap-1">
-                                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                                  <button
-                                    onClick={() => setIsEditing(true)}
-                                    className="text-xs font-semibold text-yellow-600 hover:text-yellow-700"
-                                  >
-                                    Verify
-                                  </button>
-                                </div>
-                              )}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-semibold">{profile?.email}</p>
+                                {profile?.isVerified ? (
+                                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                ) : (
+                                  <div className="flex items-center gap-1">
+                                    <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                                    <button
+                                      onClick={handleEditEmail}
+                                      className="text-xs font-semibold text-yellow-600 hover:text-yellow-700"
+                                    >
+                                      Verify
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                              <button
+                                onClick={handleEditEmail}
+                                className="clay-btn flex items-center gap-2 px-3 py-1.5 text-xs font-semibold"
+                              >
+                                <Pencil className="h-3.5 w-3.5" /> Edit
+                              </button>
                             </div>
                           )}
                         </div>

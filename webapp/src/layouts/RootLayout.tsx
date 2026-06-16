@@ -1,5 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
-import { ShieldOff, Home, ScanSearch } from "lucide-react";
+import { ShieldOff, Home } from "lucide-react";
 
 export function NotFound() {
   return (

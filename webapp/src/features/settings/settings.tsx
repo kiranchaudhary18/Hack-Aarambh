@@ -2,7 +2,16 @@ import { Link } from "react-router-dom";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
-import { Bell, ShieldCheck, Smartphone, Lock, KeyRound, Trash2, LogOut, ChevronRight } from "lucide-react";
+import {
+  Bell,
+  ShieldCheck,
+  Smartphone,
+  Lock,
+  KeyRound,
+  Trash2,
+  LogOut,
+  ChevronRight,
+} from "lucide-react";
 
 export function Settings() {
   return (
@@ -22,7 +31,10 @@ export function Settings() {
               <div className="mt-5 space-y-3">
                 <div className="clay-inset p-4">
                   <div className="flex items-center gap-3">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full" style={{ background: "var(--clay-yellow)" }}>
+                    <span
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-full"
+                      style={{ background: "var(--clay-yellow)" }}
+                    >
                       <Lock className="h-5 w-5" />
                     </span>
                     <div>
@@ -54,7 +66,9 @@ export function Settings() {
                     </span>
                     <div>
                       <p className="text-sm font-semibold">Manage your API tokens</p>
-                      <p className="text-xs text-muted-foreground">Generate and manage API tokens for the browser extension</p>
+                      <p className="text-xs text-muted-foreground">
+                        Generate and manage API tokens for the browser extension
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -71,10 +85,7 @@ export function Settings() {
                   { t: "Weekly summary of your scans", on: true },
                   { t: "Product updates & tips", on: false },
                 ].map((n) => (
-                  <label
-                    key={n.t}
-                    className="flex items-center justify-between rounded-2xl py-2"
-                  >
+                  <label key={n.t} className="flex items-center justify-between rounded-2xl py-2">
                     <span className="flex items-center gap-3 text-sm">
                       <Bell className="h-4 w-4 text-muted-foreground" /> {n.t}
                     </span>
@@ -87,7 +98,9 @@ export function Settings() {
 
           <FadeIn delay={0.2}>
             <div className="clay p-6">
-              <h3 className="font-display text-xl font-bold text-[color:var(--destructive)]">Danger zone</h3>
+              <h3 className="font-display text-xl font-bold text-[color:var(--destructive)]">
+                Danger zone
+              </h3>
               <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                 <button className="clay-btn flex flex-1 items-center justify-center gap-2 py-3 text-sm font-semibold text-[color:var(--destructive)]">
                   <Trash2 className="h-4 w-4" /> Delete history
