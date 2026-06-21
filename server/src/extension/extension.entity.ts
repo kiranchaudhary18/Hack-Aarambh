@@ -24,6 +24,15 @@ export class ExtensionSettings {
     autoScanEnabled?: boolean;
     riskThreshold?: number;
     theme?: "light" | "dark" | "system";
+    notificationPreferences?: {
+      scamPatternsDigest?: boolean;
+      weeklyScanSummary?: boolean;
+      productUpdates?: boolean;
+      scamAlerts?: boolean;
+      securityAlerts?: boolean;
+      patternUpdates?: boolean;
+      accountUpdates?: boolean;
+    };
   };
 
   @Column({ default: true })

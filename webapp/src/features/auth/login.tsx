@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2, Shield } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
@@ -17,6 +17,8 @@ export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
+  const [twoFactorToken, setTwoFactorToken] = useState("");
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -26,7 +28,16 @@ export function Login() {
 
     setLoading(true);
     try {
-      const response = await api.login(email, password);
+      const response = await api.loginWithTwoFactor(email, password, twoFactorToken);
+
+      // Check if 2FA is required
+      if (response.requiresTwoFactor) {
+        setRequiresTwoFactor(true);
+        setLoading(false);
+        toast.info("Please enter your 2FA code");
+        return;
+      }
+
       // Store the token in localStorage
       if (response.token) {
         localStorage.setItem("token", response.token);
@@ -60,6 +71,11 @@ export function Login() {
       setLoading(false);
     }
   }
+
+  const handleBackToPassword = () => {
+    setRequiresTwoFactor(false);
+    setTwoFactorToken("");
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -108,14 +124,47 @@ export function Login() {
                 }
                 required
               />
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" className="accent-[color:var(--primary)]" /> Remember me
-                </label>
-                <Link to="/forgot-password" className="font-semibold text-[color:var(--primary)]">
-                  Forgot?
-                </Link>
-              </div>
+
+              {requiresTwoFactor && (
+                <div className="space-y-2">
+                  <label className="block">
+                    <span className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                      2FA Code
+                    </span>
+                    <span className="clay-inset flex items-center gap-3 px-4 py-3">
+                      <span className="text-muted-foreground">
+                        <Shield className="h-4 w-4" />
+                      </span>
+                      <input
+                        type="text"
+                        value={twoFactorToken}
+                        onChange={(e) => setTwoFactorToken(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                        placeholder="000000"
+                        maxLength={6}
+                        className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground text-center text-2xl tracking-widest font-mono"
+                      />
+                    </span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleBackToPassword}
+                    className="text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    ← Back to password
+                  </button>
+                </div>
+              )}
+
+              {!requiresTwoFactor && (
+                <div className="flex items-center justify-between text-sm">
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" className="accent-[color:var(--primary)]" /> Remember me
+                  </label>
+                  <Link to="/forgot-password" className="font-semibold text-[color:var(--primary)]">
+                    Forgot?
+                  </Link>
+                </div>
+              )}
               <button
                 type="submit"
                 disabled={loading}
@@ -123,11 +172,12 @@ export function Login() {
               >
                 {loading ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Logging in...
+                    <Loader2 className="h-4 w-4 animate-spin" />{" "}
+                    {requiresTwoFactor ? "Verifying..." : "Logging in..."}
                   </>
                 ) : (
                   <>
-                    Log in <ArrowRight className="h-4 w-4" />
+                    {requiresTwoFactor ? "Verify 2FA" : "Log in"} <ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>

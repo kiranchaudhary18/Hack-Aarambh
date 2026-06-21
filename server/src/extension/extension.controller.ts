@@ -104,4 +104,42 @@ export class ExtensionController {
     const userId = req.user?.sub;
     return this.extensionService.deactivateExtension(userId);
   }
+
+  // Notification Preferences
+  @Get("notification-preferences")
+  async getNotificationPreferences(@Req() req: any) {
+    const userId = req.user?.sub;
+    const settings = await this.extensionService.getSettings(userId);
+    
+    // Return default preferences if not set
+    const defaultPreferences = {
+      scamPatternsDigest: true,
+      weeklyScanSummary: true,
+      productUpdates: false,
+      scamAlerts: true,
+      securityAlerts: true,
+      patternUpdates: true,
+      accountUpdates: true,
+    };
+    
+    return {
+      notificationPreferences: settings.notificationPreferences || defaultPreferences,
+    };
+  }
+
+  @Put("notification-preferences")
+  async updateNotificationPreferences(
+    @Req() req: any,
+    @Body() body: { notificationPreferences: any },
+  ) {
+    const userId = req.user?.sub;
+    const updatedSettings = await this.extensionService.updateSettings(
+      userId,
+      { notificationPreferences: body.notificationPreferences },
+    );
+    
+    return {
+      notificationPreferences: updatedSettings.settings.notificationPreferences,
+    };
+  }
 }

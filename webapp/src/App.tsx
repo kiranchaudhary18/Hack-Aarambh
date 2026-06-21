@@ -12,6 +12,7 @@ import { Signup } from "./features/auth/signup";
 import { ForgotPassword } from "./features/auth/forgot-password";
 import { ResetPassword } from "./features/auth/reset-password";
 import { Verify } from "./features/auth/verify";
+import { TwoFactorSetup } from "./features/auth/two-factor-setup";
 import { Dashboard } from "./features/dashboard/dashboard";
 import { Profile } from "./features/profile/profile";
 import { Settings } from "./features/settings/settings";
@@ -33,6 +34,7 @@ import { AdminFlagged } from "./features/admin/flagged";
 import { AdminLayout } from "./features/admin/admin";
 import { Notifications } from "./features/notifications/notifications";
 import { NotificationDetail } from "./features/notifications/notification-detail";
+import { Search } from "./features/search/search";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +53,7 @@ function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="settings/2fa/setup" element={<TwoFactorSetup />} />
             <Route path="settings/api-tokens" element={<ApiTokens />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="notifications/:id" element={<NotificationDetail />} />
@@ -65,6 +68,7 @@ function App() {
             <Route path="about" element={<About />} />
             <Route path="privacy" element={<Privacy />} />
             <Route path="terms" element={<Terms />} />
+            <Route path="search" element={<Search />} />
             <Route path="admin" element={<AdminLayout />}>
               <Route index element={<Admin />} />
               <Route path="analytics" element={<AdminAnalytics />} />

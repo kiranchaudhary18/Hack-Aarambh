@@ -40,6 +40,15 @@ export class User {
   @Column({ default: false })
   isVerified!: boolean;
 
+  @Column({ nullable: true, type: "varchar" })
+  twoFactorSecret!: string;
+
+  @Column({ default: false })
+  twoFactorEnabled!: boolean;
+
+  @Column({ type: "json", nullable: true, default: [] })
+  twoFactorBackupCodes!: string[];
+
   @CreateDateColumn()
   createdAt!: Date;
 
