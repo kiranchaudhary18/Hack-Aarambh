@@ -24,5 +24,19 @@
   },
   "overrides": {
     "@parcel/watcher": "2.4.1"
+  },
+  "manifest": {
+    "permissions": [
+      "storage",
+      "activeTab",
+      "scripting",
+      "sidePanel",
+      "tabs"
+    ],
+    "host_permissions": [
+      "http://localhost:3000/*",
+      "http://localhost:5173/*",
+      "<all_urls>"
+    ]
   }
 }
