@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
+import { NotificationBell } from "@/shared/components/NotificationBell";
+import { NotificationDropdown } from "@/shared/components/NotificationDropdown";
 import {
   Area,
   AreaChart,
@@ -66,6 +68,8 @@ export function Dashboard() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationBellRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     document.title = "Dashboard — ScamSniff";
@@ -169,12 +173,23 @@ export function Dashboard() {
                   instincts.
                 </p>
               </div>
-              <Link
-                to="/analyze"
-                className="clay-primary inline-flex items-center gap-2 px-6 py-3.5 font-semibold"
-              >
-                <ScanSearch className="h-5 w-5" /> Analyze New Offer
-              </Link>
+              <div className="flex items-center gap-3">
+                <NotificationBell
+                  ref={notificationBellRef}
+                  onOpenDropdown={() => setIsNotificationOpen(!isNotificationOpen)}
+                />
+                <NotificationDropdown
+                  isOpen={isNotificationOpen}
+                  onClose={() => setIsNotificationOpen(false)}
+                  triggerRef={notificationBellRef}
+                />
+                <Link
+                  to="/analyze"
+                  className="clay-primary inline-flex items-center gap-2 px-6 py-3.5 font-semibold"
+                >
+                  <ScanSearch className="h-5 w-5" /> Analyze New Offer
+                </Link>
+              </div>
             </header>
           </FadeIn>
 

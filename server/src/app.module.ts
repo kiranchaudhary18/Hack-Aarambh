@@ -6,6 +6,7 @@ import { AnalysisModule } from "./analysis/analysis.module";
 import { AdminModule } from "./admin/admin.module";
 import { HistoryModule } from "./history/history.module";
 import { TokensModule } from "./tokens/tokens.module";
+import { ExtensionModule } from "./extension/extension.module";
 import { History } from "./history/history.entity";
 
 @Module({
@@ -27,6 +28,7 @@ import { History } from "./history/history.entity";
     AdminModule,
     HistoryModule,
     TokensModule,
+    ExtensionModule,
   ],
 })
 export class AppModule {}

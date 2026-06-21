@@ -19,44 +19,64 @@ export default function RegionScanner({ onLogout, language }: { onLogout: () => 
   const [analysisResult, setAnalysisResult] = useState<any>(null);
 
   useEffect(() => {
+    console.log("Scanner: useEffect called");
     loadRecentScans();
 
     const listener = (request: any, sender: chrome.runtime.MessageSender) => {
+      console.log("Scanner: received message", request, "from sender", sender);
       if (request.action === "regionCaptured" && request.image) {
+        console.log("Scanner: regionCaptured message received with image size:", request.image?.length || 0);
+        console.log("Scanner: setting capturedImage");
         setCapturedImage(request.image);
         setAnalysisComplete(false);
         setAnalysisResult(null);
+        console.log("Scanner: calling addRecentScan");
         addRecentScan(request.image);
+        console.log("Scanner: calling loadRecentScans");
         loadRecentScans();
+      } else {
+        console.log("Scanner: message does not match regionCaptured criteria, action:", request.action, "has image:", !!request.image);
       }
     };
     chrome.runtime.onMessage.addListener(listener);
-    return () => chrome.runtime.onMessage.removeListener(listener);
+    return () => {
+      console.log("Scanner: removing listener");
+      chrome.runtime.onMessage.removeListener(listener);
+    };
   }, []);
 
   const loadRecentScans = async () => {
+    console.log("Scanner: loadRecentScans called");
     const scans = await getRecentScans();
+    console.log("Scanner: recent scans loaded", scans);
     setRecentScans(scans);
   };
 
   const handleScanArea = async () => {
     try {
       setError("");
+      console.log("--- handleScanArea called ---");
+      console.log("chrome object:", typeof chrome, chrome);
+      console.log("chrome.scripting:", typeof chrome.scripting, chrome.scripting);
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      console.log("tab:", tab);
 
       if (!tab.id) {
         setError(getTranslation(language, "noActiveTab"));
         return;
       }
 
-      // Inject content script
-      await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ["contents/capture.js"],
+      // Inject content script via background service worker instead!
+      console.log("Sending message to background to inject script and start capture");
+      const response = await chrome.runtime.sendMessage({
+        action: "startScan",
+        tabId: tab.id
       });
-
-      // Start capture
-      await chrome.tabs.sendMessage(tab.id, { action: "startRegionCapture" });
+      
+      console.log("background response:", response);
+      if (!response?.success) {
+        setError(response?.error || getTranslation(language, "scanAreaError"));
+      }
     } catch (err) {
       console.error("Scan error:", err);
       setError(getTranslation(language, "scanAreaError"));
@@ -64,6 +84,7 @@ export default function RegionScanner({ onLogout, language }: { onLogout: () => 
   };
 
   const analyzeImage = async (imageData: string) => {
+    console.log("Scanner: analyzeImage called with image size:", imageData?.length || 0);
     setAnalyzing(true);
     setError("");
     setAnalysisComplete(false);
@@ -71,22 +92,28 @@ export default function RegionScanner({ onLogout, language }: { onLogout: () => 
 
     try {
       const apiToken = await getItem(storageKeys.API_TOKEN);
+      console.log("Scanner: apiToken available?", !!apiToken);
       if (!apiToken) {
+        console.error("Scanner: API token not found");
         setError(getTranslation(language, "apiTokenNotFound"));
         setAnalyzing(false);
         return;
       }
 
+      console.log("Scanner: calling api.analyzeImage with token:", apiToken.substring(0, 10) + "...");
       const response = await api.analyzeImage(imageData, apiToken);
+      console.log("Scanner: api.analyzeImage response:", response);
 
       if (response.success) {
+        console.log("Scanner: Analysis successful, setting result:", response.result);
         setAnalysisComplete(true);
         setAnalysisResult(response.result);
       } else {
+        console.error("Scanner: Analysis failed, error:", response.error);
         setError(response.error || getTranslation(language, "analysisFailed"));
       }
     } catch (err) {
-      console.error(err);
+      console.error("Scanner: analyzeImage error:", err);
       setError(getTranslation(language, "analysisFailed"));
     } finally {
       setAnalyzing(false);
@@ -168,7 +195,10 @@ export default function RegionScanner({ onLogout, language }: { onLogout: () => 
               />
             </div>
             <button
-              onClick={() => analyzeImage(capturedImage)}
+              onClick={() => {
+                console.log("Scanner: Send to AI button clicked, capturedImage length:", (capturedImage || "").length);
+                analyzeImage(capturedImage);
+              }}
               className="w-full clay-primary py-3 text-primary-foreground font-medium flex items-center justify-center gap-2 text-sm rounded-full"
             >
               <Send className="w-5 h-5" />
