@@ -192,4 +192,53 @@ export const api = {
       method: "PUT",
     }),
   getUnreadCount: () => apiRequest("/extension/notifications/unread-count"),
+
+  // Notification Preferences
+  getNotificationPreferences: () => apiRequest("/extension/notification-preferences"),
+  updateNotificationPreferences: (preferences: any) =>
+    apiRequest("/extension/notification-preferences", {
+      method: "PUT",
+      body: JSON.stringify({ notificationPreferences: preferences }),
+    }),
+
+  // 2FA
+  setupTwoFactor: () =>
+    apiRequest("/auth/2fa/setup", {
+      method: "POST",
+    }),
+  verifyAndEnableTwoFactor: (token: string) =>
+    apiRequest("/auth/2fa/verify", {
+      method: "POST",
+      body: JSON.stringify({ token }),
+    }),
+  disableTwoFactor: (password: string) =>
+    apiRequest("/auth/2fa/disable", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    }),
+  regenerateBackupCodes: (password: string) =>
+    apiRequest("/auth/2fa/backup-codes", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    }),
+  loginWithTwoFactor: (email: string, password: string, twoFactorToken?: string) =>
+    apiRequest("/auth/2fa/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password, twoFactorToken }),
+    }),
+
+  // Search
+  search: (query: string, filters?: any) => {
+    const filterString = filters ? `&${new URLSearchParams(filters as any).toString()}` : '';
+    return apiRequest(`/search?q=${encodeURIComponent(query)}${filterString}`);
+  },
+  
+  getSuggestions: (query: string) =>
+    apiRequest(`/search/suggestions?q=${encodeURIComponent(query)}`),
+
+  reportScam: (scamData: any) =>
+    apiRequest("/search/report", {
+      method: "POST",
+      body: JSON.stringify(scamData),
+    }),
 };
