@@ -1,5 +1,6 @@
-import { Body, Controller, Post, Get, Query, Req } from "@nestjs/common";
+import { Body, Controller, Post, Get, Query, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
+import { JwtAuthGuard } from "../common/jwt-auth.guard";
 
 class RegisterDto {
   email!: string;
@@ -34,6 +35,24 @@ class ResendVerificationDto {
 
 class RequestEmailUpdateDto {
   newEmail!: string;
+}
+
+class TwoFactorSetupDto {
+  token!: string;
+}
+
+class TwoFactorVerifyDto {
+  token!: string;
+}
+
+class TwoFactorLoginDto {
+  email!: string;
+  password!: string;
+  twoFactorToken?: string;
+}
+
+class TwoFactorDisableDto {
+  password!: string;
 }
 
 @Controller("auth")
@@ -93,5 +112,38 @@ export class AuthController {
   @Get("verify-email-update")
   verifyEmailUpdate(@Query("token") token: string) {
     return this.auth.verifyEmailUpdate(token);
+  }
+
+  @Post("2fa/setup")
+  @UseGuards(JwtAuthGuard)
+  async setupTwoFactor(@Req() req: any) {
+    const userId = req.user?.sub;
+    return this.auth.setupTwoFactor(userId);
+  }
+
+  @Post("2fa/verify")
+  @UseGuards(JwtAuthGuard)
+  async verifyTwoFactor(@Req() req: any, @Body() body: TwoFactorSetupDto) {
+    const userId = req.user?.sub;
+    return this.auth.verifyAndEnableTwoFactor(userId, body.token);
+  }
+
+  @Post("2fa/disable")
+  @UseGuards(JwtAuthGuard)
+  async disableTwoFactor(@Req() req: any, @Body() body: TwoFactorDisableDto) {
+    const userId = req.user?.sub;
+    return this.auth.disableTwoFactor(userId, body.password);
+  }
+
+  @Post("2fa/backup-codes")
+  @UseGuards(JwtAuthGuard)
+  async regenerateBackupCodes(@Req() req: any, @Body() body: TwoFactorDisableDto) {
+    const userId = req.user?.sub;
+    return this.auth.regenerateBackupCodes(userId, body.password);
+  }
+
+  @Post("2fa/login")
+  async loginWithTwoFactor(@Body() body: TwoFactorLoginDto) {
+    return this.auth.loginWithTwoFactor(body.email, body.password, body.twoFactorToken);
   }
 }
