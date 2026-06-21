@@ -8,22 +8,25 @@ datasource db {
 }
 
 model User {
-  id                 String                    @id @default(uuid()) @db.Uuid
-  email              String                    @unique @db.VarChar
-  password           String                    @db.VarChar
-  role               String                    @default("user") @db.VarChar
-  name               String?                   @db.VarChar
-  avatar             String?                   @db.VarChar
-  scansUsed          Int                       @default(0)
-  scansLimit         Int                       @default(20)
-  plan               String                    @default("free") @db.VarChar
-  isVerified         Boolean                   @default(false)
-  createdAt          DateTime                  @default(now()) @db.Timestamp(6)
-  updatedAt          DateTime                  @updatedAt @db.Timestamp(6)
-  apiTokens          ApiToken[]
-  emailVerifications EmailVerification[]
-  passwordResets     PasswordReset[]
-  histories          History[]
+  id                      String                    @id @default(uuid()) @db.Uuid
+  email                   String                    @unique @db.VarChar
+  password                String                    @db.VarChar
+  role                    String                    @default("user") @db.VarChar
+  name                    String?                   @db.VarChar
+  avatar                  String?                   @db.VarChar
+  scansUsed               Int                       @default(0)
+  scansLimit              Int                       @default(20)
+  plan                    String                    @default("free") @db.VarChar
+  isVerified              Boolean                   @default(false)
+  createdAt               DateTime                  @default(now()) @db.Timestamp(6)
+  updatedAt               DateTime                  @updatedAt @db.Timestamp(6)
+  apiTokens               ApiToken[]
+  emailVerifications      EmailVerification[]
+  passwordResets          PasswordReset[]
+  histories               History[]
+  extensionSettings       ExtensionSettings[]
+  extensionScans          ExtensionScan[]
+  extensionNotifications  ExtensionNotification[]
 
   @@map("user")
 }
@@ -94,4 +97,51 @@ model EmailVerification {
   user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("email_verification")
+}
+
+model ExtensionSettings {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  settings  Json?
+  isActive  Boolean  @default(true)
+  deviceInfo Json?
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("extension_settings")
+}
+
+model ExtensionScan {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  url       String   @db.VarChar
+  scanType  String   @db.VarChar
+  result    Json?
+  pageTitle String?  @db.VarChar
+  domain    String?  @db.VarChar
+  isScam    Boolean  @default(false)
+  reported  Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  user      User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("extension_scan")
+}
+
+model ExtensionNotification {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  type       String   @db.VarChar
+  title      String   @db.VarChar
+  message    String   @db.Text
+  data       Json?
+  status     String   @default("pending") @db.VarChar
+  read       Boolean  @default(false)
+  metadata   Json?
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  deliveredAt DateTime? @db.Timestamp(6)
+  readAt     DateTime? @db.Timestamp(6)
+  user       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("extension_notification")
 }
