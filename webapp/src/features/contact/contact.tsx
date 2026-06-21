@@ -56,7 +56,7 @@ export function Contact() {
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   maxLength={100}
-                  placeholder="Aisha Khan"
+                  placeholder="Enter your name"
                   className="clay-inset mt-2 w-full px-4 py-3 text-sm outline-none"
                 />
               </div>
@@ -67,7 +67,7 @@ export function Contact() {
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   maxLength={255}
-                  placeholder="you@example.com"
+                  placeholder="Enter your email"
                   className="clay-inset mt-2 w-full px-4 py-3 text-sm outline-none"
                 />
               </div>
@@ -78,7 +78,7 @@ export function Contact() {
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
                   rows={6}
                   maxLength={1000}
-                  placeholder="What's on your mind?"
+                  placeholder="Enter your message"
                   className="clay-inset mt-2 w-full resize-none px-4 py-3 text-sm outline-none"
                 />
                 <p className="mt-1 text-xs text-muted-foreground">{form.message.length}/1000</p>
