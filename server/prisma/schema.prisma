@@ -18,6 +18,9 @@ model User {
   scansLimit              Int                       @default(20)
   plan                    String                    @default("free") @db.VarChar
   isVerified              Boolean                   @default(false)
+  twoFactorSecret         String?                   @db.VarChar
+  twoFactorEnabled        Boolean                   @default(false)
+  twoFactorBackupCodes    Json?                     @default("[]")
   createdAt               DateTime                  @default(now()) @db.Timestamp(6)
   updatedAt               DateTime                  @updatedAt @db.Timestamp(6)
   apiTokens               ApiToken[]
@@ -144,4 +147,25 @@ model ExtensionNotification {
   user       User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("extension_notification")
+}
+
+model ScamDatabase {
+  id            String   @id @default(uuid()) @db.Uuid
+  companyName   String   @db.VarChar
+  domain        String?  @db.VarChar
+  scamType      String   @db.VarChar
+  severity      String   @default("medium") @db.VarChar
+  description   String   @db.Text
+  sources       Json     @default("[]")
+  reportCount   Int      @default(0)
+  isVerified    Boolean  @default(false)
+  isExternal    Boolean  @default(false)
+  externalSource String?  @db.VarChar
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @updatedAt @db.Timestamp(6)
+
+  @@index([companyName])
+  @@index([domain])
+  @@index([scamType])
+  @@map("scam_database")
 }
