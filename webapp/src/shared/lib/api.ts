@@ -179,4 +179,17 @@ export const api = {
       method: "DELETE",
       body: JSON.stringify({ tokenId }),
     }),
+
+  // Notifications
+  getNotifications: (unreadOnly?: boolean) =>
+    apiRequest(`/extension/notifications${unreadOnly ? "?unreadOnly=true" : ""}`),
+  markNotificationAsRead: (notificationId: string) =>
+    apiRequest(`/extension/notifications/${notificationId}/read`, {
+      method: "PUT",
+    }),
+  markAllAsRead: () =>
+    apiRequest("/extension/notifications/read-all", {
+      method: "PUT",
+    }),
+  getUnreadCount: () => apiRequest("/extension/notifications/unread-count"),
 };
