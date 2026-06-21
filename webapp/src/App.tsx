@@ -31,6 +31,8 @@ import { Admin } from "./features/admin/index";
 import { AdminAnalytics } from "./features/admin/analytics";
 import { AdminFlagged } from "./features/admin/flagged";
 import { AdminLayout } from "./features/admin/admin";
+import { Notifications } from "./features/notifications/notifications";
+import { NotificationDetail } from "./features/notifications/notification-detail";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +52,8 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
             <Route path="settings/api-tokens" element={<ApiTokens />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="notifications/:id" element={<NotificationDetail />} />
             <Route path="analyze" element={<Analyze />} />
             <Route path="result" element={<Result />} />
             <Route path="history" element={<History />} />
