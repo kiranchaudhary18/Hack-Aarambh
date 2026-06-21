@@ -3,12 +3,62 @@ import { ExtensionGateway } from "./extension.gateway";
 import { ExtensionService } from "./extension.service";
 import { ExtensionNotification, NotificationType } from "./extension-notification.entity";
 
+interface NotificationPreferences {
+  scamPatternsDigest?: boolean;
+  weeklyScanSummary?: boolean;
+  productUpdates?: boolean;
+  scamAlerts?: boolean;
+  securityAlerts?: boolean;
+  patternUpdates?: boolean;
+  accountUpdates?: boolean;
+}
+
+const DEFAULT_PREFERENCES: NotificationPreferences = {
+  scamPatternsDigest: true,
+  weeklyScanSummary: true,
+  productUpdates: false,
+  scamAlerts: true,
+  securityAlerts: true,
+  patternUpdates: true,
+  accountUpdates: true,
+};
+
 @Injectable()
 export class NotificationService {
   constructor(
     private extensionGateway: ExtensionGateway,
     private extensionService: ExtensionService,
   ) {}
+
+  private async getUserPreferences(userId: string): Promise<NotificationPreferences> {
+    try {
+      const settings = await this.extensionService.getSettings(userId);
+      return settings.notificationPreferences || DEFAULT_PREFERENCES;
+    } catch (error) {
+      console.error('Error fetching user preferences:', error);
+      return DEFAULT_PREFERENCES;
+    }
+  }
+
+  private shouldSendNotification(
+    preferences: NotificationPreferences,
+    notificationType: NotificationType,
+  ): boolean {
+    switch (notificationType) {
+      case NotificationType.SCAM_ALERT:
+        return preferences.scamAlerts !== false;
+      case NotificationType.SECURITY_ALERT:
+        return preferences.securityAlerts !== false;
+      case NotificationType.PATTERN_UPDATE:
+        return preferences.patternUpdates !== false;
+      case NotificationType.ACCOUNT_UPDATE:
+        return preferences.accountUpdates !== false;
+      case NotificationType.SCAN_RESULT:
+        return preferences.scamAlerts !== false;
+      default:
+        return true;
+    }
+  }
 
   // Send notification to specific user's extension
   async sendToUser(userId: string, notification: {
@@ -18,6 +68,14 @@ export class NotificationService {
     data?: any;
     metadata?: any;
   }) {
+    // Check user preferences before sending
+    const preferences = await this.getUserPreferences(userId);
+    
+    if (!this.shouldSendNotification(preferences, notification.type)) {
+      console.log(`Notification type ${notification.type} disabled for user ${userId}`);
+      return null;
+    }
+
     // Store notification in database
     const savedNotification = await this.extensionService.createNotification(userId, notification);
 
