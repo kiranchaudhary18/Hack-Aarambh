@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2, Shield } from "lucide-react";
+import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2, Shield, LockKeyhole, History, ShieldCheck, Zap } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
@@ -80,123 +80,151 @@ export function Login() {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <ClayBlobs />
-      <div className="relative mx-auto grid min-h-screen max-w-md place-items-center p-6">
+      <div className="relative mx-auto grid min-h-screen max-w-5xl place-items-center p-6">
         <FadeIn className="w-full">
-          <Link to="/" className="mb-8 flex items-center justify-center gap-2">
-            <span className="grid h-12 w-12 place-items-center">
-              <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
-            </span>
-            <span className="font-display text-2xl font-bold">
-              Scam<span className="text-gradient">Sniff</span>
-            </span>
-          </Link>
-          <div className="clay-lg p-8">
-            <h1 className="font-display text-3xl font-bold">Welcome back</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Log in to continue scanning offers.
-            </p>
-
-            <form onSubmit={handleLogin} className="mt-6 space-y-4">
-              <Field
-                icon={<Mail className="h-4 w-4" />}
-                label="Email"
-                type="email"
-                placeholder="you@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <Field
-                icon={<Lock className="h-4 w-4" />}
-                label="Password"
-                type={show ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                right={
-                  <button
-                    type="button"
-                    onClick={() => setShow(!show)}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                }
-                required
-              />
-
-              {requiresTwoFactor && (
-                <div className="space-y-2">
-                  <label className="block">
-                    <span className="mb-1.5 block text-xs font-semibold text-muted-foreground">
-                      2FA Code
-                    </span>
-                    <span className="clay-inset flex items-center gap-3 px-4 py-3">
-                      <span className="text-muted-foreground">
-                        <Shield className="h-4 w-4" />
-                      </span>
-                      <input
-                        type="text"
-                        value={twoFactorToken}
-                        onChange={(e) => setTwoFactorToken(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                        placeholder="000000"
-                        maxLength={6}
-                        className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground text-center text-2xl tracking-widest font-mono"
-                      />
-                    </span>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={handleBackToPassword}
-                    className="text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    ← Back to password
-                  </button>
-                </div>
-              )}
-
-              {!requiresTwoFactor && (
-                <div className="flex items-center justify-between text-sm">
-                  <label className="flex items-center gap-2">
-                    <input type="checkbox" className="accent-[color:var(--primary)]" /> Remember me
-                  </label>
-                  <Link to="/forgot-password" className="font-semibold text-[color:var(--primary)]">
-                    Forgot?
-                  </Link>
-                </div>
-              )}
-              <button
-                type="submit"
-                disabled={loading}
-                className="clay-primary mt-2 flex w-full items-center justify-center gap-2 py-3 font-semibold disabled:opacity-70"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />{" "}
-                    {requiresTwoFactor ? "Verifying..." : "Logging in..."}
-                  </>
-                ) : (
-                  <>
-                    {requiresTwoFactor ? "Verify 2FA" : "Log in"} <ArrowRight className="h-4 w-4" />
-                  </>
-                )}
-              </button>
-            </form>
-
-            <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
-              <span className="h-px flex-1 bg-border" /> or continue with{" "}
-              <span className="h-px flex-1 bg-border" />
-            </div>
-            <button className="clay-btn flex w-full items-center justify-center gap-2 py-3 text-sm font-semibold">
-              <GoogleIcon /> Continue with Google
-            </button>
-
-            <p className="mt-6 text-center text-sm text-muted-foreground">
-              New here?{" "}
-              <Link to="/signup" className="font-semibold text-[color:var(--primary)]">
-                Create an account
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-center">
+            <div>
+              <Link to="/" className="mb-10 flex items-center">
+                <span className="grid h-12 w-12 place-items-center">
+                  <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
+                </span>
+                <span className="font-display text-2xl font-bold">
+                  Scam<span className="text-gradient">Sniff</span>
+                </span>
               </Link>
-            </p>
+              <h1 className="font-display text-6xl font-bold leading-tight">
+                Welcome
+                <br />
+                <span className="text-gradient">back</span>
+                <br />
+                to safety.
+              </h1>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Continue your journey to scam-free job hunting
+              </p>
+              <div className="mt-10 space-y-4">
+                {[
+                  { icon: LockKeyhole, text: "Secure 2FA authentication", color: "var(--clay-purple)" },
+                  { icon: History, text: "Access your scan history", color: "var(--clay-blue)" },
+                  { icon: ShieldCheck, text: "Real-time scam alerts", color: "var(--clay-green)" },
+                  { icon: Zap, text: "Instant AI-powered analysis", color: "var(--clay-orange)" },
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="clay-inset flex items-center gap-4 p-4 transition-transform hover:scale-[1.02]"
+                  >
+                    <div
+                      className="grid h-10 w-10 place-items-center rounded-xl"
+                      style={{ background: item.color }}
+                    >
+                      <item.icon className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="font-medium text-foreground">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="clay-lg p-8">
+              <h1 className="font-display text-3xl font-bold">Welcome back</h1>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Log in to continue scanning offers.
+              </p>
+
+              <form onSubmit={handleLogin} className="mt-6 space-y-4">
+                <Field
+                  icon={<Mail className="h-4 w-4" />}
+                  label="Email"
+                  type="email"
+                  placeholder="Enter you mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Field
+                  icon={<Lock className="h-4 w-4" />}
+                  label="Password"
+                  type={show ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  right={
+                    <button
+                      type="button"
+                      onClick={() => setShow(!show)}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  }
+                  required
+                />
+
+                {requiresTwoFactor && (
+                  <div className="space-y-2">
+                    <label className="block">
+                      <span className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+                        2FA Code
+                      </span>
+                      <span className="clay-inset flex items-center gap-3 px-4 py-3">
+                        <span className="text-muted-foreground">
+                          <Shield className="h-4 w-4" />
+                        </span>
+                        <input
+                          type="text"
+                          value={twoFactorToken}
+                          onChange={(e) => setTwoFactorToken(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                          placeholder="000000"
+                          maxLength={6}
+                          className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground text-center text-2xl tracking-widest font-mono"
+                        />
+                      </span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleBackToPassword}
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      ← Back to password
+                    </button>
+                  </div>
+                )}
+
+                {!requiresTwoFactor && (
+                  <div className="flex items-center justify-between text-sm">
+                    <label className="flex items-center gap-2">
+                      <input type="checkbox" className="accent-[color:var(--primary)]" /> Remember me
+                    </label>
+                    <Link to="/forgot-password" className="font-semibold text-[color:var(--primary)]">
+                      Forgot?
+                    </Link>
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="clay-primary mt-2 flex w-full items-center justify-center gap-2 py-3 font-semibold disabled:opacity-70"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />{" "}
+                      {requiresTwoFactor ? "Verifying..." : "Logging in..."}
+                    </>
+                  ) : (
+                    <>
+                      {requiresTwoFactor ? "Verify 2FA" : "Log in"} <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <p className="mt-6 text-center text-sm text-muted-foreground">
+                New here?{" "}
+                <Link to="/signup" className="font-semibold text-[color:var(--primary)]">
+                  Create an account
+                </Link>
+              </p>
+            </div>
           </div>
         </FadeIn>
       </div>

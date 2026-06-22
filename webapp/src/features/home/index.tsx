@@ -85,7 +85,7 @@ export function Home() {
 
           <div className="hero-cta mt-8 flex flex-wrap items-center gap-3">
             <Link
-              to="/analyze"
+              to="/signup"
               className="clay-primary inline-flex items-center gap-2 px-7 py-4 text-base font-semibold"
             >
               <ScanSearch className="h-5 w-5" /> Check a Job Offer

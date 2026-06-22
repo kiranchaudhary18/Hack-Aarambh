@@ -5,8 +5,6 @@ import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
 import {
   Bell,
-  ShieldCheck,
-  Smartphone,
   Lock,
   KeyRound,
   Trash2,
@@ -16,6 +14,7 @@ import {
 import { api } from "@/shared/lib/api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { TwoFactorSetup } from "@/features/auth/two-factor-setup";
 
 interface NotificationPreferences {
   scamPatternsDigest?: boolean;
@@ -42,6 +41,7 @@ export function Settings() {
   const [localPreferences, setLocalPreferences] = useState<NotificationPreferences>({});
   const [showDisableDialog, setShowDisableDialog] = useState(false);
   const [disablePassword, setDisablePassword] = useState("");
+  const [showTwoFactorSetup, setShowTwoFactorSetup] = useState(false);
 
   const { data: preferencesData, isLoading } = useQuery({
     queryKey: ["notification-preferences"],
@@ -147,12 +147,12 @@ export function Settings() {
                         Disable
                       </button>
                     ) : (
-                      <Link
-                        to="/settings/2fa/setup"
+                      <button
+                        onClick={() => setShowTwoFactorSetup(true)}
                         className="clay-btn inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold"
                       >
                         Enable <ChevronRight className="h-3.5 w-3.5" />
-                      </Link>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -201,6 +201,12 @@ export function Settings() {
                 </div>
               </div>
             </div>
+          )}
+
+          {showTwoFactorSetup && (
+            <FadeIn>
+              <TwoFactorSetup onClose={() => setShowTwoFactorSetup(false)} />
+            </FadeIn>
           )}
 
           <FadeIn delay={0.1}>

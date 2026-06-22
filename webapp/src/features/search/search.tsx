@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { SearchBar } from './search-bar';
 import { SearchResults } from './search-results';
 import { api } from '@/shared/lib/api';
@@ -30,9 +30,10 @@ interface SearchResponse {
 }
 
 export function Search() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const initialQuery = searchParams.get('q') || '';
-  
+
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [total, setTotal] = useState(0);
@@ -70,6 +71,7 @@ export function Search() {
 
   const handleSearch = (searchQuery: string) => {
     setQuery(searchQuery);
+    setSearchParams({ q: searchQuery });
     performSearch(searchQuery);
   };
 
