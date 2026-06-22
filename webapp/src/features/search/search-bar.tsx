@@ -3,6 +3,13 @@ import { Search, X } from 'lucide-react';
 import { api } from '@/shared/lib/api';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 
+const PLACEHOLDER_TEXTS = [
+  "Search company name...",
+  "Search domain URL...",
+  "Search scam pattern...",
+  "Search fraudulent companies...",
+];
+
 interface Suggestion {
   companyName: string;
   domain?: string;
@@ -20,7 +27,7 @@ export function SearchBar({ onSearch, initialQuery = '' }: SearchBarProps) {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  
+
   const debouncedQuery = useDebounce(query, 300);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
@@ -110,25 +117,38 @@ export function SearchBar({ onSearch, initialQuery = '' }: SearchBarProps) {
   return (
     <div className="relative max-w-3xl mx-auto">
       <div className="relative">
-        <div className="clay flex items-center gap-3 p-2">
-          <Search className="h-5 w-5 text-muted-foreground" />
+        <div className="clay-inset flex items-center gap-3 px-4 py-3">
+          <span className="text-muted-foreground">
+            <Search className="h-4 w-4" />
+          </span>
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Search company name, domain, or scam pattern..."
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            placeholder=""
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             autoComplete="off"
           />
+          {!query && (
+            <div className="absolute left-12 right-12 top-1/2 -translate-y-1/2 pointer-events-none overflow-hidden h-5">
+              <div className="animate-marquee text-sm text-muted-foreground">
+                {[...PLACEHOLDER_TEXTS, ...PLACEHOLDER_TEXTS].map((text, index) => (
+                  <div key={index} className="leading-5">
+                    {text}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {query && (
             <button
               onClick={clearSearch}
-              className="rounded-full p-1 hover:bg-muted"
+              className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Clear search"
             >
-              <X className="h-4 w-4 text-muted-foreground" />
+              <X className="h-4 w-4" />
             </button>
           )}
         </div>
