@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
+import { FadeIn } from "@/shared/components/Animated";
 import {
   ScanSearch,
   ShieldAlert,
@@ -37,6 +37,30 @@ export function Admin() {
   const [trendData, setTrendData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Demo data fallback
+  const demoStats = {
+    totalScans: 45234,
+    scamsDetected: 8921,
+    activeUsers: 1247,
+    savedDollars: 2340000,
+  };
+
+  const demoHistory = [
+    { id: "1", title: "Crypto Investment Manager", company: "Blockchain Inc", score: 96 },
+    { id: "2", title: "Remote Data Entry", company: "Tech Solutions", score: 87 },
+    { id: "3", title: "Personal Assistant", company: "Private Employer", score: 92 },
+    { id: "4", title: "Social Media Manager", company: "Growth Agency", score: 78 },
+  ];
+
+  const demoTrendData = [
+    { month: "Aug", safe: 3200, scams: 890 },
+    { month: "Sep", safe: 3800, scams: 1020 },
+    { month: "Oct", safe: 4200, scams: 1150 },
+    { month: "Nov", safe: 4500, scams: 1280 },
+    { month: "Dec", safe: 5100, scams: 1420 },
+    { month: "Jan", safe: 5800, scams: 1680 },
+  ];
+
   useEffect(() => {
     document.title = "Admin — ScamSniff";
   }, []);
@@ -49,11 +73,15 @@ export function Admin() {
           api.getHistory(),
           api.getAnalytics(),
         ]);
-        setAdminStats(stats || adminStats);
-        setRecentChecks(history || []);
-        setTrendData(analytics?.trendData || []);
+        setAdminStats(stats || demoStats);
+        setRecentChecks(history || demoHistory);
+        setTrendData(analytics?.trendData || demoTrendData);
       } catch (error) {
         console.error("Failed to fetch admin data:", error);
+        // Use demo data when API fails
+        setAdminStats(demoStats);
+        setRecentChecks(demoHistory);
+        setTrendData(demoTrendData);
       } finally {
         setLoading(false);
       }
@@ -79,36 +107,44 @@ export function Admin() {
         </p>
       </FadeIn>
 
-      <StaggerChildren className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat
-          icon={ScanSearch}
-          label="Total scans"
-          value={adminStats.totalScans.toLocaleString()}
-          sub="+412 today"
-          color="var(--clay-purple)"
-        />
-        <Stat
-          icon={ShieldAlert}
-          label="Scams detected"
-          value={adminStats.scamsDetected.toLocaleString()}
-          sub={`${Math.round((adminStats.scamsDetected / adminStats.totalScans) * 100)}% rate`}
-          color="var(--clay-pink)"
-        />
-        <Stat
-          icon={Users}
-          label="Active users"
-          value={adminStats.activeUsers.toLocaleString()}
-          sub="+86 this week"
-          color="var(--clay-green)"
-        />
-        <Stat
-          icon={DollarSign}
-          label="Saved (est.)"
-          value={`$${(adminStats.savedDollars / 1_000_000).toFixed(2)}M`}
-          sub="Across all users"
-          color="var(--clay-orange)"
-        />
-      </StaggerChildren>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <FadeIn delay={0.05}>
+          <Stat
+            icon={ScanSearch}
+            label="Total scans"
+            value={adminStats.totalScans.toLocaleString()}
+            sub="+412 today"
+            color="var(--clay-purple)"
+          />
+        </FadeIn>
+        <FadeIn delay={0.1}>
+          <Stat
+            icon={ShieldAlert}
+            label="Scams detected"
+            value={adminStats.scamsDetected.toLocaleString()}
+            sub={`${Math.round((adminStats.scamsDetected / adminStats.totalScans) * 100)}% rate`}
+            color="var(--clay-pink)"
+          />
+        </FadeIn>
+        <FadeIn delay={0.15}>
+          <Stat
+            icon={Users}
+            label="Active users"
+            value={adminStats.activeUsers.toLocaleString()}
+            sub="+86 this week"
+            color="var(--clay-green)"
+          />
+        </FadeIn>
+        <FadeIn delay={0.2}>
+          <Stat
+            icon={DollarSign}
+            label="Saved (est.)"
+            value={`$${(adminStats.savedDollars / 1_000_000).toFixed(2)}M`}
+            sub="Across all users"
+            color="var(--clay-orange)"
+          />
+        </FadeIn>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
         <FadeIn delay={0.1}>
@@ -331,6 +367,67 @@ export function Admin() {
           </div>
         </FadeIn>
       </div>
+
+      <FadeIn delay={0.35}>
+        <div className="clay p-6">
+          <h2 className="font-display text-2xl font-bold">Monitoring Overview</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Quick summary from all monitoring sections
+          </p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <Link
+              to="/admin/website-monitoring"
+              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
+            >
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-500/20">
+                <Activity className="h-6 w-6 text-blue-500" />
+              </span>
+              <p className="mt-3 font-semibold">Website</p>
+              <p className="text-xs text-muted-foreground">Traffic, errors, performance</p>
+            </Link>
+            <Link
+              to="/admin/ai-model-monitoring"
+              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
+            >
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-purple-500/20">
+                <Cpu className="h-6 w-6 text-purple-500" />
+              </span>
+              <p className="mt-3 font-semibold">AI Model</p>
+              <p className="text-xs text-muted-foreground">Accuracy, performance, health</p>
+            </Link>
+            <Link
+              to="/admin/server-monitoring"
+              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
+            >
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-orange-500/20">
+                <Server className="h-6 w-6 text-orange-500" />
+              </span>
+              <p className="mt-3 font-semibold">Server</p>
+              <p className="text-xs text-muted-foreground">CPU, memory, database</p>
+            </Link>
+            <Link
+              to="/admin/extension-monitoring"
+              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
+            >
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-green-500/20">
+                <Radio className="h-6 w-6 text-green-500" />
+              </span>
+              <p className="mt-3 font-semibold">Extension</p>
+              <p className="text-xs text-muted-foreground">Installs, usage, retention</p>
+            </Link>
+            <Link
+              to="/admin/real-time-monitoring"
+              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
+            >
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-pink-500/20">
+                <TrendingUp className="h-6 w-6 text-pink-500" />
+              </span>
+              <p className="mt-3 font-semibold">Real-Time</p>
+              <p className="text-xs text-muted-foreground">Events, alerts, WebSocket</p>
+            </Link>
+          </div>
+        </div>
+      </FadeIn>
     </div>
   );
 }
