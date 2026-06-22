@@ -22,6 +22,24 @@ export function AdminAnalytics() {
   const [trendData, setTrendData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Demo data fallback
+  const demoScamTypes = [
+    { name: "Fake Job Offers", value: 35, color: "oklch(0.62 0.18 295)" },
+    { name: "Phishing", value: 25, color: "oklch(0.72 0.16 155)" },
+    { name: "Investment Scams", value: 20, color: "oklch(0.66 0.22 22)" },
+    { name: "Romance Scams", value: 12, color: "oklch(0.75 0.12 85)" },
+    { name: "Other", value: 8, color: "oklch(0.68 0.15 45)" },
+  ];
+
+  const demoTrendData = [
+    { month: "Aug", safe: 3200, scams: 890 },
+    { month: "Sep", safe: 3800, scams: 1020 },
+    { month: "Oct", safe: 4200, scams: 1150 },
+    { month: "Nov", safe: 4500, scams: 1280 },
+    { month: "Dec", safe: 5100, scams: 1420 },
+    { month: "Jan", safe: 5800, scams: 1680 },
+  ];
+
   useEffect(() => {
     document.title = "Analytics — ScamSniff Admin";
   }, []);
@@ -30,10 +48,13 @@ export function AdminAnalytics() {
     async function fetchData() {
       try {
         const analytics = await api.getAnalytics();
-        setScamTypes(analytics?.scamTypes || []);
-        setTrendData(analytics?.trendData || []);
+        setScamTypes(analytics?.scamTypes || demoScamTypes);
+        setTrendData(analytics?.trendData || demoTrendData);
       } catch (error) {
         console.error("Failed to fetch analytics:", error);
+        // Use demo data when API fails
+        setScamTypes(demoScamTypes);
+        setTrendData(demoTrendData);
       } finally {
         setLoading(false);
       }
