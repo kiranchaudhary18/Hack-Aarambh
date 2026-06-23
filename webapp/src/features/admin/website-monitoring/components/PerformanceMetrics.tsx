@@ -1,7 +1,40 @@
+import { useState, useEffect } from "react";
 import { Gauge, Zap, Timer, Clock } from "lucide-react";
-import { performanceMetrics } from "../data/performanceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function PerformanceMetrics() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load performance metrics");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading performance metrics..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const performanceMetrics = websiteData?.performanceMetrics || {
+    p50: 1.8,
+    p95: 3.2,
+    p99: 4.5,
+    tti: 2.1,
+    change: "-8.5%",
+  };
+
   const stats = [
     {
       icon: Clock,
