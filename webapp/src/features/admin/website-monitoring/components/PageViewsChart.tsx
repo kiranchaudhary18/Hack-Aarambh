@@ -1,6 +1,9 @@
+import { useState, useEffect } from "react";
 import { Layout, Grid } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts";
-import { pageViewData } from "../data/trafficData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 const heatColors = {
   high: "oklch(0.62 0.18 295)",
@@ -9,6 +12,35 @@ const heatColors = {
 };
 
 export function PageViewsChart() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load page view data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading page views..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const pageViewData = websiteData?.pageViews || [
+    { page: "/", views: 45200, heat: "high" },
+    { page: "/scams", views: 28450, heat: "high" },
+    { page: "/about", views: 15200, heat: "medium" },
+    { page: "/contact", views: 8200, heat: "low" },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center gap-3">
