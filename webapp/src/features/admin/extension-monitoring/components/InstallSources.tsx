@@ -1,7 +1,38 @@
+import { useState, useEffect } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
-import { installSources } from "../data/installationData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function InstallSources() {
+  const [extensionData, setExtensionData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getExtensionMetrics();
+        setExtensionData(data);
+      } catch (err) {
+        setError("Failed to load install sources");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading install sources..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const installSources = extensionData?.installSources || [
+    { source: "Chrome Web Store", count: 35200, color: "oklch(0.72 0.16 155)" },
+    { source: "Firefox Add-ons", count: 12450, color: "oklch(0.62 0.18 295)" },
+    { source: "Direct", count: 10030, color: "oklch(0.66 0.22 22)" },
+  ];
+
   return (
     <div className="clay p-6">
       <h2 className="font-display text-2xl font-bold">Install Sources</h2>
@@ -19,7 +50,7 @@ export function InstallSources() {
               innerRadius={56}
               paddingAngle={4}
             >
-              {installSources.map((entry, index) => (
+              {installSources.map((entry: any, index: number) => (
                 <Cell key={`cell-${index}`} fill={entry.color} stroke="var(--card)" strokeWidth={4} />
               ))}
             </Pie>
