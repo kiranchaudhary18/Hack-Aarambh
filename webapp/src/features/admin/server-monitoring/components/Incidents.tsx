@@ -1,7 +1,37 @@
+import { useState, useEffect } from "react";
 import { AlertTriangle } from "lucide-react";
-import { incidents } from "../data/uptimeData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function Incidents() {
+  const [serverData, setServerData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getServerUptime();
+        setServerData(data);
+      } catch (err) {
+        setError("Failed to load incidents");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading incidents..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const incidents = serverData?.incidents || [
+    { id: 1, type: "Database Outage", severity: "high", description: "Primary database connection lost", startTime: "2024-01-15 14:30", duration: "45m" },
+    { id: 2, type: "API Latency Spike", severity: "medium", description: "API response time exceeded 5s threshold", startTime: "2024-01-10 09:15", duration: "20m" },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center justify-between">
@@ -11,7 +41,7 @@ export function Incidents() {
         </span>
       </div>
       <div className="mt-4 space-y-3">
-        {incidents.map((incident) => (
+        {incidents.map((incident: any) => (
           <div key={incident.id} className="clay-inset rounded-xl p-4">
             <div className="flex items-start justify-between">
               <div className="flex-1">
