@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { FadeIn } from "@/shared/components/Animated";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Activity, AlertTriangle, Zap } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 import { TrafficOverview } from "./components/TrafficOverview";
 import { VisitorChart } from "./components/VisitorChart";
@@ -24,10 +23,21 @@ import { APIResponseTimes } from "./components/APIResponseTimes";
 
 export function WebsiteMonitoring() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const location = useLocation();
 
   useEffect(() => {
     document.title = "Website Monitoring — ScamSniff Admin";
   }, []);
+
+  const getActiveSection = () => {
+    const path = location.pathname;
+    if (path.includes("/traffic")) return "traffic";
+    if (path.includes("/errors")) return "errors";
+    if (path.includes("/performance")) return "performance";
+    return "traffic";
+  };
+
+  const activeSection = getActiveSection();
 
   return (
     <div className="space-y-6">
@@ -42,112 +52,95 @@ export function WebsiteMonitoring() {
         </p>
       </FadeIn>
 
-      <Tabs defaultValue="traffic" className="space-y-6">
-        <TabsList className="clay grid w-full grid-cols-3">
-          <TabsTrigger value="traffic" className="flex items-center gap-2">
-            <Activity className="h-4 w-4" />
-            Traffic & Behavior
-          </TabsTrigger>
-          <TabsTrigger value="errors" className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
-            Error Monitoring
-          </TabsTrigger>
-          <TabsTrigger value="performance" className="flex items-center gap-2">
-            <Zap className="h-4 w-4" />
-            Performance
-          </TabsTrigger>
-        </TabsList>
+      {activeSection === "traffic" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <TrafficOverview />
+          </FadeIn>
 
-        <TabsContent value="traffic" className="space-y-6">
-          <div className="space-y-6">
-            <FadeIn>
-              <TrafficOverview />
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <VisitorChart />
             </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <VisitorChart />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <PageViewsChart />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.15}>
-                <GeoDistribution />
-              </FadeIn>
-              <FadeIn delay={0.2}>
-                <DeviceBreakdown />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.25}>
-                <TrafficSources />
-              </FadeIn>
-              <FadeIn delay={0.3}>
-                <BounceRate />
-              </FadeIn>
-            </div>
-
-            <FadeIn delay={0.35}>
-              <ConversionFunnel />
-            </FadeIn>
-
-            <FadeIn delay={0.4}>
-              <UserJourney />
+            <FadeIn delay={0.1}>
+              <PageViewsChart />
             </FadeIn>
           </div>
-        </TabsContent>
 
-        <TabsContent value="errors" className="space-y-6">
-          <div className="space-y-6">
-            <FadeIn>
-              <ErrorMonitoring />
-            </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <JSErrorsList />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <APIFailures />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.15}>
-                <NetworkErrors />
-              </FadeIn>
-              <FadeIn delay={0.2}>
-                <ErrorTrends />
-              </FadeIn>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="performance" className="space-y-6">
-          <div className="space-y-6">
-            <FadeIn>
-              <PerformanceMetrics />
-            </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <PageLoadTimes />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <CoreWebVitals />
-              </FadeIn>
-            </div>
-
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn delay={0.15}>
-              <APIResponseTimes />
+              <GeoDistribution />
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <DeviceBreakdown />
             </FadeIn>
           </div>
-        </TabsContent>
-      </Tabs>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.25}>
+              <TrafficSources />
+            </FadeIn>
+            <FadeIn delay={0.3}>
+              <BounceRate />
+            </FadeIn>
+          </div>
+
+          <FadeIn delay={0.35}>
+            <ConversionFunnel />
+          </FadeIn>
+
+          <FadeIn delay={0.4}>
+            <UserJourney />
+          </FadeIn>
+        </div>
+      )}
+
+      {activeSection === "errors" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <ErrorMonitoring />
+          </FadeIn>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <JSErrorsList />
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <APIFailures />
+            </FadeIn>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.15}>
+              <NetworkErrors />
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <ErrorTrends />
+            </FadeIn>
+          </div>
+        </div>
+      )}
+
+      {activeSection === "performance" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <PerformanceMetrics />
+          </FadeIn>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <PageLoadTimes />
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <CoreWebVitals />
+            </FadeIn>
+          </div>
+
+          <FadeIn delay={0.15}>
+            <APIResponseTimes />
+          </FadeIn>
+        </div>
+      )}
     </div>
   );
 }
