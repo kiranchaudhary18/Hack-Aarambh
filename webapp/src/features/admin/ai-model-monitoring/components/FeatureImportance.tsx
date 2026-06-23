@@ -1,8 +1,40 @@
+import { useState, useEffect } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { featureImportance } from "../data/healthData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function FeatureImportance() {
-  const data = featureImportance.map((f) => ({
+  const [healthData, setHealthData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAIHealth();
+        setHealthData(data);
+      } catch (err) {
+        setError("Failed to load health data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading feature importance..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const featureImportance = healthData?.featureImportance || [
+    { feature: "Job Title", importance: 0.32, change: 0.05 },
+    { feature: "Company Name", importance: 0.28, change: -0.02 },
+    { feature: "Description", importance: 0.22, change: 0.03 },
+    { feature: "Salary", importance: 0.18, change: 0.01 },
+  ];
+
+  const data = featureImportance.map((f: any) => ({
     feature: f.feature,
     importance: f.importance,
     change: f.change,
