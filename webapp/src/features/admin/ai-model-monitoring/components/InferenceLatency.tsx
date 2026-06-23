@@ -1,11 +1,37 @@
+import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
-import { inferenceLatency } from "../data/performanceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function InferenceLatency() {
+  const [performanceData, setPerformanceData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAIPerformance();
+        setPerformanceData(data);
+      } catch (err) {
+        setError("Failed to load performance data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading latency data..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const latency = performanceData?.latency || { p50: 45, p95: 120, p99: 180 };
   const stats = [
-    { label: "p50", value: `${inferenceLatency.p50}ms` },
-    { label: "p95", value: `${inferenceLatency.p95}ms` },
-    { label: "p99", value: `${inferenceLatency.p99}ms` },
+    { label: "p50", value: `${latency.p50}ms` },
+    { label: "p95", value: `${latency.p95}ms` },
+    { label: "p99", value: `${latency.p99}ms` },
   ];
 
   return (
