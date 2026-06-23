@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { FadeIn } from "@/shared/components/Animated";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Target, Zap, Cpu, HeartPulse } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 import { AccuracyOverview } from "./components/AccuracyOverview";
 import { FalsePositiveRate } from "./components/FalsePositiveRate";
@@ -24,10 +23,22 @@ import { RetrainingTriggers } from "./components/RetrainingTriggers";
 
 export function AIModelMonitoring() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const location = useLocation();
 
   useEffect(() => {
     document.title = "AI Model Monitoring — ScamSniff Admin";
   }, []);
+
+  const getActiveSection = () => {
+    const path = location.pathname;
+    if (path.includes("/accuracy")) return "accuracy";
+    if (path.includes("/performance")) return "performance";
+    if (path.includes("/resources")) return "resources";
+    if (path.includes("/health")) return "health";
+    return "accuracy";
+  };
+
+  const activeSection = getActiveSection();
 
   return (
     <div className="space-y-6">
@@ -42,121 +53,100 @@ export function AIModelMonitoring() {
         </p>
       </FadeIn>
 
-      <Tabs defaultValue="accuracy" className="space-y-6">
-        <TabsList className="clay grid w-full grid-cols-4">
-          <TabsTrigger value="accuracy" className="flex items-center gap-2">
-            <Target className="h-4 w-4" />
-            Accuracy
-          </TabsTrigger>
-          <TabsTrigger value="performance" className="flex items-center gap-2">
-            <Zap className="h-4 w-4" />
-            Performance
-          </TabsTrigger>
-          <TabsTrigger value="resources" className="flex items-center gap-2">
-            <Cpu className="h-4 w-4" />
-            Resources
-          </TabsTrigger>
-          <TabsTrigger value="health" className="flex items-center gap-2">
-            <HeartPulse className="h-4 w-4" />
-            Health
-          </TabsTrigger>
-        </TabsList>
+      {activeSection === "accuracy" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <AccuracyOverview />
+          </FadeIn>
 
-        <TabsContent value="accuracy" className="space-y-6">
-          <div className="space-y-6">
-            <FadeIn>
-              <AccuracyOverview />
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <FalsePositiveRate />
             </FadeIn>
+            <FadeIn delay={0.1}>
+              <FalseNegativeRate />
+            </FadeIn>
+          </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <FalsePositiveRate />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <FalseNegativeRate />
-              </FadeIn>
-            </div>
+          <FadeIn delay={0.15}>
+            <ConfidenceDistribution />
+          </FadeIn>
 
+          <FadeIn delay={0.2}>
+            <PredictionDrift />
+          </FadeIn>
+        </div>
+      )}
+
+      {activeSection === "performance" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <InferenceLatency />
+          </FadeIn>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <RequestThroughput />
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <ResponseTimeByType />
+            </FadeIn>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn delay={0.15}>
-              <ConfidenceDistribution />
+              <QueueDepth />
             </FadeIn>
-
             <FadeIn delay={0.2}>
-              <PredictionDrift />
+              <ProcessingTime />
             </FadeIn>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="performance" className="space-y-6">
-          <div className="space-y-6">
+      {activeSection === "resources" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn>
-              <InferenceLatency />
+              <GPUUtilization />
             </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <RequestThroughput />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <ResponseTimeByType />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.15}>
-                <QueueDepth />
-              </FadeIn>
-              <FadeIn delay={0.2}>
-                <ProcessingTime />
-              </FadeIn>
-            </div>
+            <FadeIn delay={0.05}>
+              <MemoryUsage />
+            </FadeIn>
           </div>
-        </TabsContent>
 
-        <TabsContent value="resources" className="space-y-6">
-          <div className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn>
-                <GPUUtilization />
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <MemoryUsage />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.1}>
-                <TokenUsage />
-              </FadeIn>
-              <FadeIn delay={0.15}>
-                <CostTracking />
-              </FadeIn>
-            </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.1}>
+              <TokenUsage />
+            </FadeIn>
+            <FadeIn delay={0.15}>
+              <CostTracking />
+            </FadeIn>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="health" className="space-y-6">
-          <div className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn>
-                <ModelVersion />
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <TrainingDataDrift />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.1}>
-                <FeatureImportance />
-              </FadeIn>
-              <FadeIn delay={0.15}>
-                <RetrainingTriggers />
-              </FadeIn>
-            </div>
+      {activeSection === "health" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn>
+              <ModelVersion />
+            </FadeIn>
+            <FadeIn delay={0.05}>
+              <TrainingDataDrift />
+            </FadeIn>
           </div>
-        </TabsContent>
-      </Tabs>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.1}>
+              <FeatureImportance />
+            </FadeIn>
+            <FadeIn delay={0.15}>
+              <RetrainingTriggers />
+            </FadeIn>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
