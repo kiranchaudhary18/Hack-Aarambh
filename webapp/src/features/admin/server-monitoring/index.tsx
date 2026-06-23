@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { FadeIn } from "@/shared/components/Animated";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Cpu, Zap, Database, Clock } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 import { CPUUsage } from "./components/CPUUsage";
 import { MemoryUsage } from "./components/MemoryUsage";
@@ -24,10 +23,22 @@ import { SLAMonitoring } from "./components/SLAMonitoring";
 
 export function ServerMonitoring() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const location = useLocation();
 
   useEffect(() => {
     document.title = "Server Monitoring — ScamSniff Admin";
   }, []);
+
+  const getActiveSection = () => {
+    const path = location.pathname;
+    if (path.includes("/resources")) return "resources";
+    if (path.includes("/api")) return "api";
+    if (path.includes("/database")) return "database";
+    if (path.includes("/uptime")) return "uptime";
+    return "resources";
+  };
+
+  const activeSection = getActiveSection();
 
   return (
     <div className="space-y-6">
@@ -42,120 +53,99 @@ export function ServerMonitoring() {
         </p>
       </FadeIn>
 
-      <Tabs defaultValue="resources" className="space-y-6">
-        <TabsList className="clay grid w-full grid-cols-4">
-          <TabsTrigger value="resources" className="flex items-center gap-2">
-            <Cpu className="h-4 w-4" />
-            Resources
-          </TabsTrigger>
-          <TabsTrigger value="api" className="flex items-center gap-2">
-            <Zap className="h-4 w-4" />
-            API Performance
-          </TabsTrigger>
-          <TabsTrigger value="database" className="flex items-center gap-2">
-            <Database className="h-4 w-4" />
-            Database
-          </TabsTrigger>
-          <TabsTrigger value="uptime" className="flex items-center gap-2">
-            <Clock className="h-4 w-4" />
-            Uptime
-          </TabsTrigger>
-        </TabsList>
+      {activeSection === "resources" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn>
+              <CPUUsage />
+            </FadeIn>
+            <FadeIn delay={0.05}>
+              <MemoryUsage />
+            </FadeIn>
+          </div>
 
-        <TabsContent value="resources" className="space-y-6">
-          <div className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn>
-                <CPUUsage />
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <MemoryUsage />
-              </FadeIn>
-            </div>
+          <FadeIn delay={0.1}>
+            <DiskUsage />
+          </FadeIn>
 
+          <FadeIn delay={0.15}>
+            <NetworkTraffic />
+          </FadeIn>
+
+          <FadeIn delay={0.2}>
+            <ProcessMonitoring />
+          </FadeIn>
+        </div>
+      )}
+
+      {activeSection === "api" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <ActiveConnections />
+          </FadeIn>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <RequestRate />
+            </FadeIn>
             <FadeIn delay={0.1}>
-              <DiskUsage />
+              <ResponseTime />
             </FadeIn>
+          </div>
 
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn delay={0.15}>
-              <NetworkTraffic />
+              <ErrorRate />
             </FadeIn>
-
             <FadeIn delay={0.2}>
-              <ProcessMonitoring />
+              <QueueStatus />
             </FadeIn>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="api" className="space-y-6">
-          <div className="space-y-6">
-            <FadeIn>
-              <ActiveConnections />
+      {activeSection === "database" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <ConnectionPool />
+          </FadeIn>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <QueryPerformance />
             </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <RequestRate />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <ResponseTime />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.15}>
-                <ErrorRate />
-              </FadeIn>
-              <FadeIn delay={0.2}>
-                <QueueStatus />
-              </FadeIn>
-            </div>
+            <FadeIn delay={0.1}>
+              <DatabaseSize />
+            </FadeIn>
           </div>
-        </TabsContent>
 
-        <TabsContent value="database" className="space-y-6">
-          <div className="space-y-6">
+          <FadeIn delay={0.15}>
+            <ReplicationLag />
+          </FadeIn>
+        </div>
+      )}
+
+      {activeSection === "uptime" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn>
-              <ConnectionPool />
+              <ServerUptime />
             </FadeIn>
+            <FadeIn delay={0.05}>
+              <ServiceHealth />
+            </FadeIn>
+          </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <QueryPerformance />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <DatabaseSize />
-              </FadeIn>
-            </div>
-
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.1}>
+              <Incidents />
+            </FadeIn>
             <FadeIn delay={0.15}>
-              <ReplicationLag />
+              <SLAMonitoring />
             </FadeIn>
           </div>
-        </TabsContent>
-
-        <TabsContent value="uptime" className="space-y-6">
-          <div className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn>
-                <ServerUptime />
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <ServiceHealth />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.1}>
-                <Incidents />
-              </FadeIn>
-              <FadeIn delay={0.15}>
-                <SLAMonitoring />
-              </FadeIn>
-            </div>
-          </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
     </div>
   );
 }
