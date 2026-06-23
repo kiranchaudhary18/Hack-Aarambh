@@ -32,9 +32,15 @@ export function Admin() {
     scamsDetected: 0,
     activeUsers: 0,
     savedDollars: 0,
+    todayScans: 0,
+    weeklyNewUsers: 0,
+    scamRate: 0,
   });
   const [recentChecks, setRecentChecks] = useState<any[]>([]);
   const [trendData, setTrendData] = useState<any[]>([]);
+  const [liveFeed, setLiveFeed] = useState<any[]>([]);
+  const [regions, setRegions] = useState<any[]>([]);
+  const [systemHealth, setSystemHealth] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Demo data fallback
@@ -43,6 +49,9 @@ export function Admin() {
     scamsDetected: 8921,
     activeUsers: 1247,
     savedDollars: 2340000,
+    todayScans: 412,
+    weeklyNewUsers: 86,
+    scamRate: 20,
   };
 
   const demoHistory = [
@@ -61,6 +70,27 @@ export function Admin() {
     { month: "Jan", safe: 5800, scams: 1680 },
   ];
 
+  const demoLiveFeed = [
+    { t: "Scan flagged", d: "'Crypto wallet activation' · 96%", c: "var(--clay-pink)", ago: "8s" },
+    { t: "New user", d: "anika.r@gmail.com from Karachi", c: "var(--clay-blue)", ago: "42s" },
+    { t: "Pattern updated", d: "Added 'reshipping mule' v2", c: "var(--clay-yellow)", ago: "3m" },
+    { t: "Safe verdict", d: "'Backend Engineer · Stripe'", c: "var(--clay-green)", ago: "5m" },
+  ];
+
+  const demoRegions = [
+    { l: "Pakistan", v: 38, c: "var(--clay-purple)" },
+    { l: "India", v: 27, c: "var(--clay-pink)" },
+    { l: "Nigeria", v: 14, c: "var(--clay-orange)" },
+    { l: "Philippines", v: 11, c: "var(--clay-blue)" },
+    { l: "Other", v: 10, c: "var(--clay-yellow)" },
+  ];
+
+  const demoSystemHealth = [
+    { l: "API latency", v: "184 ms", icon: Server, c: "var(--clay-blue)" },
+    { l: "Model accuracy", v: "94.2 %", icon: Cpu, c: "var(--clay-purple)" },
+    { l: "Uptime", v: "99.98 %", icon: Activity, c: "var(--clay-green)" },
+  ];
+
   useEffect(() => {
     document.title = "Admin — ScamSniff";
   }, []);
@@ -68,20 +98,29 @@ export function Admin() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [stats, history, analytics] = await Promise.all([
+        const [stats, history, analytics, liveFeedData, regionsData, systemHealthData] = await Promise.all([
           api.getAdminStats(),
           api.getHistory(),
-          api.getAnalytics(),
+          api.getAdminAnalytics(),
+          api.getLiveFeed(),
+          api.getRegions(),
+          api.getSystemHealth(),
         ]);
         setAdminStats(stats || demoStats);
         setRecentChecks(history || demoHistory);
         setTrendData(analytics?.trendData || demoTrendData);
+        setLiveFeed(liveFeedData || demoLiveFeed);
+        setRegions(regionsData || demoRegions);
+        setSystemHealth(systemHealthData || demoSystemHealth);
       } catch (error) {
         console.error("Failed to fetch admin data:", error);
         // Use demo data when API fails
         setAdminStats(demoStats);
         setRecentChecks(demoHistory);
         setTrendData(demoTrendData);
+        setLiveFeed(demoLiveFeed);
+        setRegions(demoRegions);
+        setSystemHealth(demoSystemHealth);
       } finally {
         setLoading(false);
       }
@@ -258,46 +297,27 @@ export function Admin() {
               </span>
             </div>
             <ul className="mt-4 space-y-3 text-sm">
-              {[
-                {
-                  t: "Scan flagged",
-                  d: "'Crypto wallet activation' · 96%",
-                  c: "var(--clay-pink)",
-                  ago: "8s",
-                },
-                {
-                  t: "New user",
-                  d: "anika.r@gmail.com from Karachi",
-                  c: "var(--clay-blue)",
-                  ago: "42s",
-                },
-                {
-                  t: "Pattern updated",
-                  d: "Added 'reshipping mule' v2",
-                  c: "var(--clay-yellow)",
-                  ago: "3m",
-                },
-                {
-                  t: "Safe verdict",
-                  d: "'Backend Engineer · Stripe'",
-                  c: "var(--clay-green)",
-                  ago: "5m",
-                },
-              ].map((x, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span
-                    className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-lg"
-                    style={{ background: x.c }}
-                  >
-                    <Activity className="h-3.5 w-3.5" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold">{x.t}</p>
-                    <p className="truncate text-xs text-muted-foreground">{x.d}</p>
-                  </div>
-                  <span className="text-[10px] text-muted-foreground">{x.ago}</span>
+              {liveFeed.length > 0 ? (
+                liveFeed.map((x, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <span
+                      className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-lg"
+                      style={{ background: x.color }}
+                    >
+                      <Activity className="h-3.5 w-3.5" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold">{x.type}</p>
+                      <p className="truncate text-xs text-muted-foreground">{x.description}</p>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground">{x.ago}</span>
+                  </li>
+                ))
+              ) : (
+                <li className="text-center text-sm text-muted-foreground py-4">
+                  No recent activity
                 </li>
-              ))}
+              )}
             </ul>
           </div>
         </FadeIn>
@@ -309,26 +329,26 @@ export function Admin() {
               <Globe2 className="h-4 w-4 text-muted-foreground" />
             </div>
             <ul className="mt-4 space-y-3">
-              {[
-                { l: "Pakistan", v: 38, c: "var(--clay-purple)" },
-                { l: "India", v: 27, c: "var(--clay-pink)" },
-                { l: "Nigeria", v: 14, c: "var(--clay-orange)" },
-                { l: "Philippines", v: 11, c: "var(--clay-blue)" },
-                { l: "Other", v: 10, c: "var(--clay-yellow)" },
-              ].map((x) => (
-                <li key={x.l}>
-                  <div className="flex items-center justify-between text-xs font-semibold">
-                    <span>{x.l}</span>
-                    <span className="text-muted-foreground">{x.v}%</span>
-                  </div>
-                  <div className="clay-inset mt-1 h-2 overflow-hidden rounded-full">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${x.v}%`, background: x.c }}
-                    />
-                  </div>
+              {regions.length > 0 ? (
+                regions.map((x) => (
+                  <li key={x.location}>
+                    <div className="flex items-center justify-between text-xs font-semibold">
+                      <span>{x.location}</span>
+                      <span className="text-muted-foreground">{x.percentage}%</span>
+                    </div>
+                    <div className="clay-inset mt-1 h-2 overflow-hidden rounded-full">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${x.percentage}%`, background: x.color }}
+                      />
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <li className="text-center text-sm text-muted-foreground py-4">
+                  No region data available
                 </li>
-              ))}
+              )}
             </ul>
           </div>
         </FadeIn>
@@ -342,27 +362,30 @@ export function Admin() {
               </span>
             </div>
             <div className="mt-4 space-y-3">
-              {[
-                { l: "API latency", v: "184 ms", icon: Server, c: "var(--clay-blue)" },
-                { l: "Model accuracy", v: "94.2 %", icon: Cpu, c: "var(--clay-purple)" },
-                { l: "Uptime", v: "99.98 %", icon: Activity, c: "var(--clay-green)" },
-              ].map((x) => {
-                const Icon = x.icon;
-                return (
-                  <div key={x.l} className="clay-inset flex items-center gap-3 p-3">
-                    <span
-                      className="grid h-9 w-9 place-items-center rounded-xl"
-                      style={{ background: x.c }}
-                    >
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <div className="flex-1">
-                      <p className="text-xs text-muted-foreground">{x.l}</p>
-                      <p className="font-display text-lg font-bold">{x.v}</p>
+              {systemHealth.length > 0 ? (
+                systemHealth.map((x) => {
+                  const Icon = x.label === "API latency" ? Server : x.label === "Model accuracy" ? Cpu : Activity;
+                  const color = x.status === "healthy" ? "var(--clay-green)" : x.status === "warning" ? "var(--clay-yellow)" : "var(--clay-pink)";
+                  return (
+                    <div key={x.label} className="clay-inset flex items-center gap-3 p-3">
+                      <span
+                        className="grid h-9 w-9 place-items-center rounded-xl"
+                        style={{ background: color }}
+                      >
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      <div className="flex-1">
+                        <p className="text-xs text-muted-foreground">{x.label}</p>
+                        <p className="font-display text-lg font-bold">{x.value}</p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div className="text-center text-sm text-muted-foreground py-4">
+                  No system health data available
+                </div>
+              )}
             </div>
           </div>
         </FadeIn>
