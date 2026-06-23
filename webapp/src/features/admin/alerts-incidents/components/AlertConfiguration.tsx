@@ -1,7 +1,42 @@
+import { useState, useEffect } from "react";
 import { Settings, Mail, MessageSquare, Smartphone, Webhook, ToggleRight, ToggleLeft } from "lucide-react";
-import { alertRules, alertChannels } from "../data/alertConfigData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function AlertConfiguration() {
+  const [alertData, setAlertData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAlerts();
+        setAlertData(data);
+      } catch (err) {
+        setError("Failed to load alert configuration");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading alert configuration..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const alertRules = alertData?.rules || [
+    { id: 1, name: "High CPU Usage", metric: "cpu_usage", condition: ">", threshold: "80%", severity: "critical", channels: ["email", "slack"], enabled: true },
+    { id: 2, name: "Memory High", metric: "memory_usage", condition: ">", threshold: "90%", severity: "high", channels: ["email"], enabled: true },
+  ];
+
+  const alertChannels = alertData?.channels || [
+    { id: 1, name: "Admin Email", type: "email", enabled: true },
+    { id: 2, name: "DevOps Slack", type: "slack", enabled: true },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="clay p-6">
@@ -9,7 +44,7 @@ export function AlertConfiguration() {
           <h2 className="font-display text-2xl font-bold">Alert Rules</h2>
         </div>
         <div className="mt-4 space-y-3">
-          {alertRules.map((rule) => (
+          {alertRules.map((rule: any) => (
             <div key={rule.id} className="clay-inset flex items-center justify-between rounded-xl p-4">
               <div className="flex items-center gap-4">
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-purple-500/20 text-purple-500">
