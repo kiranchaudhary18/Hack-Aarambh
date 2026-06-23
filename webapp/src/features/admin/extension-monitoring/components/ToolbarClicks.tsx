@@ -1,7 +1,40 @@
+import { useState, useEffect } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { toolbarClicks } from "../data/usageData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ToolbarClicks() {
+  const [extensionData, setExtensionData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getExtensionMetrics();
+        setExtensionData(data);
+      } catch (err) {
+        setError("Failed to load toolbar data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading toolbar clicks..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const toolbarClicks = extensionData?.toolbarClicks || [
+    { date: "2024-01-01", clicks: 12450 },
+    { date: "2024-01-02", clicks: 13200 },
+    { date: "2024-01-03", clicks: 11800 },
+    { date: "2024-01-04", clicks: 14500 },
+    { date: "2024-01-05", clicks: 13800 },
+  ];
+
   return (
     <div className="clay p-6">
       <h2 className="font-display text-2xl font-bold">Toolbar Clicks</h2>
