@@ -98,6 +98,33 @@ export const api = {
   getAdminStats: () => apiRequest("/admin/stats"),
   getFlaggedCases: () => apiRequest("/admin/flagged"),
   getAdminAnalytics: () => apiRequest("/admin/analytics"),
+  getLiveFeed: () => apiRequest("/admin/live-feed"),
+  getRegions: () => apiRequest("/admin/regions"),
+  getSystemHealth: () => apiRequest("/admin/system-health"),
+
+  // Monitoring - AI
+  getAIAccuracy: () => apiRequest("/monitoring/ai/accuracy"),
+  getAIPerformance: () => apiRequest("/monitoring/ai/performance"),
+  getAIResources: () => apiRequest("/monitoring/ai/resources"),
+  getAIHealth: () => apiRequest("/monitoring/ai/health"),
+
+  // Monitoring - Server
+  getServerResources: () => apiRequest("/monitoring/server/resources"),
+  getServerAPI: () => apiRequest("/monitoring/server/api"),
+  getServerDatabase: () => apiRequest("/monitoring/server/database"),
+  getServerUptime: () => apiRequest("/monitoring/server/uptime"),
+
+  // Monitoring - Extension
+  getExtensionInstallation: () => apiRequest("/monitoring/extension/installation"),
+  getExtensionUsage: () => apiRequest("/monitoring/extension/usage"),
+  getExtensionRetention: () => apiRequest("/monitoring/extension/retention"),
+  getExtensionErrors: () => apiRequest("/monitoring/extension/errors"),
+  getExtensionPerformance: () => apiRequest("/monitoring/extension/performance"),
+
+  // Monitoring - Website
+  getWebsiteTraffic: () => apiRequest("/monitoring/website/traffic"),
+  getWebsiteErrors: () => apiRequest("/monitoring/website/errors"),
+  getWebsitePerformance: () => apiRequest("/monitoring/website/performance"),
 
   // Password Reset
   forgotPassword: (email: string) =>
