@@ -61,6 +61,9 @@ export class SearchService {
       queryBuilder.andWhere('scam.isExternal = true');
     }
 
+    // Only show approved reports in public search
+    queryBuilder.andWhere('scam.status = :status', { status: 'approved' });
+
     // Order by relevance (report count, verification status, recency)
     queryBuilder
       .orderBy('scam.reportCount', 'DESC')
@@ -143,7 +146,7 @@ export class SearchService {
       return this.scamDatabaseRepo.save(existingScam);
     }
 
-    // Create new scam entry
+    // Create new scam entry with pending status
     const newScam = this.scamDatabaseRepo.create({
       companyName,
       domain,
@@ -160,9 +163,47 @@ export class SearchService {
       ],
       isVerified: false,
       isExternal: false,
+      status: 'pending',
     });
 
     return this.scamDatabaseRepo.save(newScam);
+  }
+
+  async getPendingReports() {
+    return this.scamDatabaseRepo.find({
+      where: { status: 'pending' },
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async approveReport(id: string, adminId: string) {
+    const report = await this.scamDatabaseRepo.findOne({ where: { id } });
+    if (!report) {
+      throw new Error('Report not found');
+    }
+
+    report.status = 'approved';
+    report.isVerified = true;
+    report.reviewedBy = adminId;
+    report.reviewedAt = new Date();
+
+    return this.scamDatabaseRepo.save(report);
+  }
+
+  async rejectReport(id: string, adminId: string, reason?: string) {
+    const report = await this.scamDatabaseRepo.findOne({ where: { id } });
+    if (!report) {
+      throw new Error('Report not found');
+    }
+
+    report.status = 'rejected';
+    report.reviewedBy = adminId;
+    report.reviewedAt = new Date();
+    if (reason) {
+      report.rejectionReason = reason;
+    }
+
+    return this.scamDatabaseRepo.save(report);
   }
 
   private calculateRelevanceScore(result: ScamDatabase, query: string): number {
