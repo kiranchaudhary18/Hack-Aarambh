@@ -1,7 +1,37 @@
+import { useState, useEffect } from "react";
 import { GitBranch } from "lucide-react";
-import { modelVersions } from "../data/healthData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ModelVersion() {
+  const [healthData, setHealthData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAIHealth();
+        setHealthData(data);
+      } catch (err) {
+        setError("Failed to load model health data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading model versions..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const modelVersions = healthData?.modelVersions || [
+    { version: "v2.1.0", deployedDate: "2024-01-15", accuracy: 94.2, status: "active" },
+    { version: "v2.0.5", deployedDate: "2024-01-01", accuracy: 93.8, status: "testing" },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center justify-between">
@@ -11,7 +41,7 @@ export function ModelVersion() {
         </span>
       </div>
       <div className="mt-4 space-y-3">
-        {modelVersions.map((version) => (
+        {modelVersions.map((version: any) => (
           <div
             key={version.version}
             className="flex items-center justify-between rounded-xl border p-4"
