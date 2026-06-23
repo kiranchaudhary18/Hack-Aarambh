@@ -1,7 +1,38 @@
+import { useState, useEffect } from "react";
 import { Route, Footprints, ArrowRight } from "lucide-react";
-import { userJourneyData } from "../data/userData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function UserJourney() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load user journey data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading user journey..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const userJourneyData = websiteData?.userJourney || [
+    { users: 4520, completionRate: 85, path: ["home", "scams", "report"] },
+    { users: 2840, completionRate: 72, path: ["home", "about", "contact"] },
+    { users: 1820, completionRate: 65, path: ["scams", "details", "report"] },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center gap-3">
@@ -14,7 +45,7 @@ export function UserJourney() {
         </div>
       </div>
       <div className="mt-4 space-y-4">
-        {userJourneyData.map((journey, index) => (
+        {userJourneyData.map((journey: any, index: number) => (
           <div key={index} className="clay-inset p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
