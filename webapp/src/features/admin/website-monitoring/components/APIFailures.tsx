@@ -1,8 +1,39 @@
+import { useState, useEffect } from "react";
 import { Server, XCircle } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { apiFailureData } from "../data/errorData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function APIFailures() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load API failure data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading API failures..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const apiFailureData = websiteData?.apiFailures || [
+    { endpoint: "/api/scan", requests: 45200, failures: 45, failureRate: 0.1 },
+    { endpoint: "/api/analyze", requests: 28450, failures: 28, failureRate: 0.1 },
+    { endpoint: "/api/report", requests: 15200, failures: 15, failureRate: 0.1 },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center gap-3">
