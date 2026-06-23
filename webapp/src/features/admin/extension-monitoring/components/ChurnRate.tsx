@@ -1,7 +1,33 @@
+import { useState, useEffect } from "react";
 import { TrendingDown } from "lucide-react";
-import { churnRate } from "../data/retentionData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ChurnRate() {
+  const [extensionData, setExtensionData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getExtensionMetrics();
+        setExtensionData(data);
+      } catch (err) {
+        setError("Failed to load churn data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading churn rate..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const churnRate = extensionData?.churn || { daily: 0.8, weekly: 3.2, monthly: 8.5, change: "-1.2%" };
   const stats = [
     { label: "Daily", value: `${churnRate.daily}%` },
     { label: "Weekly", value: `${churnRate.weekly}%` },

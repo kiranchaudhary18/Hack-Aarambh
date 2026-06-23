@@ -1,7 +1,39 @@
+import { useState, useEffect } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
-import { apiResponseTime } from "../data/apiPerformanceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ResponseTime() {
+  const [serverData, setServerData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getServerAPI();
+        setServerData(data);
+      } catch (err) {
+        setError("Failed to load response time data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading response time..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const apiResponseTime = serverData?.responseTime || [
+    { endpoint: "/api/scan", p50: 45, p95: 120, p99: 180 },
+    { endpoint: "/api/analyze", p50: 85, p95: 220, p99: 350 },
+    { endpoint: "/api/history", p50: 25, p95: 65, p99: 95 },
+    { endpoint: "/api/admin", p50: 35, p95: 85, p99: 130 },
+  ];
+
   return (
     <div className="clay p-6">
       <h2 className="font-display text-2xl font-bold">API Response Time</h2>

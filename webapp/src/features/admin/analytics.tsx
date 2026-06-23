@@ -47,7 +47,7 @@ export function AdminAnalytics() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const analytics = await api.getAnalytics();
+        const analytics = await api.getAdminAnalytics();
         setScamTypes(analytics?.scamTypes || demoScamTypes);
         setTrendData(analytics?.trendData || demoTrendData);
       } catch (error) {

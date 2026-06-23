@@ -1,7 +1,39 @@
+import { useState, useEffect } from "react";
 import { HeartPulse } from "lucide-react";
-import { serviceHealth } from "../data/uptimeData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ServiceHealth() {
+  const [serverData, setServerData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getServerUptime();
+        setServerData(data);
+      } catch (err) {
+        setError("Failed to load service health data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading service health..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const serviceHealth = serverData?.services || [
+    { service: "API Server", responseTime: 45, lastCheck: "1m ago", status: "healthy" },
+    { service: "Database", responseTime: 12, lastCheck: "1m ago", status: "healthy" },
+    { service: "Redis Cache", responseTime: 3, lastCheck: "1m ago", status: "healthy" },
+    { service: "AI Model", responseTime: 85, lastCheck: "1m ago", status: "degraded" },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center justify-between">
@@ -11,7 +43,7 @@ export function ServiceHealth() {
         </span>
       </div>
       <div className="mt-4 space-y-3">
-        {serviceHealth.map((service) => (
+        {serviceHealth.map((service: any) => (
           <div key={service.service} className="clay-inset flex items-center justify-between rounded-xl p-4">
             <div className="flex-1">
               <p className="font-semibold">{service.service}</p>

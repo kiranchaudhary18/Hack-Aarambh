@@ -161,11 +161,143 @@ model ScamDatabase {
   isVerified    Boolean  @default(false)
   isExternal    Boolean  @default(false)
   externalSource String?  @db.VarChar
+  status        String   @default("pending") @db.VarChar
+  reviewedBy    String?  @db.Uuid
+  reviewedAt    DateTime? @db.Timestamp(6)
+  rejectionReason String? @db.Text
   createdAt     DateTime @default(now()) @db.Timestamp(6)
   updatedAt     DateTime @updatedAt @db.Timestamp(6)
 
   @@index([companyName])
   @@index([domain])
   @@index([scamType])
+  @@index([status])
   @@map("scam_database")
+}
+
+model SystemMetrics {
+  id        String   @id @default(uuid()) @db.Uuid
+  metricType String  @db.VarChar
+  metricName String  @db.VarChar
+  value     Float
+  unit      String?  @db.VarChar
+  metadata  Json?
+  timestamp DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([metricType])
+  @@index([metricName])
+  @@index([timestamp])
+  @@map("system_metrics")
+}
+
+model AIMetrics {
+  id        String   @id @default(uuid()) @db.Uuid
+  metricType String  @db.VarChar
+  metricName String  @db.VarChar
+  value     Float
+  unit      String?  @db.VarChar
+  metadata  Json?
+  timestamp DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([metricType])
+  @@index([metricName])
+  @@index([timestamp])
+  @@map("ai_metrics")
+}
+
+model ExtensionMetrics {
+  id        String   @id @default(uuid()) @db.Uuid
+  metricType String  @db.VarChar
+  metricName String  @db.VarChar
+  value     Float
+  unit      String?  @db.VarChar
+  metadata  Json?
+  timestamp DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([metricType])
+  @@index([metricName])
+  @@index([timestamp])
+  @@map("extension_metrics")
+}
+
+model WebsiteMetrics {
+  id        String   @id @default(uuid()) @db.Uuid
+  metricType String  @db.VarChar
+  metricName String  @db.VarChar
+  value     Float
+  unit      String?  @db.VarChar
+  metadata  Json?
+  timestamp DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([metricType])
+  @@index([metricName])
+  @@index([timestamp])
+  @@map("website_metrics")
+}
+
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar
+  description String?  @db.Text
+  permissions Json     @default("[]")
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar
+  description String?  @db.Text
+  resource    String   @db.VarChar
+  action      String   @db.VarChar
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+
+  @@map("permissions")
+}
+
+model Alert {
+  id            String   @id @default(uuid()) @db.Uuid
+  name          String   @db.VarChar
+  type          String   @db.VarChar
+  threshold     Float
+  condition     String   @db.VarChar
+  enabled       Boolean  @default(true)
+  channels      Json     @default("[]")
+  lastTriggered DateTime? @db.Timestamp(6)
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @updatedAt @db.Timestamp(6)
+
+  @@map("alerts")
+}
+
+model Incident {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String   @db.VarChar
+  description String   @db.Text
+  severity    String   @default("medium") @db.VarChar
+  status      String   @default("open") @db.VarChar
+  alertId     String?  @db.Uuid
+  resolvedBy  String?  @db.Uuid
+  resolvedAt  DateTime? @db.Timestamp(6)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+
+  @@index([status])
+  @@index([severity])
+  @@map("incidents")
+}
+
+model SystemSettings {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @unique @db.VarChar
+  value       Json
+  category    String   @db.VarChar
+  description String?  @db.Text
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+
+  @@index([category])
+  @@map("system_settings")
 }

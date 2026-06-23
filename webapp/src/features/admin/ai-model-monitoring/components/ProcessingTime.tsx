@@ -1,7 +1,39 @@
+import { useState, useEffect } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
-import { processingTimeData } from "../data/performanceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ProcessingTime() {
+  const [performanceData, setPerformanceData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAIPerformance();
+        setPerformanceData(data);
+      } catch (err) {
+        setError("Failed to load performance data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading processing time data..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const processingTimeData = performanceData?.processingTime || [
+    { inputSize: "<1KB", avgTime: 25, p95: 45 },
+    { inputSize: "1-10KB", avgTime: 42, p95: 85 },
+    { inputSize: "10-100KB", avgTime: 78, p95: 150 },
+    { inputSize: ">100KB", avgTime: 120, p95: 220 },
+  ];
+
   return (
     <div className="clay p-6">
       <h2 className="font-display text-2xl font-bold">Processing Time by Input Size</h2>

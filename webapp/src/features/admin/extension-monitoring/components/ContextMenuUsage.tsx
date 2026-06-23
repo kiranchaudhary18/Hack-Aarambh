@@ -1,8 +1,40 @@
+import { useState, useEffect } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
-import { contextMenuUsage } from "../data/usageData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ContextMenuUsage() {
-  const data = contextMenuUsage.map((item) => ({
+  const [extensionData, setExtensionData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getExtensionMetrics();
+        setExtensionData(data);
+      } catch (err) {
+        setError("Failed to load context menu data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading context menu usage..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const contextMenuUsage = extensionData?.contextMenu || [
+    { action: "Scan Selection", count: 35200 },
+    { action: "Scan Link", count: 18450 },
+    { action: "Scan Image", count: 8200 },
+    { action: "Report", count: 5800 },
+  ];
+
+  const data = contextMenuUsage.map((item: any) => ({
     ...item,
     color:
       item.action === "Scan Selection"

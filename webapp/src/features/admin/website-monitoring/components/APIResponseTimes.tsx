@@ -1,8 +1,39 @@
+import { useState, useEffect } from "react";
 import { Server, Zap } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
-import { apiResponseTimeData } from "../data/performanceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function APIResponseTimes() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load API response times");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading API response times..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const apiResponseTimeData = websiteData?.apiResponseTimes || [
+    { endpoint: "/api/scan", p50: 45, p95: 85, p99: 120 },
+    { endpoint: "/api/analyze", p50: 62, p95: 110, p99: 150 },
+    { endpoint: "/api/report", p50: 38, p95: 72, p99: 95 },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center gap-3">

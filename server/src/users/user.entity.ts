@@ -5,8 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { ApiToken } from "../tokens/api-token.entity";
+import { Role } from "../admin/entities/role.entity";
 
 @Entity()
 export class User {
@@ -21,6 +24,13 @@ export class User {
 
   @Column({ default: "user" })
   role!: string;
+
+  @ManyToOne(() => Role, { nullable: true })
+  @JoinColumn({ name: "roleId" })
+  roleEntity?: Role;
+
+  @Column({ nullable: true, type: "uuid" })
+  roleId?: string;
 
   @Column({ nullable: true })
   name!: string;
@@ -41,7 +51,7 @@ export class User {
   isVerified!: boolean;
 
   @Column({ nullable: true, type: "varchar" })
-  twoFactorSecret!: string;
+  twoFactorSecret!: string | null;
 
   @Column({ default: false })
   twoFactorEnabled!: boolean;

@@ -1,7 +1,38 @@
+import { useState, useEffect } from "react";
 import { AlertCircle, Clock, CheckCircle, XCircle, User } from "lucide-react";
-import { incidents, incidentStats } from "../data/incidentsData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function IncidentManagement() {
+  const [incidentData, setIncidentData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAlerts();
+        setIncidentData(data);
+      } catch (err) {
+        setError("Failed to load incident data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading incidents..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const incidentStats = incidentData?.stats || { total: 45, open: 5, inProgress: 8, resolved: 32, avgResolutionTime: 45 };
+  const incidents = incidentData?.incidents || [
+    { id: 1, title: "Database Down", description: "PostgreSQL cluster unavailable", severity: "critical", status: "resolved", downtime: 15, assignedTo: "John", createdAt: "2d ago" },
+    { id: 2, title: "API Latency", description: "High response times on /api/scan", severity: "high", status: "in_progress", downtime: 0, assignedTo: "Jane", createdAt: "1d ago" },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center justify-between">
@@ -30,7 +61,7 @@ export function IncidentManagement() {
         </div>
       </div>
       <div className="mt-6 space-y-3">
-        {incidents.map((incident) => (
+        {incidents.map((incident: any) => (
           <div key={incident.id} className="clay-inset flex items-center justify-between rounded-xl p-4">
             <div className="flex items-center gap-4">
               <span

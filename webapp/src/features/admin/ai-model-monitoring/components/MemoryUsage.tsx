@@ -1,11 +1,37 @@
+import { useState, useEffect } from "react";
 import { MemoryStick } from "lucide-react";
-import { memoryUsage } from "../data/resourceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function MemoryUsage() {
+  const [resourceData, setResourceData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAIResources();
+        setResourceData(data);
+      } catch (err) {
+        setError("Failed to load memory data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading memory data..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const memory = resourceData?.memory || { current: 12.5, average: 10.2, peak: 16.8 };
   const stats = [
-    { label: "Current", value: `${memoryUsage.current}GB` },
-    { label: "Average", value: `${memoryUsage.average}GB` },
-    { label: "Peak", value: `${memoryUsage.peak}GB` },
+    { label: "Current", value: `${memory.current}GB` },
+    { label: "Average", value: `${memory.average}GB` },
+    { label: "Peak", value: `${memory.peak}GB` },
   ];
 
   return (
@@ -27,14 +53,14 @@ export function MemoryUsage() {
         ))}
       </div>
       <p className="mt-3 text-xs text-muted-foreground">
-        {memoryUsage.perRequest}GB per request
+        {memory.perRequest || 0.5}GB per request
       </p>
       <p
         className={`mt-1 text-xs font-medium ${
-          memoryUsage.change.startsWith("-") ? "text-green-500" : "text-red-500"
+          resourceData?.memory?.status === 'healthy' ? "text-green-500" : resourceData?.memory?.status === 'warning' ? "text-yellow-500" : "text-red-500"
         }`}
       >
-        {memoryUsage.change} from last week
+        Status: {resourceData?.memory?.status || 'unknown'}
       </p>
     </div>
   );

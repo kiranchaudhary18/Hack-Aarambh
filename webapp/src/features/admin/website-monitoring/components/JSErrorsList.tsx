@@ -1,5 +1,8 @@
+import { useState, useEffect } from "react";
 import { Code, FileCode, AlertTriangle, AlertCircle, Info } from "lucide-react";
-import { jsErrors } from "../data/errorData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 const severityIcons = {
   high: AlertTriangle,
@@ -14,6 +17,33 @@ const severityColors = {
 };
 
 export function JSErrorsList() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load JS errors");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading JS errors..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const jsErrors = websiteData?.jsErrors || [
+    { id: "ERR-001", message: "Cannot read property 'undefined' of undefined", severity: "high", count: 45, lastSeen: "2h ago", file: "app.js", line: 124, stack: "TypeError at app.js:124:15" },
+    { id: "ERR-002", message: "Failed to fetch user data", severity: "medium", count: 28, lastSeen: "5h ago", file: "api.js", line: 45, stack: "NetworkError at app.js:45:10" },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center gap-3">
@@ -26,7 +56,7 @@ export function JSErrorsList() {
         </div>
       </div>
       <div className="mt-4 space-y-3">
-        {jsErrors.map((error) => {
+        {jsErrors.map((error: any) => {
           const SeverityIcon = severityIcons[error.severity];
           return (
             <div key={error.id} className="clay-inset p-4">

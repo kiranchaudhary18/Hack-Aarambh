@@ -1,7 +1,37 @@
+import { useState, useEffect } from "react";
 import { HardDrive } from "lucide-react";
-import { diskUsage } from "../data/systemResourcesData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function DiskUsage() {
+  const [serverData, setServerData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getServerResources();
+        setServerData(data);
+      } catch (err) {
+        setError("Failed to load disk data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading disk usage..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const diskUsage = serverData?.disk || [
+    { mount: "/", used: 120, total: 500, percentage: 24, iops: { read: 450, write: 280 }, throughput: { read: 85, write: 45 } },
+    { mount: "/var", used: 85, total: 200, percentage: 42, iops: { read: 320, write: 190 }, throughput: { read: 62, write: 38 } },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center justify-between">
@@ -11,7 +41,7 @@ export function DiskUsage() {
         </span>
       </div>
       <div className="mt-4 space-y-3">
-        {diskUsage.map((disk) => (
+        {diskUsage.map((disk: any) => (
           <div key={disk.mount} className="clay-inset rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>

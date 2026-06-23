@@ -17,19 +17,41 @@ export function Report() {
     document.title = "Report a Scam — ScamSniff";
   }, []);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (jobText.trim().length < 30)
       return toast.error("Please paste at least 30 characters of the offer.");
     if (jobText.length > 5000) return toast.error("Offer text must be under 5000 characters.");
     if (desc.length > 1000) return toast.error("Description must be under 1000 characters.");
     setSending(true);
-    setTimeout(() => {
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/search/report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          companyName: 'Unknown Company', // You may want to add a field for this
+          scamType: type,
+          description: desc || 'No description provided',
+          severity: 'medium', // Default severity
+          isAnonymous: true,
+        }),
+      });
+
+      if (response.ok) {
+        setJobText("");
+        setDesc("");
+        toast.success("Thanks! Your report is pending admin review.");
+      } else {
+        toast.error("Failed to submit report. Please try again.");
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
       setSending(false);
-      setJobText("");
-      setDesc("");
-      toast.success("Thanks! Your report is queued for review.");
-    }, 1200);
+    }
   }
 
   return (

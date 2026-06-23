@@ -1,7 +1,40 @@
+import { useState, useEffect } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
-import { tokenUsageData } from "../data/resourceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function TokenUsage() {
+  const [resourceData, setResourceData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAIResources();
+        setResourceData(data);
+      } catch (err) {
+        setError("Failed to load resource data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading token usage..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const tokenUsageData = resourceData?.tokenUsageHistory || [
+    { date: "2024-01-01", tokens: 50000, cost: 0.5 },
+    { date: "2024-01-02", tokens: 55000, cost: 0.55 },
+    { date: "2024-01-03", tokens: 48000, cost: 0.48 },
+    { date: "2024-01-04", tokens: 62000, cost: 0.62 },
+    { date: "2024-01-05", tokens: 58000, cost: 0.58 },
+  ];
+
   return (
     <div className="clay p-6">
       <h2 className="font-display text-2xl font-bold">Token Usage & Cost</h2>

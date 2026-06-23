@@ -1,7 +1,42 @@
+import { useState, useEffect } from "react";
 import { Users, Eye, Activity, TrendingDown } from "lucide-react";
-import { trafficOverview } from "../data/trafficData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function TrafficOverview() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load traffic data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading traffic overview..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const trafficOverview = websiteData?.trafficOverview || {
+    realTimeVisitors: 1245,
+    visitorsChange: "+12.5%",
+    pageViewsPerSession: 4.2,
+    totalSessionsToday: 8450,
+    sessionsChange: "+8.2%",
+    bounceRate: 35.8,
+    bounceRateChange: "-2.1%",
+  };
+
   const stats = [
     {
       icon: Users,

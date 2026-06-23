@@ -21,4 +21,19 @@ export class AdminController {
   async analytics(@Req() req: any) {
     return this.svc.getAnalytics();
   }
+
+  @Get("live-feed")
+  async liveFeed(@Req() req: any) {
+    return this.svc.getLiveFeed();
+  }
+
+  @Get("regions")
+  async regions(@Req() req: any) {
+    return this.svc.getRegions();
+  }
+
+  @Get("system-health")
+  async systemHealth(@Req() req: any) {
+    return this.svc.getSystemHealth();
+  }
 }

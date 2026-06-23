@@ -1,7 +1,40 @@
+import { useState, useEffect } from "react";
 import { MemoryStick } from "lucide-react";
-import { memoryUsage } from "../data/systemResourcesData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function MemoryUsage() {
+  const [serverData, setServerData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getServerResources();
+        setServerData(data);
+      } catch (err) {
+        setError("Failed to load memory data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading memory usage..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const memoryUsage = serverData?.memory || {
+    ram: { percentage: 68, used: 10.9, total: 16 },
+    swap: { percentage: 12, used: 0.6, total: 4 },
+    buffers: 1.2,
+    cache: 3.8,
+    change: "+2.3%",
+  };
+
   return (
     <div className="clay p-5">
       <div className="flex items-center justify-between">

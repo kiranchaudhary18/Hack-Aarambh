@@ -1,7 +1,38 @@
+import { useState, useEffect } from "react";
 import { Activity } from "lucide-react";
-import { processStatus } from "../data/systemResourcesData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ProcessMonitoring() {
+  const [serverData, setServerData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getServerResources();
+        setServerData(data);
+      } catch (err) {
+        setError("Failed to load process data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading process data..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const processStatus = serverData?.processes || [
+    { pid: 1234, name: "node-server", uptime: "45d", cpu: 2.5, memory: 1.2, status: "running" },
+    { pid: 5678, name: "postgres", uptime: "45d", cpu: 1.8, memory: 2.4, status: "running" },
+    { pid: 9012, name: "redis", uptime: "45d", cpu: 0.5, memory: 0.3, status: "running" },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center justify-between">
@@ -11,7 +42,7 @@ export function ProcessMonitoring() {
         </span>
       </div>
       <div className="mt-4 space-y-3">
-        {processStatus.map((process) => (
+        {processStatus.map((process: any) => (
           <div key={process.pid} className="clay-inset flex items-center justify-between rounded-xl p-4">
             <div className="flex-1">
               <p className="font-semibold">{process.name}</p>

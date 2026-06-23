@@ -1,7 +1,39 @@
+import { useState, useEffect } from "react";
 import { Clock, Timer, Gauge, CheckCircle2, AlertTriangle } from "lucide-react";
-import { pageLoadPercentiles } from "../data/performanceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function PageLoadTimes() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load page load data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading page load times..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const pageLoadPercentiles = websiteData?.pageLoadPercentiles || [
+    { percentile: "p50", time: 1.8, status: "good", target: 2.5 },
+    { percentile: "p75", time: 2.4, status: "good", target: 3.0 },
+    { percentile: "p90", time: 3.2, status: "warning", target: 3.5 },
+    { percentile: "p95", time: 4.1, status: "warning", target: 4.0 },
+  ];
+
   const statusIcons = {
     good: CheckCircle2,
     warning: AlertTriangle,

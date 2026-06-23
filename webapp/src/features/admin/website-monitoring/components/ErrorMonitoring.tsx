@@ -1,7 +1,39 @@
+import { useState, useEffect } from "react";
 import { AlertTriangle, Bug, XCircle, WifiOff } from "lucide-react";
-import { errorOverview } from "../data/errorData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ErrorMonitoring() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load error data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading error monitoring..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const errorOverview = websiteData?.errorOverview || {
+    jsErrors: 45,
+    apiFailures: 28,
+    pageLoadFailures: 12,
+    networkErrors: 8,
+  };
+
   const stats = [
     {
       icon: Bug,
