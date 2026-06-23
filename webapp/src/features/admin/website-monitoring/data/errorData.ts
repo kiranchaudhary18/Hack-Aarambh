@@ -1,0 +1,110 @@
+import { ErrorOverview, JSError, APIFailureData, NetworkErrorData, ErrorTrendData } from "../types/website-monitoring";
+
+export const errorOverview: ErrorOverview = {
+  jsErrors: 23,
+  apiFailures: 12,
+  pageLoadFailures: 5,
+  networkErrors: 8,
+  totalErrors: 48,
+  errorRate: "0.57%",
+};
+
+export const jsErrors: JSError[] = [
+  {
+    id: "ERR-001",
+    message: "Uncaught TypeError: Cannot read property 'x' of undefined",
+    file: "/src/components/Analyze.tsx",
+    line: 45,
+    count: 12,
+    lastSeen: "2 hours ago",
+    severity: "high",
+    stack: "at Analyze.handleScan (/src/components/Analyze.tsx:45:23)\n    at onClick (/src/components/Analyze.tsx:78:12)",
+  },
+  {
+    id: "ERR-002",
+    message: "ReferenceError: api is not defined",
+    file: "/src/features/dashboard/dashboard.tsx",
+    line: 23,
+    count: 8,
+    lastSeen: "5 hours ago",
+    severity: "medium",
+    stack: "at Dashboard.loadData (/src/features/dashboard/dashboard.tsx:23:15)",
+  },
+  {
+    id: "ERR-003",
+    message: "SyntaxError: Unexpected token '<'",
+    file: "/src/shared/lib/api.ts",
+    line: 67,
+    count: 5,
+    lastSeen: "8 hours ago",
+    severity: "high",
+    stack: "at api.get (/src/shared/lib/api.ts:67:10)\n    at fetchAnalytics (/src/features/admin/analytics.tsx:31:12)",
+  },
+  {
+    id: "ERR-004",
+    message: "NetworkError: Failed to fetch",
+    file: "/src/components/Result.tsx",
+    line: 112,
+    count: 3,
+    lastSeen: "12 hours ago",
+    severity: "medium",
+    stack: "at Result.loadData (/src/components/Result.tsx:112:18)",
+  },
+  {
+    id: "ERR-005",
+    message: "RangeError: Maximum call stack size exceeded",
+    file: "/src/features/history/history.tsx",
+    line: 89,
+    count: 2,
+    lastSeen: "18 hours ago",
+    severity: "high",
+    stack: "at History.renderItem (/src/features/history/history.tsx:89:25)",
+  },
+];
+
+export const apiFailureData: APIFailureData[] = [
+  { endpoint: "/api/scan", requests: 4521, failures: 5, failureRate: 0.11 },
+  { endpoint: "/api/analytics", requests: 2345, failures: 3, failureRate: 0.13 },
+  { endpoint: "/api/history", requests: 1876, failures: 2, failureRate: 0.11 },
+  { endpoint: "/api/auth/login", requests: 987, failures: 2, failureRate: 0.20 },
+];
+
+export const networkErrorData: NetworkErrorData[] = [
+  { type: "Timeout", count: 4, percentage: 50, color: "var(--clay-red)" },
+  { type: "CORS", count: 2, percentage: 25, color: "var(--clay-orange)" },
+  { type: "404 Not Found", count: 1, percentage: 13, color: "var(--clay-yellow)" },
+  { type: "500 Server Error", count: 1, percentage: 12, color: "var(--clay-pink)" },
+];
+
+export const errorTrendData: ErrorTrendData[] = [
+  { date: "Jan 1", jsErrors: 18, apiFailures: 8, networkErrors: 5 },
+  { date: "Jan 2", jsErrors: 22, apiFailures: 10, networkErrors: 6 },
+  { date: "Jan 3", jsErrors: 19, apiFailures: 9, networkErrors: 4 },
+  { date: "Jan 4", jsErrors: 25, apiFailures: 11, networkErrors: 7 },
+  { date: "Jan 5", jsErrors: 21, apiFailures: 8, networkErrors: 5 },
+  { date: "Jan 6", jsErrors: 20, apiFailures: 9, networkErrors: 6 },
+  { date: "Jan 7", jsErrors: 24, apiFailures: 12, networkErrors: 8 },
+  { date: "Jan 8", jsErrors: 22, apiFailures: 10, networkErrors: 5 },
+  { date: "Jan 9", jsErrors: 19, apiFailures: 8, networkErrors: 4 },
+  { date: "Jan 10", jsErrors: 23, apiFailures: 11, networkErrors: 7 },
+  { date: "Jan 11", jsErrors: 21, apiFailures: 9, networkErrors: 6 },
+  { date: "Jan 12", jsErrors: 20, apiFailures: 10, networkErrors: 5 },
+  { date: "Jan 13", jsErrors: 25, apiFailures: 12, networkErrors: 8 },
+  { date: "Jan 14", jsErrors: 22, apiFailures: 11, networkErrors: 6 },
+  { date: "Jan 15", jsErrors: 24, apiFailures: 10, networkErrors: 7 },
+  { date: "Jan 16", jsErrors: 21, apiFailures: 9, networkErrors: 5 },
+  { date: "Jan 17", jsErrors: 23, apiFailures: 11, networkErrors: 6 },
+  { date: "Jan 18", jsErrors: 20, apiFailures: 8, networkErrors: 4 },
+  { date: "Jan 19", jsErrors: 22, apiFailures: 10, networkErrors: 7 },
+  { date: "Jan 20", jsErrors: 24, apiFailures: 12, networkErrors: 8 },
+  { date: "Jan 21", jsErrors: 21, apiFailures: 9, networkErrors: 5 },
+  { date: "Jan 22", jsErrors: 23, apiFailures: 11, networkErrors: 6 },
+  { date: "Jan 23", jsErrors: 20, apiFailures: 10, networkErrors: 7 },
+  { date: "Jan 24", jsErrors: 25, apiFailures: 12, networkErrors: 8 },
+  { date: "Jan 25", jsErrors: 22, apiFailures: 11, networkErrors: 6 },
+  { date: "Jan 26", jsErrors: 24, apiFailures: 10, networkErrors: 5 },
+  { date: "Jan 27", jsErrors: 21, apiFailures: 9, networkErrors: 7 },
+  { date: "Jan 28", jsErrors: 23, apiFailures: 11, networkErrors: 6 },
+  { date: "Jan 29", jsErrors: 22, apiFailures: 10, networkErrors: 5 },
+  { date: "Jan 30", jsErrors: 23, apiFailures: 12, networkErrors: 8 },
+];
