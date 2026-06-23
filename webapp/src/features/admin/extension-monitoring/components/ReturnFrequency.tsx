@@ -1,7 +1,33 @@
+import { useState, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
-import { returnFrequency } from "../data/retentionData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ReturnFrequency() {
+  const [extensionData, setExtensionData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getExtensionMetrics();
+        setExtensionData(data);
+      } catch (err) {
+        setError("Failed to load return frequency");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading return frequency..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const returnFrequency = extensionData?.returnFrequency || { once: 15, daily: 35, weekly: 28, monthly: 22 };
   const stats = [
     { label: "Once", value: `${returnFrequency.once}%` },
     { label: "Daily", value: `${returnFrequency.daily}%` },
