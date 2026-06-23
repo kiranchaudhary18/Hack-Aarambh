@@ -1,11 +1,37 @@
+import { useState, useEffect } from "react";
 import { Cpu } from "lucide-react";
-import { gpuUtilization } from "../data/resourceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function GPUUtilization() {
+  const [resourceData, setResourceData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAIResources();
+        setResourceData(data);
+      } catch (err) {
+        setError("Failed to load GPU data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading GPU data..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const gpu = resourceData?.gpu || { current: 65, average: 58, peak: 92 };
   const stats = [
-    { label: "Current", value: `${gpuUtilization.current}%` },
-    { label: "Average", value: `${gpuUtilization.average}%` },
-    { label: "Peak", value: `${gpuUtilization.peak}%` },
+    { label: "Current", value: `${gpu.current}%` },
+    { label: "Average", value: `${gpu.average}%` },
+    { label: "Peak", value: `${gpu.peak}%` },
   ];
 
   return (
@@ -28,10 +54,10 @@ export function GPUUtilization() {
       </div>
       <p
         className={`mt-3 text-xs font-medium ${
-          gpuUtilization.change.startsWith("-") ? "text-green-500" : "text-red-500"
+          resourceData?.gpu?.status === 'healthy' ? "text-green-500" : resourceData?.gpu?.status === 'warning' ? "text-yellow-500" : "text-red-500"
         }`}
       >
-        {gpuUtilization.change} from last week
+        Status: {resourceData?.gpu?.status || 'unknown'}
       </p>
     </div>
   );
