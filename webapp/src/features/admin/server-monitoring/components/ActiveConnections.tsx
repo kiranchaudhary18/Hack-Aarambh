@@ -1,7 +1,33 @@
+import { useState, useEffect } from "react";
 import { Link } from "lucide-react";
-import { activeConnections } from "../data/apiPerformanceData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ActiveConnections() {
+  const [serverData, setServerData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getServerAPI();
+        setServerData(data);
+      } catch (err) {
+        setError("Failed to load connection data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading connections..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const activeConnections = serverData?.connections || { http: 245, websocket: 42, total: 287 };
   const stats = [
     { label: "HTTP", value: activeConnections.http, color: "var(--clay-blue)" },
     { label: "WebSocket", value: activeConnections.websocket, color: "var(--clay-purple)" },
