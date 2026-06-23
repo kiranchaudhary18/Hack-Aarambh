@@ -1,8 +1,40 @@
+import { useState, useEffect } from "react";
 import { Filter } from "lucide-react";
-import { conversionFunnelData } from "../data/trafficData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ConversionFunnel() {
-  const maxCount = Math.max(...conversionFunnelData.map((d) => d.count));
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load conversion data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading conversion funnel..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const conversionFunnelData = websiteData?.conversionFunnel || [
+    { stage: "Page View", count: 45200, percentage: 100 },
+    { stage: "Sign Up", count: 8450, percentage: 18.7 },
+    { stage: "Onboarding", count: 5200, percentage: 11.5 },
+    { stage: "Active User", count: 2845, percentage: 6.3 },
+  ];
+
+  const maxCount = Math.max(...conversionFunnelData.map((d: any) => d.count));
 
   return (
     <div className="clay p-6">
