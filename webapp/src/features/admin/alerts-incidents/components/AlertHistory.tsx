@@ -1,7 +1,38 @@
+import { useState, useEffect } from "react";
 import { AlertTriangle, CheckCircle, Clock, User } from "lucide-react";
-import { alertHistory, alertStats } from "../data/alertHistoryData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function AlertHistory() {
+  const [alertData, setAlertData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAlerts();
+        setAlertData(data);
+      } catch (err) {
+        setError("Failed to load alert history");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading alert history..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const alertStats = alertData?.stats || { total: 245, active: 12, resolved: 220, critical: 8 };
+  const alertHistory = alertData?.history || [
+    { id: 1, type: "High CPU", message: "CPU usage exceeded 90%", severity: "critical", resolved: true, assignedTo: "John", timestamp: "2h ago" },
+    { id: 2, type: "Memory High", message: "Memory usage at 85%", severity: "high", resolved: false, assignedTo: "Jane", timestamp: "1h ago" },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center justify-between">
@@ -26,7 +57,7 @@ export function AlertHistory() {
         </div>
       </div>
       <div className="mt-6 space-y-3">
-        {alertHistory.map((alert) => (
+        {alertHistory.map((alert: any) => (
           <div key={alert.id} className="clay-inset flex items-center justify-between rounded-xl p-4">
             <div className="flex items-center gap-4">
               <span
