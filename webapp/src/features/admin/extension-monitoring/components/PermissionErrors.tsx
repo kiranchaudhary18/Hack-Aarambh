@@ -1,7 +1,37 @@
+import { useState, useEffect } from "react";
 import { ShieldAlert } from "lucide-react";
-import { permissionErrors } from "../data/errorData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function PermissionErrors() {
+  const [extensionData, setExtensionData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getExtensionMetrics();
+        setExtensionData(data);
+      } catch (err) {
+        setError("Failed to load permission error data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading permission errors..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const permissionErrors = extensionData?.permissionErrors || [
+    { permission: "tabs", users: 245, errors: 12 },
+    { permission: "storage", users: 85, errors: 5 },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center justify-between">
@@ -11,7 +41,7 @@ export function PermissionErrors() {
         </span>
       </div>
       <div className="mt-4 space-y-3">
-        {permissionErrors.map((error) => (
+        {permissionErrors.map((error: any) => (
           <div key={error.permission} className="clay-inset flex items-center justify-between rounded-xl p-4">
             <div className="flex-1">
               <p className="font-semibold">{error.permission}</p>
