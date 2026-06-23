@@ -1,8 +1,40 @@
+import { useState, useEffect } from "react";
 import { Link, Share2, Globe } from "lucide-react";
 import { ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, Legend, Tooltip } from "recharts";
-import { trafficSourceData } from "../data/trafficData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function TrafficSources() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load traffic sources");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading traffic sources..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const trafficSourceData = websiteData?.trafficSources || [
+    { source: "Organic Search", count: 45200, color: "oklch(0.72 0.16 155)" },
+    { source: "Direct", count: 28450, color: "oklch(0.62 0.18 295)" },
+    { source: "Referral", count: 15200, color: "oklch(0.66 0.22 22)" },
+    { source: "Social", count: 8200, color: "oklch(0.75 0.12 85)" },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center gap-3">
@@ -27,7 +59,7 @@ export function TrafficSources() {
               innerRadius={56}
               paddingAngle={4}
             >
-              {trafficSourceData.map((entry, index) => (
+              {trafficSourceData.map((entry: any, index: number) => (
                 <Cell key={`cell-${index}`} fill={entry.color} stroke="var(--card)" strokeWidth={4} />
               ))}
             </Pie>
