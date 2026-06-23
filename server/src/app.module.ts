@@ -8,10 +8,16 @@ import { HistoryModule } from "./history/history.module";
 import { TokensModule } from "./tokens/tokens.module";
 import { ExtensionModule } from "./extension/extension.module";
 import { SearchModule } from "./search/search.module";
+import { MonitoringModule } from "./monitoring/monitoring.module";
+import { UserManagementModule } from "./user-management/user-management.module";
+import { AlertsModule } from "./alerts/alerts.module";
+import { SettingsModule } from "./settings/settings.module";
+import { ScheduleModule } from "@nestjs/schedule";
 import { History } from "./history/history.entity";
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: "postgres",
       host: "localhost",
@@ -31,6 +37,10 @@ import { History } from "./history/history.entity";
     TokensModule,
     ExtensionModule,
     SearchModule,
+    MonitoringModule,
+    UserManagementModule,
+    AlertsModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}
