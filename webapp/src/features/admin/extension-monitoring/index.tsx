@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { FadeIn } from "@/shared/components/Animated";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Download, Users, TrendingUp, AlertTriangle, Zap } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 import { TotalInstalls } from "./components/TotalInstalls";
 import { InstallSources } from "./components/InstallSources";
@@ -29,10 +28,23 @@ import { OCRProcessingTime } from "./components/OCRProcessingTime";
 
 export function ExtensionMonitoring() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const location = useLocation();
 
   useEffect(() => {
     document.title = "Extension Monitoring — ScamSniff Admin";
   }, []);
+
+  const getActiveSection = () => {
+    const path = location.pathname;
+    if (path.includes("/installation")) return "installation";
+    if (path.includes("/usage")) return "usage";
+    if (path.includes("/retention")) return "retention";
+    if (path.includes("/errors")) return "errors";
+    if (path.includes("/performance")) return "performance";
+    return "installation";
+  };
+
+  const activeSection = getActiveSection();
 
   return (
     <div className="space-y-6">
@@ -47,151 +59,126 @@ export function ExtensionMonitoring() {
         </p>
       </FadeIn>
 
-      <Tabs defaultValue="installation" className="space-y-6">
-        <TabsList className="clay grid w-full grid-cols-5">
-          <TabsTrigger value="installation" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Installation
-          </TabsTrigger>
-          <TabsTrigger value="usage" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            Usage
-          </TabsTrigger>
-          <TabsTrigger value="retention" className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" />
-            Retention
-          </TabsTrigger>
-          <TabsTrigger value="errors" className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
-            Errors
-          </TabsTrigger>
-          <TabsTrigger value="performance" className="flex items-center gap-2">
-            <Zap className="h-4 w-4" />
-            Performance
-          </TabsTrigger>
-        </TabsList>
+      {activeSection === "installation" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <TotalInstalls />
+          </FadeIn>
 
-        <TabsContent value="installation" className="space-y-6">
-          <div className="space-y-6">
-            <FadeIn>
-              <TotalInstalls />
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <InstallSources />
             </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <InstallSources />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <InstallTrends />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.15}>
-                <UninstallReasons />
-              </FadeIn>
-              <FadeIn delay={0.2}>
-                <VersionDistribution />
-              </FadeIn>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="usage" className="space-y-6">
-          <div className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn>
-                <ActiveUsers />
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <SessionDuration />
-              </FadeIn>
-            </div>
-
             <FadeIn delay={0.1}>
-              <FeatureUsage />
+              <InstallTrends />
             </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.15}>
-                <ToolbarClicks />
-              </FadeIn>
-              <FadeIn delay={0.2}>
-                <ContextMenuUsage />
-              </FadeIn>
-            </div>
           </div>
-        </TabsContent>
 
-        <TabsContent value="retention" className="space-y-6">
-          <div className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn>
-                <RetentionRate />
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <ChurnRate />
-              </FadeIn>
-            </div>
-
-            <FadeIn delay={0.1}>
-              <CohortAnalysis />
-            </FadeIn>
-
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn delay={0.15}>
-              <ReturnFrequency />
+              <UninstallReasons />
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <VersionDistribution />
             </FadeIn>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="errors" className="space-y-6">
-          <div className="space-y-6">
+      {activeSection === "usage" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn>
-              <ExtensionCrashes />
+              <ActiveUsers />
             </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <APIFailures />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <PermissionErrors />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.15}>
-                <ContentScriptErrors />
-              </FadeIn>
-              <FadeIn delay={0.2}>
-                <BackgroundWorkerErrors />
-              </FadeIn>
-            </div>
+            <FadeIn delay={0.05}>
+              <SessionDuration />
+            </FadeIn>
           </div>
-        </TabsContent>
 
-        <TabsContent value="performance" className="space-y-6">
-          <div className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn>
-                <ExtensionLoadTime />
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <MemoryUsage />
-              </FadeIn>
-            </div>
+          <FadeIn delay={0.1}>
+            <FeatureUsage />
+          </FadeIn>
 
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.1}>
-                <ScanCompletionTime />
-              </FadeIn>
-              <FadeIn delay={0.15}>
-                <OCRProcessingTime />
-              </FadeIn>
-            </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.15}>
+              <ToolbarClicks />
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <ContextMenuUsage />
+            </FadeIn>
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
+
+      {activeSection === "retention" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn>
+              <RetentionRate />
+            </FadeIn>
+            <FadeIn delay={0.05}>
+              <ChurnRate />
+            </FadeIn>
+          </div>
+
+          <FadeIn delay={0.1}>
+            <CohortAnalysis />
+          </FadeIn>
+
+          <FadeIn delay={0.15}>
+            <ReturnFrequency />
+          </FadeIn>
+        </div>
+      )}
+
+      {activeSection === "errors" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <ExtensionCrashes />
+          </FadeIn>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <APIFailures />
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <PermissionErrors />
+            </FadeIn>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.15}>
+              <ContentScriptErrors />
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <BackgroundWorkerErrors />
+            </FadeIn>
+          </div>
+        </div>
+      )}
+
+      {activeSection === "performance" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn>
+              <ExtensionLoadTime />
+            </FadeIn>
+            <FadeIn delay={0.05}>
+              <MemoryUsage />
+            </FadeIn>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.1}>
+              <ScanCompletionTime />
+            </FadeIn>
+            <FadeIn delay={0.15}>
+              <OCRProcessingTime />
+            </FadeIn>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
