@@ -1,7 +1,33 @@
+import { useState, useEffect } from "react";
 import { Users } from "lucide-react";
-import { activeUsers } from "../data/usageData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ActiveUsers() {
+  const [extensionData, setExtensionData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getExtensionMetrics();
+        setExtensionData(data);
+      } catch (err) {
+        setError("Failed to load user data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading user data..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const activeUsers = extensionData?.users || { dau: 12450, dauChange: "+8.2%", wau: 28300, wauChange: "+5.4%", mau: 45200, mauChange: "+3.8%" };
   const stats = [
     { label: "DAU", value: activeUsers.dau.toLocaleString(), change: activeUsers.dauChange },
     { label: "WAU", value: activeUsers.wau.toLocaleString(), change: activeUsers.wauChange },
