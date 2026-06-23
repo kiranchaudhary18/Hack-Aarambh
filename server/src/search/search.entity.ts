@@ -38,6 +38,18 @@ export class ScamDatabase {
   @Column({ type: 'varchar', nullable: true })
   externalSource?: string;
 
+  @Column({ type: 'varchar', default: 'pending' })
+  status!: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  reviewedBy?: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  reviewedAt?: Date;
+
+  @Column({ type: 'text', nullable: true })
+  rejectionReason?: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
 
