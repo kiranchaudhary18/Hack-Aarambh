@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { FadeIn } from "@/shared/components/Animated";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Activity, AlertTriangle, Wifi } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 import { UserRegistrations } from "./components/UserRegistrations";
 import { ScanCompletions } from "./components/ScanCompletions";
@@ -24,15 +23,26 @@ import { AlertDelivery } from "./components/AlertDelivery";
 
 export function RealTimeMonitoring() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const location = useLocation();
 
   useEffect(() => {
-    document.title = "Real-Time Monitoring — ScamSniff Admin";
+    document.title = "Live Event — ScamSniff Admin";
   }, []);
+
+  const getActiveSection = () => {
+    const path = location.pathname;
+    if (path.includes("/events")) return "events";
+    if (path.includes("/alerts")) return "alerts";
+    if (path.includes("/websocket")) return "websocket";
+    return "events";
+  };
+
+  const activeSection = getActiveSection();
 
   return (
     <div className="space-y-6">
       <FadeIn>
-        <p className="clay-pill inline-block">Real-Time Monitoring</p>
+        <p className="clay-pill inline-block">Live Event</p>
         <h1 className="mt-3 font-display text-4xl font-bold sm:text-5xl">Live Event Feed</h1>
         <p className="mt-2 text-muted-foreground">
           Real-time events, alerts, and WebSocket integration
@@ -42,112 +52,95 @@ export function RealTimeMonitoring() {
         </p>
       </FadeIn>
 
-      <Tabs defaultValue="events" className="space-y-6">
-        <TabsList className="clay grid w-full grid-cols-3">
-          <TabsTrigger value="events" className="flex items-center gap-2">
-            <Activity className="h-4 w-4" />
-            Live Events
-          </TabsTrigger>
-          <TabsTrigger value="alerts" className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
-            Alerts
-          </TabsTrigger>
-          <TabsTrigger value="websocket" className="flex items-center gap-2">
-            <Wifi className="h-4 w-4" />
-            WebSocket
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="events" className="space-y-6">
-          <div className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn>
-                <UserRegistrations />
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <ScanCompletions />
-              </FadeIn>
-            </div>
-
-            <FadeIn delay={0.1}>
-              <ScamDetections />
-            </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.15}>
-                <ExtensionInstallations />
-              </FadeIn>
-              <FadeIn delay={0.2}>
-                <APIErrors />
-              </FadeIn>
-            </div>
-
-            <FadeIn delay={0.25}>
-              <SystemAlerts />
-            </FadeIn>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="alerts" className="space-y-6">
-          <div className="space-y-6">
+      {activeSection === "events" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn>
-              <ScamDetectionRate />
+              <UserRegistrations />
             </FadeIn>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.05}>
-                <ServerCPU />
-              </FadeIn>
-              <FadeIn delay={0.1}>
-                <MemoryUsage />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.15}>
-                <ConnectionPoolStatus />
-              </FadeIn>
-              <FadeIn delay={0.2}>
-                <ExtensionErrorRate />
-              </FadeIn>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn delay={0.25}>
-                <ModelAccuracy />
-              </FadeIn>
-              <FadeIn delay={0.3}>
-                <APILatencySpike />
-              </FadeIn>
-            </div>
-
-            <FadeIn delay={0.35}>
-              <AlertThresholds />
+            <FadeIn delay={0.05}>
+              <ScanCompletions />
             </FadeIn>
           </div>
-        </TabsContent>
 
-        <TabsContent value="websocket" className="space-y-6">
-          <div className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <FadeIn>
-                <LiveDashboard />
-              </FadeIn>
-              <FadeIn delay={0.05}>
-                <LiveUserCount />
-              </FadeIn>
-            </div>
+          <FadeIn delay={0.1}>
+            <ScamDetections />
+          </FadeIn>
 
-            <FadeIn delay={0.1}>
-              <RealTimeNotifications />
-            </FadeIn>
-
+          <div className="grid gap-6 lg:grid-cols-2">
             <FadeIn delay={0.15}>
-              <AlertDelivery />
+              <ExtensionInstallations />
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <APIErrors />
             </FadeIn>
           </div>
-        </TabsContent>
-      </Tabs>
+
+          <FadeIn delay={0.25}>
+            <SystemAlerts />
+          </FadeIn>
+        </div>
+      )}
+
+      {activeSection === "alerts" && (
+        <div className="space-y-6">
+          <FadeIn>
+            <ScamDetectionRate />
+          </FadeIn>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.05}>
+              <ServerCPU />
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <MemoryUsage />
+            </FadeIn>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.15}>
+              <ConnectionPoolStatus />
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <ExtensionErrorRate />
+            </FadeIn>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn delay={0.25}>
+              <ModelAccuracy />
+            </FadeIn>
+            <FadeIn delay={0.3}>
+              <APILatencySpike />
+            </FadeIn>
+          </div>
+
+          <FadeIn delay={0.35}>
+            <AlertThresholds />
+          </FadeIn>
+        </div>
+      )}
+
+      {activeSection === "websocket" && (
+        <div className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <FadeIn>
+              <LiveDashboard />
+            </FadeIn>
+            <FadeIn delay={0.05}>
+              <LiveUserCount />
+            </FadeIn>
+          </div>
+
+          <FadeIn delay={0.1}>
+            <RealTimeNotifications />
+          </FadeIn>
+
+          <FadeIn delay={0.15}>
+            <AlertDelivery />
+          </FadeIn>
+        </div>
+      )}
     </div>
   );
 }
