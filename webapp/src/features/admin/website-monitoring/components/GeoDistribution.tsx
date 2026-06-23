@@ -1,7 +1,33 @@
+import { useState, useEffect } from "react";
 import { Globe, MapPin } from "lucide-react";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function GeoDistribution() {
-  const geoData = [
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load geo data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading geo distribution..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const geoData = websiteData?.geoDistribution || [
     { country: "Pakistan", users: 3842, percentage: 38, flag: "🇵🇰" },
     { country: "India", users: 2734, percentage: 27, flag: "🇮🇳" },
     { country: "Nigeria", users: 1412, percentage: 14, flag: "🇳🇬" },
