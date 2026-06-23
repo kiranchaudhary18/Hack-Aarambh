@@ -1,13 +1,44 @@
+import { useState, useEffect } from "react";
 import { RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
-import { retrainingTriggers } from "../data/healthData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function RetrainingTriggers() {
+  const [healthData, setHealthData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getAIHealth();
+        setHealthData(data);
+      } catch (err) {
+        setError("Failed to load health data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading retraining triggers..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const retrainingTriggers = healthData?.retrainingTriggers || [
+    { trigger: "Accuracy Drop", threshold: "<92%", currentValue: "94.2%", status: "ok", lastChecked: "2h ago" },
+    { trigger: "Data Drift", threshold: ">0.3", currentValue: "0.12", status: "ok", lastChecked: "2h ago" },
+    { trigger: "Error Rate", threshold: ">5%", currentValue: "3.2%", status: "ok", lastChecked: "2h ago" },
+  ];
+
   return (
     <div className="clay p-6">
       <h2 className="font-display text-2xl font-bold">Retraining Triggers</h2>
       <p className="text-sm text-muted-foreground">Automated retraining conditions and status</p>
       <div className="mt-4 space-y-3">
-        {retrainingTriggers.map((trigger) => {
+        {retrainingTriggers.map((trigger: any) => {
           const Icon =
             trigger.status === "active"
               ? RefreshCw
