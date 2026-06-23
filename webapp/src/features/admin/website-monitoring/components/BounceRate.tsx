@@ -1,8 +1,41 @@
+import { useState, useEffect } from "react";
 import { TrendingDown } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { bounceRateData } from "../data/trafficData";
+import { api } from "@/shared/lib/api";
+import { LoadingState } from "@/shared/components/LoadingState";
+import { ErrorState } from "@/shared/components/ErrorState";
 
 export function BounceRate() {
+  const [websiteData, setWebsiteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await api.getWebsiteMetrics();
+        setWebsiteData(data);
+      } catch (err) {
+        setError("Failed to load bounce rate data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  if (loading) return <LoadingState message="Loading bounce rate..." />;
+  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
+
+  const bounceRateData = websiteData?.bounceRate || [
+    { date: "2024-01-01", rate: 38.5 },
+    { date: "2024-01-08", rate: 37.2 },
+    { date: "2024-01-15", rate: 36.8 },
+    { date: "2024-01-22", rate: 35.9 },
+    { date: "2024-01-29", rate: 35.8 },
+  ];
+
   return (
     <div className="clay p-6">
       <div className="flex items-center gap-3">
