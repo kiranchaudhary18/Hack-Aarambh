@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function InstallSources() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function InstallSources() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load install sources");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,8 @@ export function InstallSources() {
   }, []);
 
   if (loading) return <LoadingState message="Loading install sources..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const installSources = extensionData?.installSources || [
-    { source: "Chrome Web Store", count: 35200, color: "oklch(0.72 0.16 155)" },
-    { source: "Firefox Add-ons", count: 12450, color: "oklch(0.62 0.18 295)" },
-    { source: "Direct", count: 10030, color: "oklch(0.66 0.22 22)" },
-  ];
+  const installSources = extensionData?.installSources || [];
 
   return (
     <div className="clay p-6">
