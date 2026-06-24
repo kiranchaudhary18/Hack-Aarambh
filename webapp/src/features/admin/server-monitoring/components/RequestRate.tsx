@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function RequestRate() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function RequestRate() {
         const data = await api.getServerAPI();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load API data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,16 +23,8 @@ export function RequestRate() {
   }, []);
 
   if (loading) return <LoadingState message="Loading request rate..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const apiRequestRate = serverData?.requestRate || [
-    { timestamp: "00:00", rpm: 120 },
-    { timestamp: "04:00", rpm: 85 },
-    { timestamp: "08:00", rpm: 280 },
-    { timestamp: "12:00", rpm: 520 },
-    { timestamp: "16:00", rpm: 420 },
-    { timestamp: "20:00", rpm: 250 },
-  ];
+  const apiRequestRate = serverData?.requestRate || [];
 
   return (
     <div className="clay p-6">
