@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function SessionDuration() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function SessionDuration() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load session data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function SessionDuration() {
   }, []);
 
   if (loading) return <LoadingState message="Loading session duration..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const sessionDuration = extensionData?.sessionDuration || { avgDuration: 245, medianDuration: 180, change: "+5.2%" };
+  const sessionDuration = extensionData?.sessionDuration || { avgDuration: 0, medianDuration: 0, change: "+0%" };
   const stats = [
     { label: "Average", value: `${sessionDuration.avgDuration}s` },
     { label: "Median", value: `${sessionDuration.medianDuration}s` },
