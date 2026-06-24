@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Layers } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function QueueStatus() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function QueueStatus() {
         const data = await api.getServerAPI();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load queue status");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,8 @@ export function QueueStatus() {
   }, []);
 
   if (loading) return <LoadingState message="Loading queue status..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const queueStatus = serverData?.queues || [
-    { queueName: "scan-queue", processingRate: 45, avgWaitTime: 2.3, depth: 12 },
-    { queueName: "analysis-queue", processingRate: 28, avgWaitTime: 4.1, depth: 8 },
-    { queueName: "notification-queue", processingRate: 120, avgWaitTime: 0.5, depth: 3 },
-  ];
+  const queueStatus = serverData?.queues || [];
 
   return (
     <div className="clay p-6">
