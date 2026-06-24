@@ -83,7 +83,6 @@ const items = [
   },
   { to: "/admin/pending-reports", label: "Pending Reports", icon: FileText },
   { to: "/admin/flagged", label: "Flagged Cases", icon: Flag },
-  { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
 export function AdminSidebar() {
