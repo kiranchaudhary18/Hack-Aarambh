@@ -3,7 +3,6 @@ import { Activity, Clock } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function VisitorChart() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -13,10 +12,9 @@ export function VisitorChart() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load visitor data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -26,15 +24,14 @@ export function VisitorChart() {
   }, []);
 
   if (loading) return <LoadingState message="Loading visitor data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const visitorData = websiteData?.visitors || [
-    { time: "00:00", visitors: 245 },
-    { time: "04:00", visitors: 180 },
-    { time: "08:00", visitors: 520 },
-    { time: "12:00", visitors: 890 },
-    { time: "16:00", visitors: 1245 },
-    { time: "20:00", visitors: 980 },
+    { time: "00:00", visitors: 0 },
+    { time: "04:00", visitors: 0 },
+    { time: "08:00", visitors: 0 },
+    { time: "12:00", visitors: 0 },
+    { time: "16:00", visitors: 0 },
+    { time: "20:00", visitors: 0 },
   ];
 
   return (
