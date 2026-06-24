@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { AlertTriangle } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function Incidents() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function Incidents() {
         const data = await api.getServerUptime();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load incidents");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,12 +23,22 @@ export function Incidents() {
   }, []);
 
   if (loading) return <LoadingState message="Loading incidents..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const incidents = serverData?.incidents || [
-    { id: 1, type: "Database Outage", severity: "high", description: "Primary database connection lost", startTime: "2024-01-15 14:30", duration: "45m" },
-    { id: 2, type: "API Latency Spike", severity: "medium", description: "API response time exceeded 5s threshold", startTime: "2024-01-10 09:15", duration: "20m" },
-  ];
+  const incidents = serverData?.incidents || [];
+
+  if (incidents.length === 0) {
+    return (
+      <div className="clay p-6">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-2xl font-bold">Incident History</h2>
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-orange-500/20">
+            <AlertTriangle className="h-5 w-5 text-orange-500" />
+          </span>
+        </div>
+        <p className="mt-4 text-sm text-muted-foreground">No incidents recorded</p>
+      </div>
+    );
+  }
 
   return (
     <div className="clay p-6">
