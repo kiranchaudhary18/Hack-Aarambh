@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { HardDrive } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function DatabaseSize() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function DatabaseSize() {
         const data = await api.getServerDatabase();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load database size data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,12 +23,8 @@ export function DatabaseSize() {
   }, []);
 
   if (loading) return <LoadingState message="Loading database size..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const databaseSize = serverData?.databases || [
-    { database: "fakejob", tables: 12, indexes: 28, size: 2.4, growth: "+0.8%" },
-    { database: "fakejob_analytics", tables: 8, indexes: 15, size: 1.2, growth: "+0.3%" },
-  ];
+  const databaseSize = serverData?.databases || [];
 
   return (
     <div className="clay p-6">
