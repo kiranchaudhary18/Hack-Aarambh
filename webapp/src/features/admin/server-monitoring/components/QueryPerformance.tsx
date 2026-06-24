@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function QueryPerformance() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function QueryPerformance() {
         const data = await api.getServerDatabase();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load query performance data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,8 @@ export function QueryPerformance() {
   }, []);
 
   if (loading) return <LoadingState message="Loading query performance..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const queryPerformance = serverData?.queries || [
-    { query: "SELECT * FROM history WHERE user_id = ?", count: 15420, avgTime: 12, slowQueries: 0 },
-    { query: "SELECT * FROM scam_database WHERE status = ?", count: 8230, avgTime: 28, slowQueries: 5 },
-    { query: "INSERT INTO history (...) VALUES (...)", count: 4520, avgTime: 8, slowQueries: 0 },
-  ];
+  const queryPerformance = serverData?.queries || [];
 
   return (
     <div className="clay p-6">
