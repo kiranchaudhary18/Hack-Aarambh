@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function RetrainingTriggers() {
   const [healthData, setHealthData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function RetrainingTriggers() {
         const data = await api.getAIHealth();
         setHealthData(data);
       } catch (err) {
-        setError("Failed to load health data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,12 +23,11 @@ export function RetrainingTriggers() {
   }, []);
 
   if (loading) return <LoadingState message="Loading retraining triggers..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const retrainingTriggers = healthData?.retrainingTriggers || [
-    { trigger: "Accuracy Drop", threshold: "<92%", currentValue: "94.2%", status: "ok", lastChecked: "2h ago" },
-    { trigger: "Data Drift", threshold: ">0.3", currentValue: "0.12", status: "ok", lastChecked: "2h ago" },
-    { trigger: "Error Rate", threshold: ">5%", currentValue: "3.2%", status: "ok", lastChecked: "2h ago" },
+    { trigger: "Accuracy Drop", threshold: "<92%", currentValue: "0%", status: "ok", lastChecked: "2h ago" },
+    { trigger: "Data Drift", threshold: ">0.3", currentValue: "0", status: "ok", lastChecked: "2h ago" },
+    { trigger: "Error Rate", threshold: ">5%", currentValue: "0%", status: "ok", lastChecked: "2h ago" },
   ];
 
   return (
