@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ProcessingTime() {
   const [performanceData, setPerformanceData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function ProcessingTime() {
         const data = await api.getAIPerformance();
         setPerformanceData(data);
       } catch (err) {
-        setError("Failed to load performance data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,12 @@ export function ProcessingTime() {
   }, []);
 
   if (loading) return <LoadingState message="Loading processing time data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const processingTimeData = performanceData?.processingTime || [
-    { inputSize: "<1KB", avgTime: 25, p95: 45 },
-    { inputSize: "1-10KB", avgTime: 42, p95: 85 },
-    { inputSize: "10-100KB", avgTime: 78, p95: 150 },
-    { inputSize: ">100KB", avgTime: 120, p95: 220 },
+    { inputSize: "<1KB", avgTime: 0, p95: 0 },
+    { inputSize: "1-10KB", avgTime: 0, p95: 0 },
+    { inputSize: "10-100KB", avgTime: 0, p95: 0 },
+    { inputSize: ">100KB", avgTime: 0, p95: 0 },
   ];
 
   return (
