@@ -3,7 +3,6 @@ import { Server, XCircle } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function APIFailures() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -13,10 +12,9 @@ export function APIFailures() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load API failure data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -26,12 +24,11 @@ export function APIFailures() {
   }, []);
 
   if (loading) return <LoadingState message="Loading API failures..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const apiFailureData = websiteData?.apiFailures || [
-    { endpoint: "/api/scan", requests: 45200, failures: 45, failureRate: 0.1 },
-    { endpoint: "/api/analyze", requests: 28450, failures: 28, failureRate: 0.1 },
-    { endpoint: "/api/report", requests: 15200, failures: 15, failureRate: 0.1 },
+    { endpoint: "/api/scan", requests: 0, failures: 0, failureRate: 0 },
+    { endpoint: "/api/analyze", requests: 0, failures: 0, failureRate: 0 },
+    { endpoint: "/api/report", requests: 0, failures: 0, failureRate: 0 },
   ];
 
   return (
