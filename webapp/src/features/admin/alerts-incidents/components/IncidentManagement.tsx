@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { AlertCircle, Clock, CheckCircle, XCircle, User } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function IncidentManagement() {
   const [incidentData, setIncidentData] = useState<any>(null);
@@ -12,10 +11,18 @@ export function IncidentManagement() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getAlerts();
-        setIncidentData(data);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/incidents`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setIncidentData(data);
+        } else {
+          setIncidentData(null);
+        }
       } catch (err) {
-        setError("Failed to load incident data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +32,9 @@ export function IncidentManagement() {
   }, []);
 
   if (loading) return <LoadingState message="Loading incidents..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const incidentStats = incidentData?.stats || { total: 45, open: 5, inProgress: 8, resolved: 32, avgResolutionTime: 45 };
-  const incidents = incidentData?.incidents || [
-    { id: 1, title: "Database Down", description: "PostgreSQL cluster unavailable", severity: "critical", status: "resolved", downtime: 15, assignedTo: "John", createdAt: "2d ago" },
-    { id: 2, title: "API Latency", description: "High response times on /api/scan", severity: "high", status: "in_progress", downtime: 0, assignedTo: "Jane", createdAt: "1d ago" },
-  ];
+  const incidentStats = incidentData?.stats || { total: 0, open: 0, inProgress: 0, resolved: 0, avgResolutionTime: 0 };
+  const incidents = incidentData?.incidents || [];
 
   return (
     <div className="clay p-6">
