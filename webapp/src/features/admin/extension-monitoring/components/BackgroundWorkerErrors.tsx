@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Cpu } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function BackgroundWorkerErrors() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function BackgroundWorkerErrors() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load worker error data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,12 +23,8 @@ export function BackgroundWorkerErrors() {
   }, []);
 
   if (loading) return <LoadingState message="Loading worker errors..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const backgroundWorkerErrors = extensionData?.workerErrors || [
-    { error: "OCR Timeout", lastSeen: "2h ago", count: 12 },
-    { error: "Network Error", lastSeen: "5h ago", count: 8 },
-  ];
+  const backgroundWorkerErrors = extensionData?.workerErrors || [];
 
   return (
     <div className="clay p-6">
