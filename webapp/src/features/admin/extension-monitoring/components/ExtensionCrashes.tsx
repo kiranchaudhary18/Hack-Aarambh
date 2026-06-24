@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { AlertTriangle } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ExtensionCrashes() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function ExtensionCrashes() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load crash data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,12 +23,8 @@ export function ExtensionCrashes() {
   }, []);
 
   if (loading) return <LoadingState message="Loading crash data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const extensionCrashes = extensionData?.crashes || [
-    { browser: "Chrome", version: "120", users: 245, crashes: 12 },
-    { browser: "Firefox", version: "121", users: 85, crashes: 5 },
-  ];
+  const extensionCrashes = extensionData?.crashes || [];
 
   return (
     <div className="clay p-6">
