@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { TrendingUp } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function RetentionRate() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function RetentionRate() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load retention data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function RetentionRate() {
   }, []);
 
   if (loading) return <LoadingState message="Loading retention rate..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const retentionRate = extensionData?.retention || { d1: 78, d7: 52, d30: 34 };
+  const retentionRate = extensionData?.retention || { d1: 0, d7: 0, d30: 0 };
   const stats = [
     { label: "D1 Retention", value: `${retentionRate.d1}%` },
     { label: "D7 Retention", value: `${retentionRate.d7}%` },
