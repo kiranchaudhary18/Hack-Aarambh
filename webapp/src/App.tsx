@@ -28,7 +28,6 @@ import { About } from "./features/about/about";
 import { Privacy } from "./features/legal/privacy";
 import { Terms } from "./features/legal/terms";
 import { Admin } from "./features/admin/index";
-import { AdminAnalytics } from "./features/admin/analytics";
 import { AdminFlagged } from "./features/admin/flagged";
 import { PendingReports } from "./features/admin/pending-reports";
 import { AdminLayout } from "./features/admin/admin";
@@ -116,7 +115,6 @@ function App() {
               <Route path="system-settings/notifications" element={<SystemSettings />} />
               <Route path="system-settings/security" element={<SystemSettings />} />
               <Route path="pending-reports" element={<PendingReports />} />
-              <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="flagged" element={<AdminFlagged />} />
             </Route>
           </Route>
