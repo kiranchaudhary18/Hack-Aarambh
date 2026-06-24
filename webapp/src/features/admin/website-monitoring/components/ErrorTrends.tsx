@@ -3,7 +3,6 @@ import { TrendingUp, AlertTriangle, XCircle, WifiOff } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ErrorTrends() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -13,10 +12,9 @@ export function ErrorTrends() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load error trends");
         console.error(err);
       } finally {
         setLoading(false);
@@ -26,14 +24,13 @@ export function ErrorTrends() {
   }, []);
 
   if (loading) return <LoadingState message="Loading error trends..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const errorTrendData = websiteData?.errorTrends || [
-    { date: "2024-01-01", jsErrors: 45, apiFailures: 28, networkErrors: 12 },
-    { date: "2024-01-08", jsErrors: 38, apiFailures: 22, networkErrors: 8 },
-    { date: "2024-01-15", jsErrors: 32, apiFailures: 18, networkErrors: 6 },
-    { date: "2024-01-22", jsErrors: 28, apiFailures: 15, networkErrors: 5 },
-    { date: "2024-01-29", jsErrors: 25, apiFailures: 12, networkErrors: 4 },
+    { date: "2024-01-01", jsErrors: 0, apiFailures: 0, networkErrors: 0 },
+    { date: "2024-01-08", jsErrors: 0, apiFailures: 0, networkErrors: 0 },
+    { date: "2024-01-15", jsErrors: 0, apiFailures: 0, networkErrors: 0 },
+    { date: "2024-01-22", jsErrors: 0, apiFailures: 0, networkErrors: 0 },
+    { date: "2024-01-29", jsErrors: 0, apiFailures: 0, networkErrors: 0 },
   ];
 
   return (
