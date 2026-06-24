@@ -3,7 +3,6 @@ import { Link, Share2, Globe } from "lucide-react";
 import { ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function TrafficSources() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -13,10 +12,9 @@ export function TrafficSources() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load traffic sources");
         console.error(err);
       } finally {
         setLoading(false);
@@ -26,13 +24,12 @@ export function TrafficSources() {
   }, []);
 
   if (loading) return <LoadingState message="Loading traffic sources..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const trafficSourceData = websiteData?.trafficSources || [
-    { source: "Organic Search", count: 45200, color: "oklch(0.72 0.16 155)" },
-    { source: "Direct", count: 28450, color: "oklch(0.62 0.18 295)" },
-    { source: "Referral", count: 15200, color: "oklch(0.66 0.22 22)" },
-    { source: "Social", count: 8200, color: "oklch(0.75 0.12 85)" },
+    { source: "Organic Search", count: 0, color: "oklch(0.72 0.16 155)" },
+    { source: "Direct", count: 0, color: "oklch(0.62 0.18 295)" },
+    { source: "Referral", count: 0, color: "oklch(0.66 0.22 22)" },
+    { source: "Social", count: 0, color: "oklch(0.75 0.12 85)" },
   ];
 
   return (
