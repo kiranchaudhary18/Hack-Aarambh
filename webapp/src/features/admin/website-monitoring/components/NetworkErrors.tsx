@@ -3,7 +3,6 @@ import { WifiOff, AlertCircle } from "lucide-react";
 import { ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function NetworkErrors() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -16,7 +15,6 @@ export function NetworkErrors() {
         const data = await api.getWebsiteMetrics();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load network error data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -26,13 +24,12 @@ export function NetworkErrors() {
   }, []);
 
   if (loading) return <LoadingState message="Loading network errors..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const networkErrorData = websiteData?.networkErrors || [
-    { type: "Timeout", count: 45, color: "oklch(0.62 0.18 295)" },
-    { type: "Connection Refused", count: 28, color: "oklch(0.72 0.16 155)" },
-    { type: "DNS Error", count: 12, color: "oklch(0.66 0.22 22)" },
-    { type: "CORS Error", count: 8, color: "oklch(0.75 0.12 85)" },
+    { type: "Timeout", count: 0, color: "oklch(0.62 0.18 295)" },
+    { type: "Connection Refused", count: 0, color: "oklch(0.72 0.16 155)" },
+    { type: "DNS Error", count: 0, color: "oklch(0.66 0.22 22)" },
+    { type: "CORS Error", count: 0, color: "oklch(0.75 0.12 85)" },
   ];
 
   return (
