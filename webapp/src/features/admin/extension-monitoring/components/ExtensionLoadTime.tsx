@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Zap } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ExtensionLoadTime() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function ExtensionLoadTime() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load load time data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function ExtensionLoadTime() {
   }, []);
 
   if (loading) return <LoadingState message="Loading load time..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const extensionLoadTime = extensionData?.loadTime || { avg: 245, p50: 220, p95: 380, p99: 520, change: "-8.5%" };
+  const extensionLoadTime = extensionData?.loadTime || { avg: 0, p50: 0, p95: 0, p99: 0, change: "+0%" };
   const stats = [
     { label: "Average", value: `${extensionLoadTime.avg}ms` },
     { label: "p50", value: `${extensionLoadTime.p50}ms` },
