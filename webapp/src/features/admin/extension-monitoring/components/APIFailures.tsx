@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { XCircle } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function APIFailures() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function APIFailures() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load API failure data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,8 @@ export function APIFailures() {
   }, []);
 
   if (loading) return <LoadingState message="Loading API failures..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const apiFailures = extensionData?.apiFailures || [
-    { endpoint: "/api/scan", failures: 45, errorRate: 0.8 },
-    { endpoint: "/api/analyze", failures: 28, errorRate: 1.2 },
-    { endpoint: "/api/report", failures: 15, errorRate: 0.5 },
-  ];
+  const apiFailures = extensionData?.apiFailures || [];
 
   return (
     <div className="clay p-6">
