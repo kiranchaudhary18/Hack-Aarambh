@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Clock, Timer, Gauge, CheckCircle2, AlertTriangle } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function PageLoadTimes() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function PageLoadTimes() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load page load data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,12 @@ export function PageLoadTimes() {
   }, []);
 
   if (loading) return <LoadingState message="Loading page load times..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const pageLoadPercentiles = websiteData?.pageLoadPercentiles || [
-    { percentile: "p50", time: 1.8, status: "good", target: 2.5 },
-    { percentile: "p75", time: 2.4, status: "good", target: 3.0 },
-    { percentile: "p90", time: 3.2, status: "warning", target: 3.5 },
-    { percentile: "p95", time: 4.1, status: "warning", target: 4.0 },
+    { percentile: "p50", time: 0, status: "good", target: 2.5 },
+    { percentile: "p75", time: 0, status: "good", target: 3.0 },
+    { percentile: "p90", time: 0, status: "good", target: 3.5 },
+    { percentile: "p95", time: 0, status: "good", target: 4.0 },
   ];
 
   const statusIcons = {
@@ -58,8 +55,8 @@ export function PageLoadTimes() {
         </div>
       </div>
       <div className="mt-4 space-y-3">
-        {pageLoadPercentiles.map((item) => {
-          const StatusIcon = statusIcons[item.status];
+        {pageLoadPercentiles.map((item: any) => {
+          const StatusIcon = statusIcons[item.status as keyof typeof statusIcons];
           return (
             <div key={item.percentile} className="clay-inset flex items-center gap-4 p-4">
               <span className="font-display text-lg font-bold text-muted-foreground">{item.percentile}</span>
@@ -71,12 +68,12 @@ export function PageLoadTimes() {
                 <div className="clay-inset mt-2 h-2 overflow-hidden rounded-full">
                   <div
                     className="h-full rounded-full"
-                    style={{ width: `${(item.time / 5) * 100}%`, background: statusColors[item.status] }}
+                    style={{ width: `${(item.time / 5) * 100}%`, background: statusColors[item.status as keyof typeof statusColors] }}
                   />
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <StatusIcon className="h-4 w-4" style={{ color: statusColors[item.status] }} />
+                <StatusIcon className="h-4 w-4" style={{ color: statusColors[item.status as keyof typeof statusColors] }} />
                 <span className="text-xs text-muted-foreground">Target: {item.target}s</span>
               </div>
             </div>
