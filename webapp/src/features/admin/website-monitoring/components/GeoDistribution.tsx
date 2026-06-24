@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Globe, MapPin } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function GeoDistribution() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function GeoDistribution() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load geo data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,15 +23,14 @@ export function GeoDistribution() {
   }, []);
 
   if (loading) return <LoadingState message="Loading geo distribution..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const geoData = websiteData?.geoDistribution || [
-    { country: "Pakistan", users: 3842, percentage: 38, flag: "🇵🇰" },
-    { country: "India", users: 2734, percentage: 27, flag: "🇮🇳" },
-    { country: "Nigeria", users: 1412, percentage: 14, flag: "🇳🇬" },
-    { country: "Philippines", users: 1108, percentage: 11, flag: "🇵🇭" },
-    { country: "United States", users: 605, percentage: 6, flag: "🇺🇸" },
-    { country: "United Kingdom", users: 404, percentage: 4, flag: "🇬🇧" },
+    { country: "Pakistan", users: 0, percentage: 0, flag: "🇵🇰" },
+    { country: "India", users: 0, percentage: 0, flag: "🇮🇳" },
+    { country: "Nigeria", users: 0, percentage: 0, flag: "🇳🇬" },
+    { country: "Philippines", users: 0, percentage: 0, flag: "🇵🇭" },
+    { country: "United States", users: 0, percentage: 0, flag: "🇺🇸" },
+    { country: "United Kingdom", users: 0, percentage: 0, flag: "🇬🇧" },
   ];
 
   return (
@@ -51,7 +48,7 @@ export function GeoDistribution() {
         <MapPin className="h-5 w-5 text-muted-foreground" />
       </div>
       <div className="mt-4 space-y-3">
-        {geoData.map((item) => (
+        {geoData.map((item: any) => (
           <div key={item.country} className="flex items-center gap-4">
             <span className="text-2xl">{item.flag}</span>
             <div className="min-w-0 flex-1">
