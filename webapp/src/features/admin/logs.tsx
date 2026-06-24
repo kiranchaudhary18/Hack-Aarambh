@@ -45,103 +45,20 @@ export function Logs() {
   useEffect(() => {
     async function fetchLogs() {
       try {
-        const mockLogs: LogData[] = [
-          {
-            id: "1",
-            timestamp: "2024-06-05 14:32:15",
-            level: "error",
-            category: "Authentication",
-            message: "Failed login attempt - invalid credentials",
-            userId: "user_123",
-            userEmail: "unknown@example.com",
-            ip: "192.168.1.100",
-            details: "Multiple failed attempts from same IP",
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/logs`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          {
-            id: "2",
-            timestamp: "2024-06-05 14:28:42",
-            level: "warning",
-            category: "API",
-            message: "Rate limit exceeded for user",
-            userId: "user_456",
-            userEmail: "john@example.com",
-            ip: "10.0.0.50",
-            details: "User exceeded 100 requests per minute",
-          },
-          {
-            id: "3",
-            timestamp: "2024-06-05 14:25:18",
-            level: "success",
-            category: "System",
-            message: "Database backup completed successfully",
-            details: "Backup size: 2.3GB, Duration: 45s",
-          },
-          {
-            id: "4",
-            timestamp: "2024-06-05 14:22:05",
-            level: "info",
-            category: "User",
-            message: "New user registration",
-            userId: "user_789",
-            userEmail: "newuser@example.com",
-            ip: "172.16.0.25",
-          },
-          {
-            id: "5",
-            timestamp: "2024-06-05 14:18:33",
-            level: "error",
-            category: "Scanning",
-            message: "ML model inference failed",
-            details: "Model timeout after 30s for scan ID: scan_abc123",
-          },
-          {
-            id: "6",
-            timestamp: "2024-06-05 14:15:21",
-            level: "warning",
-            category: "Payment",
-            message: "Payment processing delayed",
-            userId: "user_321",
-            userEmail: "customer@example.com",
-            details: "Payment gateway response timeout",
-          },
-          {
-            id: "7",
-            timestamp: "2024-06-05 14:12:09",
-            level: "info",
-            category: "System",
-            message: "Scheduled maintenance started",
-            details: "Routine server maintenance",
-          },
-          {
-            id: "8",
-            timestamp: "2024-06-05 14:08:45",
-            level: "success",
-            category: "Authentication",
-            message: "User login successful",
-            userId: "user_654",
-            userEmail: "admin@scamsniff.com",
-            ip: "192.168.1.1",
-          },
-          {
-            id: "9",
-            timestamp: "2024-06-05 14:05:32",
-            level: "error",
-            category: "Database",
-            message: "Connection pool exhausted",
-            details: "Max connections reached, consider increasing pool size",
-          },
-          {
-            id: "10",
-            timestamp: "2024-06-05 14:02:18",
-            level: "info",
-            category: "API",
-            message: "Pattern updated",
-            details: "Pattern 'Crypto Wallet Activation' updated by admin",
-          },
-        ];
-        setLogs(mockLogs);
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setLogs(data);
+        } else {
+          setLogs([]);
+        }
       } catch (error) {
         console.error("Failed to fetch logs:", error);
+        setLogs([]);
       } finally {
         setLoading(false);
       }
