@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Database } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ConnectionPool() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function ConnectionPool() {
         const data = await api.getServerDatabase();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load connection pool data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function ConnectionPool() {
   }, []);
 
   if (loading) return <LoadingState message="Loading connection pool..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const connectionPool = serverData?.connectionPool || { active: 18, idle: 12, waiting: 2, total: 32, max: 50 };
+  const connectionPool = serverData?.connectionPool || { active: 0, idle: 0, waiting: 0, total: 0, max: 50 };
   const stats = [
     { label: "Active", value: connectionPool.active, color: "var(--clay-green)" },
     { label: "Idle", value: connectionPool.idle, color: "var(--clay-blue)" },
