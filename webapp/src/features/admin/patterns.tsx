@@ -47,89 +47,20 @@ export function Patterns() {
   useEffect(() => {
     async function fetchPatterns() {
       try {
-        const mockPatterns: PatternData[] = [
-          {
-            id: "1",
-            name: "Crypto Wallet Activation",
-            category: "Cryptocurrency",
-            severity: "critical",
-            description: "Requests for crypto wallet activation fees or transfers",
-            keywords: ["wallet", "activation", "crypto", "bitcoin", "ethereum"],
-            detectionRate: 94.5,
-            falsePositiveRate: 2.3,
-            status: "active",
-            lastUpdated: "2 days ago",
-            createdBy: "Admin",
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/patterns`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          {
-            id: "2",
-            name: "Reshipping Mule",
-            category: "Logistics",
-            severity: "high",
-            description: "Offers involving receiving and reshipping packages",
-            keywords: ["reship", "package", "forward", "logistics", "warehouse"],
-            detectionRate: 89.2,
-            falsePositiveRate: 4.1,
-            status: "active",
-            lastUpdated: "1 week ago",
-            createdBy: "Admin",
-          },
-          {
-            id: "3",
-            name: "Upfront Payment",
-            category: "Payment",
-            severity: "high",
-            description: "Requests for payment before starting work",
-            keywords: ["upfront", "advance", "payment", "deposit", "fee"],
-            detectionRate: 91.8,
-            falsePositiveRate: 3.2,
-            status: "active",
-            lastUpdated: "3 days ago",
-            createdBy: "Admin",
-          },
-          {
-            id: "4",
-            name: "Fake Job Board",
-            category: "Platform",
-            severity: "medium",
-            description: "Suspicious job board or recruitment platform",
-            keywords: ["job board", "recruitment", "platform", "portal"],
-            detectionRate: 82.4,
-            falsePositiveRate: 6.5,
-            status: "active",
-            lastUpdated: "5 days ago",
-            createdBy: "Admin",
-          },
-          {
-            id: "5",
-            name: "Urgency Pressure",
-            category: "Psychological",
-            severity: "medium",
-            description: "Excessive urgency or time pressure tactics",
-            keywords: ["urgent", "immediately", "asap", "today only", "limited time"],
-            detectionRate: 78.9,
-            falsePositiveRate: 8.2,
-            status: "testing",
-            lastUpdated: "1 day ago",
-            createdBy: "Admin",
-          },
-          {
-            id: "6",
-            name: "Unofficial Email Domain",
-            category: "Communication",
-            severity: "low",
-            description: "Use of unofficial or suspicious email domains",
-            keywords: ["gmail", "yahoo", "hotmail", "protonmail"],
-            detectionRate: 72.1,
-            falsePositiveRate: 12.4,
-            status: "inactive",
-            lastUpdated: "2 weeks ago",
-            createdBy: "Admin",
-          },
-        ];
-        setPatterns(mockPatterns);
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setPatterns(data);
+        } else {
+          setPatterns([]);
+        }
       } catch (error) {
         console.error("Failed to fetch patterns:", error);
+        setPatterns([]);
       } finally {
         setLoading(false);
       }
