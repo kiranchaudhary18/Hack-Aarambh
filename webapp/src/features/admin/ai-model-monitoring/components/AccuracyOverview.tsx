@@ -13,12 +13,11 @@ export function AccuracyOverview() {
         setAccuracyData(data);
       } catch (error) {
         console.error("Failed to fetch accuracy data:", error);
-        // Use fallback values on error
         setAccuracyData({
-          overallAccuracy: 94.2,
-          precision: 0.93,
-          recall: 0.91,
-          f1Score: 0.92,
+          overallAccuracy: 0,
+          precision: 0,
+          recall: 0,
+          f1Score: 0,
         });
       } finally {
         setLoading(false);
