@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { HeartPulse } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ServiceHealth() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function ServiceHealth() {
         const data = await api.getServerUptime();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load service health data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,14 +23,8 @@ export function ServiceHealth() {
   }, []);
 
   if (loading) return <LoadingState message="Loading service health..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const serviceHealth = serverData?.services || [
-    { service: "API Server", responseTime: 45, lastCheck: "1m ago", status: "healthy" },
-    { service: "Database", responseTime: 12, lastCheck: "1m ago", status: "healthy" },
-    { service: "Redis Cache", responseTime: 3, lastCheck: "1m ago", status: "healthy" },
-    { service: "AI Model", responseTime: 85, lastCheck: "1m ago", status: "degraded" },
-  ];
+  const serviceHealth = serverData?.services || [];
 
   return (
     <div className="clay p-6">
