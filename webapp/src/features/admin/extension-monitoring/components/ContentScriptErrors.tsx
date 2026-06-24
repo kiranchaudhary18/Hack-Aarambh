@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { FileCode } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ContentScriptErrors() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function ContentScriptErrors() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load script error data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,12 +23,8 @@ export function ContentScriptErrors() {
   }, []);
 
   if (loading) return <LoadingState message="Loading script errors..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const contentScriptErrors = extensionData?.scriptErrors || [
-    { domain: "linkedin.com", type: "CORS Error", errors: 45 },
-    { domain: "indeed.com", type: "DOM Exception", errors: 28 },
-  ];
+  const contentScriptErrors = extensionData?.scriptErrors || [];
 
   return (
     <div className="clay p-6">
