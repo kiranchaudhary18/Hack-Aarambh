@@ -4,7 +4,6 @@ import { Users, Shield, Key, Search, Plus, MoreVertical, Edit, Trash2 } from "lu
 import { useLocation } from "react-router-dom";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function UserManagement() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
@@ -20,7 +19,6 @@ export function UserManagement() {
         const data = await api.getUsers();
         setUserData(data);
       } catch (err) {
-        setError("Failed to load user data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -30,25 +28,12 @@ export function UserManagement() {
   }, []);
 
   if (loading) return <LoadingState message="Loading user data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const users = userData?.users || [
-    { id: "USR-001", name: "John Doe", email: "john@example.com", role: "Admin", status: "Active", lastActive: "2 minutes ago" },
-    { id: "USR-002", name: "Jane Smith", email: "jane@example.com", role: "Analyst", status: "Active", lastActive: "5 minutes ago" },
-    { id: "USR-003", name: "Bob Johnson", email: "bob@example.com", role: "Viewer", status: "Inactive", lastActive: "2 days ago" },
-  ];
+  const users = userData?.users || [];
 
-  const roles = userData?.roles || [
-    { name: "Admin", description: "Full system access", users: 2, permissions: 12 },
-    { name: "Analyst", description: "View and analyze data", users: 5, permissions: 8 },
-    { name: "Viewer", description: "Read-only access", users: 15, permissions: 4 },
-  ];
+  const roles = userData?.roles || [];
 
-  const permissions = userData?.permissions || [
-    { name: "view_dashboard", description: "View admin dashboard", category: "General" },
-    { name: "manage_users", description: "Create, edit, delete users", category: "User Management" },
-    { name: "view_analytics", description: "View analytics and reports", category: "Analytics" },
-  ];
+  const permissions = userData?.permissions || [];
 
   const getActiveSection = () => {
     const path = location.pathname;
