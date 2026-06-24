@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Cpu } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function GPUUtilization() {
   const [resourceData, setResourceData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function GPUUtilization() {
         const data = await api.getAIResources();
         setResourceData(data);
       } catch (err) {
-        setError("Failed to load GPU data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function GPUUtilization() {
   }, []);
 
   if (loading) return <LoadingState message="Loading GPU data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const gpu = resourceData?.gpu || { current: 65, average: 58, peak: 92 };
+  const gpu = resourceData?.gpu || { current: 0, average: 0, peak: 0, status: 'unknown' };
   const stats = [
     { label: "Current", value: `${gpu.current}%` },
     { label: "Average", value: `${gpu.average}%` },
