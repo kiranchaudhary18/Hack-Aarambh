@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function InstallTrends() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function InstallTrends() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load install trends");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,15 +23,8 @@ export function InstallTrends() {
   }, []);
 
   if (loading) return <LoadingState message="Loading install trends..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const installTrends = extensionData?.installTrends || [
-    { date: "2024-01-01", installs: 450, uninstalls: 28 },
-    { date: "2024-01-02", installs: 520, uninstalls: 35 },
-    { date: "2024-01-03", installs: 480, uninstalls: 42 },
-    { date: "2024-01-04", installs: 610, uninstalls: 38 },
-    { date: "2024-01-05", installs: 550, uninstalls: 45 },
-  ];
+  const installTrends = extensionData?.installTrends || [];
 
   return (
     <div className="clay p-6">
