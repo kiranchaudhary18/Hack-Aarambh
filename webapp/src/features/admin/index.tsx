@@ -23,6 +23,14 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+  LineChart,
+  Line,
 } from "recharts";
 import { api } from "@/shared/lib/api";
 
@@ -37,59 +45,25 @@ export function Admin() {
     scamRate: 0,
   });
   const [recentChecks, setRecentChecks] = useState<any[]>([]);
-  const [trendData, setTrendData] = useState<any[]>([]);
+  const [trendData, setTrendData] = useState<any[]>([
+    { month: "Aug", safe: 0, scams: 0 },
+    { month: "Sep", safe: 0, scams: 0 },
+    { month: "Oct", safe: 0, scams: 0 },
+    { month: "Nov", safe: 0, scams: 0 },
+    { month: "Dec", safe: 0, scams: 0 },
+    { month: "Jan", safe: 0, scams: 0 },
+  ]);
+  const [scamTypes, setScamTypes] = useState<any[]>([
+    { name: "Fake Job Offers", value: 0, color: "oklch(0.62 0.18 295)" },
+    { name: "Phishing", value: 0, color: "oklch(0.72 0.16 155)" },
+    { name: "Investment Scams", value: 0, color: "oklch(0.66 0.22 22)" },
+    { name: "Romance Scams", value: 0, color: "oklch(0.75 0.12 85)" },
+    { name: "Other", value: 0, color: "oklch(0.68 0.15 45)" },
+  ]);
   const [liveFeed, setLiveFeed] = useState<any[]>([]);
   const [regions, setRegions] = useState<any[]>([]);
   const [systemHealth, setSystemHealth] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Demo data fallback
-  const demoStats = {
-    totalScans: 45234,
-    scamsDetected: 8921,
-    activeUsers: 1247,
-    savedDollars: 2340000,
-    todayScans: 412,
-    weeklyNewUsers: 86,
-    scamRate: 20,
-  };
-
-  const demoHistory = [
-    { id: "1", title: "Crypto Investment Manager", company: "Blockchain Inc", score: 96 },
-    { id: "2", title: "Remote Data Entry", company: "Tech Solutions", score: 87 },
-    { id: "3", title: "Personal Assistant", company: "Private Employer", score: 92 },
-    { id: "4", title: "Social Media Manager", company: "Growth Agency", score: 78 },
-  ];
-
-  const demoTrendData = [
-    { month: "Aug", safe: 3200, scams: 890 },
-    { month: "Sep", safe: 3800, scams: 1020 },
-    { month: "Oct", safe: 4200, scams: 1150 },
-    { month: "Nov", safe: 4500, scams: 1280 },
-    { month: "Dec", safe: 5100, scams: 1420 },
-    { month: "Jan", safe: 5800, scams: 1680 },
-  ];
-
-  const demoLiveFeed = [
-    { t: "Scan flagged", d: "'Crypto wallet activation' · 96%", c: "var(--clay-pink)", ago: "8s" },
-    { t: "New user", d: "anika.r@gmail.com from Karachi", c: "var(--clay-blue)", ago: "42s" },
-    { t: "Pattern updated", d: "Added 'reshipping mule' v2", c: "var(--clay-yellow)", ago: "3m" },
-    { t: "Safe verdict", d: "'Backend Engineer · Stripe'", c: "var(--clay-green)", ago: "5m" },
-  ];
-
-  const demoRegions = [
-    { l: "Pakistan", v: 38, c: "var(--clay-purple)" },
-    { l: "India", v: 27, c: "var(--clay-pink)" },
-    { l: "Nigeria", v: 14, c: "var(--clay-orange)" },
-    { l: "Philippines", v: 11, c: "var(--clay-blue)" },
-    { l: "Other", v: 10, c: "var(--clay-yellow)" },
-  ];
-
-  const demoSystemHealth = [
-    { l: "API latency", v: "184 ms", icon: Server, c: "var(--clay-blue)" },
-    { l: "Model accuracy", v: "94.2 %", icon: Cpu, c: "var(--clay-purple)" },
-    { l: "Uptime", v: "99.98 %", icon: Activity, c: "var(--clay-green)" },
-  ];
 
   useEffect(() => {
     document.title = "Admin — ScamSniff";
@@ -106,21 +80,29 @@ export function Admin() {
           api.getRegions(),
           api.getSystemHealth(),
         ]);
-        setAdminStats(stats || demoStats);
-        setRecentChecks(history || demoHistory);
-        setTrendData(analytics?.trendData || demoTrendData);
-        setLiveFeed(liveFeedData || demoLiveFeed);
-        setRegions(regionsData || demoRegions);
-        setSystemHealth(systemHealthData || demoSystemHealth);
+        if (stats) {
+          setAdminStats(stats);
+        }
+        if (history) {
+          setRecentChecks(history);
+        }
+        if (analytics?.trendData && analytics.trendData.length > 0) {
+          setTrendData(analytics.trendData);
+        }
+        if (analytics?.scamTypes && analytics.scamTypes.length > 0) {
+          setScamTypes(analytics.scamTypes);
+        }
+        if (liveFeedData) {
+          setLiveFeed(liveFeedData);
+        }
+        if (regionsData) {
+          setRegions(regionsData);
+        }
+        if (systemHealthData) {
+          setSystemHealth(systemHealthData);
+        }
       } catch (error) {
         console.error("Failed to fetch admin data:", error);
-        // Use demo data when API fails
-        setAdminStats(demoStats);
-        setRecentChecks(demoHistory);
-        setTrendData(demoTrendData);
-        setLiveFeed(demoLiveFeed);
-        setRegions(demoRegions);
-        setSystemHealth(demoSystemHealth);
       } finally {
         setLoading(false);
       }
@@ -258,27 +240,37 @@ export function Admin() {
               {recentChecks
                 .filter((c) => c.score >= 70)
                 .slice(0, 4)
-                .map((c) => (
-                  <Link
-                    to={`/result?id=${c.id}`}
-                    key={c.id}
-                    className="clay-sm flex items-center gap-3 p-3 transition hover:-translate-y-0.5"
-                  >
-                    <span
-                      className="grid h-10 w-10 place-items-center rounded-xl"
-                      style={{ background: "var(--clay-pink)" }}
+                .length > 0 ? (
+                recentChecks
+                  .filter((c) => c.score >= 70)
+                  .slice(0, 4)
+                  .map((c) => (
+                    <Link
+                      to={`/result?id=${c.id}`}
+                      key={c.id}
+                      className="clay-sm flex items-center gap-3 p-3 transition hover:-translate-y-0.5"
                     >
-                      <Flag className="h-4 w-4" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold">{c.title}</p>
-                      <p className="text-xs text-muted-foreground">{c.company}</p>
-                    </div>
-                    <span className="clay-pill bg-[color:var(--destructive)] text-destructive-foreground">
-                      {c.score}%
-                    </span>
-                  </Link>
-                ))}
+                      <span
+                        className="grid h-10 w-10 place-items-center rounded-xl"
+                        style={{ background: "var(--clay-pink)" }}
+                      >
+                        <Flag className="h-4 w-4" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold">{c.title}</p>
+                        <p className="text-xs text-muted-foreground">{c.company}</p>
+                      </div>
+                      <span className="clay-pill bg-[color:var(--destructive)] text-destructive-foreground">
+                        {c.score}%
+                      </span>
+                    </Link>
+                  ))
+              ) : (
+                <div className="text-center py-8">
+                  <Flag className="mx-auto h-10 w-10 text-muted-foreground" />
+                  <p className="mt-3 text-sm text-muted-foreground">No flagged cases yet</p>
+                </div>
+              )}
             </div>
           </div>
         </FadeIn>
@@ -391,63 +383,117 @@ export function Admin() {
         </FadeIn>
       </div>
 
-      <FadeIn delay={0.35}>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <FadeIn delay={0.35}>
+          <div className="clay p-6">
+            <h2 className="font-display text-2xl font-bold">Scam vs safe scans</h2>
+            <p className="text-sm text-muted-foreground">Last 6 months</p>
+            <div className="mt-4 h-72">
+              <ResponsiveContainer>
+                <BarChart data={trendData} barGap={6}>
+                  <CartesianGrid stroke="var(--border)" strokeDasharray="3 4" vertical={false} />
+                  <XAxis
+                    dataKey="month"
+                    stroke="var(--muted-foreground)"
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis stroke="var(--muted-foreground)" tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      background: "var(--card)",
+                      border: "none",
+                      borderRadius: 16,
+                      boxShadow: "var(--shadow-clay-sm)",
+                    }}
+                  />
+                  <Bar dataKey="safe" fill="oklch(0.72 0.16 155)" radius={[12, 12, 0, 0]} />
+                  <Bar dataKey="scams" fill="oklch(0.62 0.18 295)" radius={[12, 12, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.4}>
+          <div className="clay p-6">
+            <h2 className="font-display text-2xl font-bold">Most common fraud types</h2>
+            <p className="text-sm text-muted-foreground">Share of confirmed scams</p>
+            <div className="mt-4 h-72">
+              {scamTypes.some((s) => s.value > 0) ? (
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie
+                      data={scamTypes}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      innerRadius={56}
+                      paddingAngle={4}
+                    >
+                      {scamTypes.map((s, i) => (
+                        <Cell key={i} fill={s.color} stroke="var(--card)" strokeWidth={4} />
+                      ))}
+                    </Pie>
+                    <Legend />
+                    <Tooltip
+                      contentStyle={{
+                        background: "var(--card)",
+                        border: "none",
+                        borderRadius: 16,
+                        boxShadow: "var(--shadow-clay-sm)",
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <Flag className="h-12 w-12 text-muted-foreground mb-4" />
+                  <p className="text-sm text-muted-foreground">No fraud data available</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+
+      <FadeIn delay={0.45}>
         <div className="clay p-6">
-          <h2 className="font-display text-2xl font-bold">Monitoring Overview</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Quick summary from all monitoring sections
-          </p>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            <Link
-              to="/admin/website-monitoring"
-              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
-            >
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-500/20">
-                <Activity className="h-6 w-6 text-blue-500" />
-              </span>
-              <p className="mt-3 font-semibold">Website</p>
-              <p className="text-xs text-muted-foreground">Traffic, errors, performance</p>
-            </Link>
-            <Link
-              to="/admin/ai-model-monitoring"
-              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
-            >
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-purple-500/20">
-                <Cpu className="h-6 w-6 text-purple-500" />
-              </span>
-              <p className="mt-3 font-semibold">AI Model</p>
-              <p className="text-xs text-muted-foreground">Accuracy, performance, health</p>
-            </Link>
-            <Link
-              to="/admin/server-monitoring"
-              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
-            >
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-orange-500/20">
-                <Server className="h-6 w-6 text-orange-500" />
-              </span>
-              <p className="mt-3 font-semibold">Server</p>
-              <p className="text-xs text-muted-foreground">CPU, memory, database</p>
-            </Link>
-            <Link
-              to="/admin/extension-monitoring"
-              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
-            >
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-green-500/20">
-                <Radio className="h-6 w-6 text-green-500" />
-              </span>
-              <p className="mt-3 font-semibold">Extension</p>
-              <p className="text-xs text-muted-foreground">Installs, usage, retention</p>
-            </Link>
-            <Link
-              to="/admin/real-time-monitoring"
-              className="clay-inset flex flex-col items-center rounded-xl p-4 transition hover:-translate-y-0.5"
-            >
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-pink-500/20">
-                <TrendingUp className="h-6 w-6 text-pink-500" />
-              </span>
-              <p className="mt-3 font-semibold">Real-Time</p>
-              <p className="text-xs text-muted-foreground">Events, alerts, WebSocket</p>
-            </Link>
+          <h2 className="font-display text-2xl font-bold">Scam rate trend</h2>
+          <p className="text-sm text-muted-foreground">% of scans flagged as scam, per month</p>
+          <div className="mt-4 h-72">
+            <ResponsiveContainer>
+              <LineChart data={trendData.map((d) => ({
+                month: d.month,
+                rate: d.scams + d.safe > 0 ? Math.round((d.scams / (d.scams + d.safe)) * 100) : 0,
+              }))}>
+                <CartesianGrid stroke="var(--border)" strokeDasharray="3 4" vertical={false} />
+                <XAxis
+                  dataKey="month"
+                  stroke="var(--muted-foreground)"
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis stroke="var(--muted-foreground)" tickLine={false} axisLine={false} />
+                <Tooltip
+                  contentStyle={{
+                    background: "var(--card)",
+                    border: "none",
+                    borderRadius: 16,
+                    boxShadow: "var(--shadow-clay-sm)",
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="rate"
+                  stroke="oklch(0.66 0.22 22)"
+                  strokeWidth={4}
+                  dot={{ fill: "oklch(0.66 0.22 22)", r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </FadeIn>
