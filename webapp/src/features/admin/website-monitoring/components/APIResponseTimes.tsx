@@ -3,7 +3,6 @@ import { Server, Zap } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function APIResponseTimes() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -13,10 +12,9 @@ export function APIResponseTimes() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load API response times");
         console.error(err);
       } finally {
         setLoading(false);
@@ -26,12 +24,11 @@ export function APIResponseTimes() {
   }, []);
 
   if (loading) return <LoadingState message="Loading API response times..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const apiResponseTimeData = websiteData?.apiResponseTimes || [
-    { endpoint: "/api/scan", p50: 45, p95: 85, p99: 120 },
-    { endpoint: "/api/analyze", p50: 62, p95: 110, p99: 150 },
-    { endpoint: "/api/report", p50: 38, p95: 72, p99: 95 },
+    { endpoint: "/api/scan", p50: 0, p95: 0, p99: 0 },
+    { endpoint: "/api/analyze", p50: 0, p95: 0, p99: 0 },
+    { endpoint: "/api/report", p50: 0, p95: 0, p99: 0 },
   ];
 
   return (
