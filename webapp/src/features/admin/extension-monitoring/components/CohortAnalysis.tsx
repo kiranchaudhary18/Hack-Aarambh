@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function CohortAnalysis() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function CohortAnalysis() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load cohort data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,8 @@ export function CohortAnalysis() {
   }, []);
 
   if (loading) return <LoadingState message="Loading cohort analysis..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const cohortData = extensionData?.cohorts || [
-    { cohortDate: "2024-01", d1Retention: 82, d7Retention: 58, d30Retention: 38 },
-    { cohortDate: "2024-02", d1Retention: 78, d7Retention: 52, d30Retention: 34 },
-    { cohortDate: "2024-03", d1Retention: 75, d7Retention: 48, d30Retention: 31 },
-  ];
+  const cohortData = extensionData?.cohorts || [];
 
   return (
     <div className="clay p-6">

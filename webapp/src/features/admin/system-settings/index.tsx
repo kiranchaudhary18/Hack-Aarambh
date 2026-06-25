@@ -4,7 +4,6 @@ import { Settings, Database, Bell, Shield, Globe, Save } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function SystemSettings() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
@@ -17,10 +16,9 @@ export function SystemSettings() {
     document.title = "System Settings — ScamSniff Admin";
     async function fetchData() {
       try {
-        const data = await api.getSettings();
+        const data = await api.getAdminStats();
         setSettingsData(data);
       } catch (err) {
-        setError("Failed to load settings");
         console.error(err);
       } finally {
         setLoading(false);
@@ -30,18 +28,10 @@ export function SystemSettings() {
   }, []);
 
   if (loading) return <LoadingState message="Loading settings..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const integrations = settingsData?.integrations || [
-    { name: "OpenAI API", status: "Connected", icon: "🤖" },
-    { name: "PostgreSQL Database", status: "Connected", icon: "🗄️" },
-    { name: "Redis Cache", status: "Connected", icon: "⚡" },
-  ];
+  const integrations = settingsData?.integrations || [];
 
-  const notifications = settingsData?.notifications || [
-    { name: "Email Notifications", enabled: true, description: "Receive alerts via email" },
-    { name: "Slack Notifications", enabled: false, description: "Receive alerts in Slack" },
-  ];
+  const notifications = settingsData?.notifications || [];
 
   const getActiveSection = () => {
     const path = location.pathname;

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Users } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ActiveUsers() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,18 @@ export function ActiveUsers() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
-        setExtensionData(data);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/extension/metrics`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setExtensionData(data);
+        } else {
+          setExtensionData(null);
+        }
       } catch (err) {
-        setError("Failed to load user data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +32,8 @@ export function ActiveUsers() {
   }, []);
 
   if (loading) return <LoadingState message="Loading user data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const activeUsers = extensionData?.users || { dau: 12450, dauChange: "+8.2%", wau: 28300, wauChange: "+5.4%", mau: 45200, mauChange: "+3.8%" };
+  const activeUsers = extensionData?.users || { dau: 0, dauChange: "0%", wau: 0, wauChange: "0%", mau: 0, mauChange: "0%" };
   const stats = [
     { label: "DAU", value: activeUsers.dau.toLocaleString(), change: activeUsers.dauChange },
     { label: "WAU", value: activeUsers.wau.toLocaleString(), change: activeUsers.wauChange },

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { MemoryStick } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function MemoryUsage() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function MemoryUsage() {
         const data = await api.getServerResources();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load memory data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,14 +23,13 @@ export function MemoryUsage() {
   }, []);
 
   if (loading) return <LoadingState message="Loading memory usage..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const memoryUsage = serverData?.memory || {
-    ram: { percentage: 68, used: 10.9, total: 16 },
-    swap: { percentage: 12, used: 0.6, total: 4 },
-    buffers: 1.2,
-    cache: 3.8,
-    change: "+2.3%",
+    ram: { percentage: 0, used: 0, total: 0 },
+    swap: { percentage: 0, used: 0, total: 0 },
+    buffers: 0,
+    cache: 0,
+    change: "+0%",
   };
 
   return (

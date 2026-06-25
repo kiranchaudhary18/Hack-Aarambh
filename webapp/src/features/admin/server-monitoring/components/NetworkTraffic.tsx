@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function NetworkTraffic() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function NetworkTraffic() {
         const data = await api.getServerResources();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load network data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,16 +23,8 @@ export function NetworkTraffic() {
   }, []);
 
   if (loading) return <LoadingState message="Loading network traffic..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const networkTraffic = serverData?.networkTraffic || [
-    { timestamp: "00:00", bandwidthIn: 45, bandwidthOut: 28, connections: 120 },
-    { timestamp: "04:00", bandwidthIn: 32, bandwidthOut: 18, connections: 85 },
-    { timestamp: "08:00", bandwidthIn: 85, bandwidthOut: 52, connections: 280 },
-    { timestamp: "12:00", bandwidthIn: 120, bandwidthOut: 78, connections: 450 },
-    { timestamp: "16:00", bandwidthIn: 95, bandwidthOut: 62, connections: 380 },
-    { timestamp: "20:00", bandwidthIn: 68, bandwidthOut: 42, connections: 220 },
-  ];
+  const networkTraffic = serverData?.networkTraffic || [];
 
   return (
     <div className="clay p-6">

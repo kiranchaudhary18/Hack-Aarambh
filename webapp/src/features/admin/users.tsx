@@ -43,67 +43,20 @@ export function Users() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        // Mock data for now
-        const mockUsers: UserData[] = [
-          {
-            id: "1",
-            name: "John Doe",
-            email: "john.doe@example.com",
-            plan: "pro",
-            scansUsed: 145,
-            scansLimit: 500,
-            status: "active",
-            joinedDate: "Jan 15, 2024",
-            lastActive: "2 hours ago",
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/users`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          {
-            id: "2",
-            name: "Jane Smith",
-            email: "jane.smith@example.com",
-            plan: "free",
-            scansUsed: 23,
-            scansLimit: 50,
-            status: "active",
-            joinedDate: "Feb 3, 2024",
-            lastActive: "1 day ago",
-          },
-          {
-            id: "3",
-            name: "Bob Johnson",
-            email: "bob.johnson@example.com",
-            plan: "pro",
-            scansUsed: 489,
-            scansLimit: 500,
-            status: "active",
-            joinedDate: "Dec 10, 2023",
-            lastActive: "5 minutes ago",
-          },
-          {
-            id: "4",
-            name: "Alice Williams",
-            email: "alice.williams@example.com",
-            plan: "free",
-            scansUsed: 50,
-            scansLimit: 50,
-            status: "suspended",
-            joinedDate: "Mar 22, 2024",
-            lastActive: "3 days ago",
-          },
-          {
-            id: "5",
-            name: "Charlie Brown",
-            email: "charlie.brown@example.com",
-            plan: "pro",
-            scansUsed: 320,
-            scansLimit: 500,
-            status: "banned",
-            joinedDate: "Jan 5, 2024",
-            lastActive: "1 week ago",
-          },
-        ];
-        setUsers(mockUsers);
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data);
+        } else {
+          setUsers([]);
+        }
       } catch (error) {
         console.error("Failed to fetch users:", error);
+        setUsers([]);
       } finally {
         setLoading(false);
       }

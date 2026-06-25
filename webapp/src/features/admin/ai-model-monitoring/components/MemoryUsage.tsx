@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { MemoryStick } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function MemoryUsage() {
   const [resourceData, setResourceData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function MemoryUsage() {
         const data = await api.getAIResources();
         setResourceData(data);
       } catch (err) {
-        setError("Failed to load memory data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function MemoryUsage() {
   }, []);
 
   if (loading) return <LoadingState message="Loading memory data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const memory = resourceData?.memory || { current: 12.5, average: 10.2, peak: 16.8 };
+  const memory = resourceData?.memory || { current: 0, average: 0, peak: 0, perRequest: 0, status: 'unknown' };
   const stats = [
     { label: "Current", value: `${memory.current}GB` },
     { label: "Average", value: `${memory.average}GB` },

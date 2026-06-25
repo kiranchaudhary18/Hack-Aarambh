@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { FileText, Check, X, Loader2, AlertCircle } from "lucide-react";
+import { FileText, Check, X, Loader2, ShieldAlert } from "lucide-react";
+import { FadeIn } from "@/shared/components/Animated";
 
 interface PendingReport {
   id: string;
@@ -114,7 +115,7 @@ export function PendingReports() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center p-12">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
@@ -122,88 +123,96 @@ export function PendingReports() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Pending Reports</h1>
-          <p className="text-muted-foreground">
-            Review and approve or reject user-submitted scam reports
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <FileText className="h-5 w-5 text-muted-foreground" />
-          <span className="text-sm font-medium">{reports.length} pending</span>
-        </div>
-      </div>
+      <FadeIn>
+        <p className="clay-pill inline-block">Admin Reports</p>
+        <h1 className="mt-3 font-display text-4xl font-bold sm:text-5xl">Pending Reports</h1>
+        <p className="mt-2 text-muted-foreground">
+          Review and approve or reject user-submitted scam reports
+        </p>
+      </FadeIn>
 
-      {reports.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-lg">
-          <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
-          <p className="text-muted-foreground">No pending reports to review</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {reports.map((report) => (
-            <div
-              key={report.id}
-              className="border rounded-lg p-6 space-y-4 hover:bg-muted/50 transition"
-            >
-              <div className="flex items-start justify-between">
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-3">
-                    <h3 className="font-semibold text-lg">{report.companyName}</h3>
-                    {report.domain && (
-                      <span className="text-sm text-muted-foreground">({report.domain})</span>
-                    )}
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        report.severity === "high"
-                          ? "bg-red-100 text-red-700"
-                          : report.severity === "medium"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-green-100 text-green-700"
-                      }`}
-                    >
-                      {report.severity}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>Type: {report.scamType}</span>
-                    <span>Reports: {report.reportCount}</span>
-                    <span>
-                      Submitted: {new Date(report.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handleApprove(report.id)}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                  >
-                    <Check className="h-4 w-4" />
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => openRejectModal(report.id)}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                  >
-                    <X className="h-4 w-4" />
-                    Reject
-                  </button>
-                </div>
-              </div>
-              <div className="border-t pt-4">
-                <p className="text-sm text-muted-foreground mb-2">Description:</p>
-                <p className="text-sm">{report.description}</p>
-              </div>
+      <FadeIn delay={0.1}>
+        <div className="clay p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-muted-foreground" />
+              <span className="text-sm font-medium">{reports.length} pending</span>
             </div>
-          ))}
+          </div>
+
+          {reports.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <ShieldAlert className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">No pending reports to review</p>
+            </div>
+          ) : (
+            <div className="mt-6 space-y-4">
+              {reports.map((report) => (
+                <div
+                  key={report.id}
+                  className="clay-sm p-6 space-y-4 transition hover:-translate-y-0.5"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-display text-xl font-bold">{report.companyName}</h3>
+                        {report.domain && (
+                          <span className="text-sm text-muted-foreground">({report.domain})</span>
+                        )}
+                        <span
+                          className={`clay-pill text-[10px] uppercase ${
+                            report.severity === "high"
+                              ? "bg-[color:var(--destructive)] text-destructive-foreground"
+                              : report.severity === "medium"
+                              ? "bg-[color:var(--warning)]"
+                              : "bg-[color:var(--success)]"
+                          }`}
+                        >
+                          {report.severity}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span>Type: {report.scamType}</span>
+                        <span>Reports: {report.reportCount}</span>
+                        <span>
+                          Submitted: {new Date(report.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleApprove(report.id)}
+                        className="clay-btn flex items-center gap-2 px-4 py-2 text-sm font-semibold"
+                        style={{ color: "var(--success)" }}
+                      >
+                        <Check className="h-4 w-4" />
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => openRejectModal(report.id)}
+                        className="clay-btn flex items-center gap-2 px-4 py-2 text-sm font-semibold"
+                        style={{ color: "var(--destructive)" }}
+                      >
+                        <X className="h-4 w-4" />
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                  <div className="clay-inset pt-4">
+                    <p className="text-sm text-muted-foreground mb-2">Description:</p>
+                    <p className="text-sm">{report.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </FadeIn>
 
       {showRejectModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-background rounded-lg p-6 max-w-md w-full space-y-4">
-            <h3 className="text-lg font-semibold">Reject Report</h3>
+          <div className="clay p-6 max-w-md w-full space-y-4">
+            <h3 className="font-display text-xl font-bold">Reject Report</h3>
             <p className="text-sm text-muted-foreground">
               Please provide a reason for rejecting this report (optional).
             </p>
@@ -212,18 +221,19 @@ export function PendingReports() {
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="Reason for rejection..."
               rows={4}
-              className="w-full border rounded-lg p-3 text-sm resize-none"
+              className="clay-inset w-full p-3 text-sm resize-none"
             />
             <div className="flex justify-end gap-2">
               <button
                 onClick={closeRejectModal}
-                className="px-4 py-2 border rounded-lg hover:bg-muted transition"
+                className="clay-btn px-4 py-2 text-sm font-semibold"
               >
                 Cancel
               </button>
               <button
                 onClick={handleReject}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                className="clay-btn px-4 py-2 text-sm font-semibold"
+                style={{ color: "var(--destructive)" }}
               >
                 Reject
               </button>

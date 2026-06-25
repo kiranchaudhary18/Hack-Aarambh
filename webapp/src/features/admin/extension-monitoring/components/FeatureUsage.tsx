@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Zap } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function FeatureUsage() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function FeatureUsage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load feature usage");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,12 +23,11 @@ export function FeatureUsage() {
   }, []);
 
   if (loading) return <LoadingState message="Loading feature usage..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const featureUsage = extensionData?.features || [
-    { feature: "Scan Selection", usage: 45200, change: "+12.5%" },
-    { feature: "Scan Link", usage: 28450, change: "+8.2%" },
-    { feature: "Report Scam", usage: 15200, change: "+15.8%" },
+    { feature: "Scan Selection", usage: 0, change: "+0%" },
+    { feature: "Scan Link", usage: 0, change: "+0%" },
+    { feature: "Report Scam", usage: 0, change: "+0%" },
   ];
 
   return (

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function RequestThroughput() {
   const [performanceData, setPerformanceData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function RequestThroughput() {
         const data = await api.getAIPerformance();
         setPerformanceData(data);
       } catch (err) {
-        setError("Failed to load performance data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,15 +23,14 @@ export function RequestThroughput() {
   }, []);
 
   if (loading) return <LoadingState message="Loading throughput data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const throughputData = performanceData?.throughputHistory || [
-    { time: "00:00", rps: 120 },
-    { time: "04:00", rps: 85 },
-    { time: "08:00", rps: 200 },
-    { time: "12:00", rps: 350 },
-    { time: "16:00", rps: 280 },
-    { time: "20:00", rps: 150 },
+    { time: "00:00", rps: 0 },
+    { time: "04:00", rps: 0 },
+    { time: "08:00", rps: 0 },
+    { time: "12:00", rps: 0 },
+    { time: "16:00", rps: 0 },
+    { time: "20:00", rps: 0 },
   ];
 
   return (

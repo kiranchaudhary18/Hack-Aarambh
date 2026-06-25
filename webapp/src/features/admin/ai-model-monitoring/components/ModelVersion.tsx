@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { GitBranch } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ModelVersion() {
   const [healthData, setHealthData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function ModelVersion() {
         const data = await api.getAIHealth();
         setHealthData(data);
       } catch (err) {
-        setError("Failed to load model health data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,11 +23,10 @@ export function ModelVersion() {
   }, []);
 
   if (loading) return <LoadingState message="Loading model versions..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const modelVersions = healthData?.modelVersions || [
-    { version: "v2.1.0", deployedDate: "2024-01-15", accuracy: 94.2, status: "active" },
-    { version: "v2.0.5", deployedDate: "2024-01-01", accuracy: 93.8, status: "testing" },
+    { version: "v2.1.0", deployedDate: "2024-01-15", accuracy: 0, status: "active" },
+    { version: "v2.0.5", deployedDate: "2024-01-01", accuracy: 0, status: "testing" },
   ];
 
   return (

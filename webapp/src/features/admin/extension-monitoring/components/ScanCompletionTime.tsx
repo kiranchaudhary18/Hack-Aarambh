@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ScanSearch } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ScanCompletionTime() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function ScanCompletionTime() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load scan time data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function ScanCompletionTime() {
   }, []);
 
   if (loading) return <LoadingState message="Loading scan completion time..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const scanCompletionTime = extensionData?.scanTime || { avg: 1200, p50: 950, p95: 1800, change: "-8.2%" };
+  const scanCompletionTime = extensionData?.scanTime || { avg: 0, p50: 0, p95: 0, change: "+0%" };
   const stats = [
     { label: "Average", value: `${scanCompletionTime.avg}ms` },
     { label: "p50", value: `${scanCompletionTime.p50}ms` },

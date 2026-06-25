@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function InferenceLatency() {
   const [performanceData, setPerformanceData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function InferenceLatency() {
         const data = await api.getAIPerformance();
         setPerformanceData(data);
       } catch (err) {
-        setError("Failed to load performance data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function InferenceLatency() {
   }, []);
 
   if (loading) return <LoadingState message="Loading latency data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const latency = performanceData?.latency || { p50: 45, p95: 120, p99: 180 };
+  const latency = performanceData?.latency || { p50: 0, p95: 0, p99: 0, change: "0%" };
   const stats = [
     { label: "p50", value: `${latency.p50}ms` },
     { label: "p95", value: `${latency.p95}ms` },
@@ -54,10 +51,10 @@ export function InferenceLatency() {
       </div>
       <p
         className={`mt-3 text-xs font-medium ${
-          inferenceLatency.change.startsWith("-") ? "text-green-500" : "text-red-500"
+          latency.change.startsWith("-") ? "text-green-500" : "text-red-500"
         }`}
       >
-        {inferenceLatency.change} from last week
+        {latency.change} from last week
       </p>
     </div>
   );

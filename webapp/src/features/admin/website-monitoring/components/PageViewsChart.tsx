@@ -3,7 +3,6 @@ import { Layout, Grid } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 const heatColors = {
   high: "oklch(0.62 0.18 295)",
@@ -19,10 +18,9 @@ export function PageViewsChart() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load page view data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -32,13 +30,12 @@ export function PageViewsChart() {
   }, []);
 
   if (loading) return <LoadingState message="Loading page views..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const pageViewData = websiteData?.pageViews || [
-    { page: "/", views: 45200, heat: "high" },
-    { page: "/scams", views: 28450, heat: "high" },
-    { page: "/about", views: 15200, heat: "medium" },
-    { page: "/contact", views: 8200, heat: "low" },
+    { page: "/", views: 0, heat: "low" },
+    { page: "/scams", views: 0, heat: "low" },
+    { page: "/about", views: 0, heat: "low" },
+    { page: "/contact", views: 0, heat: "low" },
   ];
 
   return (
@@ -67,8 +64,8 @@ export function PageViewsChart() {
               }}
             />
             <Bar dataKey="views" radius={[0, 8, 8, 0]}>
-              {pageViewData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={heatColors[entry.heat]} />
+              {pageViewData.map((entry: any, index: number) => (
+                <Cell key={`cell-${index}`} fill={heatColors[entry.heat as keyof typeof heatColors]} />
               ))}
             </Bar>
           </BarChart>

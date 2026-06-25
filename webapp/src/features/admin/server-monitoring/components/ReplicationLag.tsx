@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ReplicationLag() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function ReplicationLag() {
         const data = await api.getServerDatabase();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load replication data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,22 @@ export function ReplicationLag() {
   }, []);
 
   if (loading) return <LoadingState message="Loading replication lag..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const replicationLag = serverData?.replication || { primary: "db-primary", replica: "db-replica-1", lag: 0.8, status: "synced" };
+  const replicationLag = serverData?.replication || null;
+
+  if (!replicationLag) {
+    return (
+      <div className="clay p-6">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-2xl font-bold">Replication Lag</h2>
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-blue-500/20">
+            <RefreshCw className="h-5 w-5 text-blue-500" />
+          </span>
+        </div>
+        <p className="mt-4 text-sm text-muted-foreground">No replication data available</p>
+      </div>
+    );
+  }
 
   return (
     <div className="clay p-6">

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function FalsePositiveRate() {
   const [accuracyData, setAccuracyData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function FalsePositiveRate() {
         const data = await api.getAIAccuracy();
         setAccuracyData(data);
       } catch (err) {
-        setError("Failed to load accuracy data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,14 +23,13 @@ export function FalsePositiveRate() {
   }, []);
 
   if (loading) return <LoadingState message="Loading false positive rate..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const data = accuracyData?.falsePositiveHistory || [
-    { date: "2024-01-01", rate: 0.05 },
-    { date: "2024-01-02", rate: 0.048 },
-    { date: "2024-01-03", rate: 0.045 },
-    { date: "2024-01-04", rate: 0.042 },
-    { date: "2024-01-05", rate: 0.04 },
+    { date: "2024-01-01", rate: 0 },
+    { date: "2024-01-02", rate: 0 },
+    { date: "2024-01-03", rate: 0 },
+    { date: "2024-01-04", rate: 0 },
+    { date: "2024-01-05", rate: 0 },
   ].map((d) => ({
     date: d.date,
     rate: d.rate,

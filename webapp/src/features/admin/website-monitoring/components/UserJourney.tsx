@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Route, Footprints, ArrowRight } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function UserJourney() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function UserJourney() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load user journey data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,12 +23,11 @@ export function UserJourney() {
   }, []);
 
   if (loading) return <LoadingState message="Loading user journey..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const userJourneyData = websiteData?.userJourney || [
-    { users: 4520, completionRate: 85, path: ["home", "scams", "report"] },
-    { users: 2840, completionRate: 72, path: ["home", "about", "contact"] },
-    { users: 1820, completionRate: 65, path: ["scams", "details", "report"] },
+    { users: 0, completionRate: 0, path: ["home", "scams", "report"] },
+    { users: 0, completionRate: 0, path: ["home", "about", "contact"] },
+    { users: 0, completionRate: 0, path: ["scams", "details", "report"] },
   ];
 
   return (
@@ -57,7 +54,7 @@ export function UserJourney() {
               </span>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              {journey.path.map((page, i) => (
+              {journey.path.map((page: any, i: number) => (
                 <div key={i} className="flex items-center gap-2">
                   <span className="clay-sm px-3 py-1 text-sm font-medium">/{page}</span>
                   {i < journey.path.length - 1 && <ArrowRight className="h-4 w-4 text-muted-foreground" />}

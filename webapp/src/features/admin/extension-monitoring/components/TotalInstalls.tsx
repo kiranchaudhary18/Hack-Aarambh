@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Download } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function TotalInstalls() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function TotalInstalls() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load install data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function TotalInstalls() {
   }, []);
 
   if (loading) return <LoadingState message="Loading install data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const totalInstalls = extensionData?.installs || { chrome: 45230, firefox: 12450, total: 57680, change: "+12.5%" };
+  const totalInstalls = extensionData?.installs || { chrome: 0, firefox: 0, total: 0, change: "+0%" };
   const stats = [
     { label: "Chrome", value: totalInstalls.chrome.toLocaleString(), color: "var(--clay-blue)" },
     { label: "Firefox", value: totalInstalls.firefox.toLocaleString(), color: "var(--clay-orange)" },

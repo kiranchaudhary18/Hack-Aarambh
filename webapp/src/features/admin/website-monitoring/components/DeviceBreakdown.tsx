@@ -3,7 +3,6 @@ import { Monitor, Smartphone, Tablet, PieChart } from "lucide-react";
 import { ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 const deviceColors = ["oklch(0.62 0.18 295)", "oklch(0.72 0.16 155)", "oklch(0.75 0.12 85)"];
 const browserColors = ["oklch(0.62 0.18 295)", "oklch(0.72 0.16 155)", "oklch(0.75 0.12 85)", "oklch(0.66 0.22 22)"];
@@ -22,10 +21,9 @@ export function DeviceBreakdown() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
+        const data = await api.getWebsiteTraffic();
         setWebsiteData(data);
       } catch (err) {
-        setError("Failed to load device data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -35,19 +33,18 @@ export function DeviceBreakdown() {
   }, []);
 
   if (loading) return <LoadingState message="Loading device breakdown..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const deviceData = websiteData?.devices || [
-    { type: "Desktop", count: 45200 },
-    { type: "Mobile", count: 28450 },
-    { type: "Tablet", count: 8200 },
+    { type: "Desktop", count: 0 },
+    { type: "Mobile", count: 0 },
+    { type: "Tablet", count: 0 },
   ];
 
   const browserData = websiteData?.browsers || [
-    { name: "Chrome", count: 45200 },
-    { name: "Firefox", count: 18450 },
-    { name: "Safari", count: 12200 },
-    { name: "Edge", count: 6000 },
+    { name: "Chrome", count: 0 },
+    { name: "Firefox", count: 0 },
+    { name: "Safari", count: 0 },
+    { name: "Edge", count: 0 },
   ];
 
   return (
@@ -116,7 +113,7 @@ export function DeviceBreakdown() {
                 innerRadius={40}
                 paddingAngle={4}
               >
-                {browserData.map((entry, index) => (
+                {browserData.map((entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={browserColors[index]} stroke="var(--card)" strokeWidth={4} />
                 ))}
               </Pie>

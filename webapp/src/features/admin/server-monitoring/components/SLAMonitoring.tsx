@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Target } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function SLAMonitoring() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function SLAMonitoring() {
         const data = await api.getServerUptime();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load SLA data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,8 @@ export function SLAMonitoring() {
   }, []);
 
   if (loading) return <LoadingState message="Loading SLA data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const slaMonitoring = serverData?.sla || [
-    { service: "API Availability", target: 99.9, period: "30d", current: 99.95, status: "on-track" },
-    { service: "Response Time", target: 95, period: "24h", current: 92, status: "at-risk" },
-    { service: "Error Rate", target: 99.5, period: "7d", current: 99.8, status: "on-track" },
-  ];
+  const slaMonitoring = serverData?.sla || [];
 
   return (
     <div className="clay p-6">

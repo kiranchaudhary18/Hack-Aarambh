@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ShieldAlert } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function PermissionErrors() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function PermissionErrors() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load permission error data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,12 +23,8 @@ export function PermissionErrors() {
   }, []);
 
   if (loading) return <LoadingState message="Loading permission errors..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const permissionErrors = extensionData?.permissionErrors || [
-    { permission: "tabs", users: 245, errors: 12 },
-    { permission: "storage", users: 85, errors: 5 },
-  ];
+  const permissionErrors = extensionData?.permissionErrors || [];
 
   return (
     <div className="clay p-6">

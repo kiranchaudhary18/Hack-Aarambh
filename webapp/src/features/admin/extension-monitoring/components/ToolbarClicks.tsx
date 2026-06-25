@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ToolbarClicks() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function ToolbarClicks() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load toolbar data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,15 +23,8 @@ export function ToolbarClicks() {
   }, []);
 
   if (loading) return <LoadingState message="Loading toolbar clicks..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const toolbarClicks = extensionData?.toolbarClicks || [
-    { date: "2024-01-01", clicks: 12450 },
-    { date: "2024-01-02", clicks: 13200 },
-    { date: "2024-01-03", clicks: 11800 },
-    { date: "2024-01-04", clicks: 14500 },
-    { date: "2024-01-05", clicks: 13800 },
-  ];
+  const toolbarClicks = extensionData?.toolbarClicks || [];
 
   return (
     <div className="clay p-6">

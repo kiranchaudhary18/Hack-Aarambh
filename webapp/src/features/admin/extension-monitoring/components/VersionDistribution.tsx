@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Tag } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function VersionDistribution() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function VersionDistribution() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load version data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,8 @@ export function VersionDistribution() {
   }, []);
 
   if (loading) return <LoadingState message="Loading version distribution..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const versionDistribution = extensionData?.versions || [
-    { version: "v2.1.0", count: 28450, percentage: 49.2, status: "stable" },
-    { version: "v2.0.5", count: 18230, percentage: 31.6, status: "stable" },
-    { version: "v2.2.0-beta", count: 11000, percentage: 19.2, status: "beta" },
-  ];
+  const versionDistribution = extensionData?.versions || [];
 
   return (
     <div className="clay p-6">

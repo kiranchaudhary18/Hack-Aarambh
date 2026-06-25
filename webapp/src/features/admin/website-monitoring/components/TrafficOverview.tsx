@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Users, Eye, Activity, TrendingDown } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function TrafficOverview() {
   const [websiteData, setWebsiteData] = useState<any>(null);
@@ -12,10 +11,18 @@ export function TrafficOverview() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getWebsiteMetrics();
-        setWebsiteData(data);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/website-metrics`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setWebsiteData(data);
+        } else {
+          setWebsiteData(null);
+        }
       } catch (err) {
-        setError("Failed to load traffic data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,16 +32,15 @@ export function TrafficOverview() {
   }, []);
 
   if (loading) return <LoadingState message="Loading traffic overview..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const trafficOverview = websiteData?.trafficOverview || {
-    realTimeVisitors: 1245,
-    visitorsChange: "+12.5%",
-    pageViewsPerSession: 4.2,
-    totalSessionsToday: 8450,
-    sessionsChange: "+8.2%",
-    bounceRate: 35.8,
-    bounceRateChange: "-2.1%",
+    realTimeVisitors: 0,
+    visitorsChange: "0%",
+    pageViewsPerSession: 0,
+    totalSessionsToday: 0,
+    sessionsChange: "0%",
+    bounceRate: 0,
+    bounceRateChange: "0%",
   };
 
   const stats = [

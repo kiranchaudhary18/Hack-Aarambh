@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ResponseTimeByType() {
   const [performanceData, setPerformanceData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function ResponseTimeByType() {
         const data = await api.getAIPerformance();
         setPerformanceData(data);
       } catch (err) {
-        setError("Failed to load performance data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +23,12 @@ export function ResponseTimeByType() {
   }, []);
 
   if (loading) return <LoadingState message="Loading response time data..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
   const responseTimeByType = performanceData?.responseTimeByType || [
-    { type: "Text", p50: 45, p95: 120, p99: 180 },
-    { type: "PDF", p50: 85, p95: 220, p99: 350 },
-    { type: "URL", p50: 35, p95: 95, p99: 150 },
-    { type: "Image", p50: 120, p95: 280, p99: 420 },
+    { type: "Text", p50: 0, p95: 0, p99: 0 },
+    { type: "PDF", p50: 0, p95: 0, p99: 0 },
+    { type: "URL", p50: 0, p95: 0, p99: 0 },
+    { type: "Image", p50: 0, p95: 0, p99: 0 },
   ];
 
   return (

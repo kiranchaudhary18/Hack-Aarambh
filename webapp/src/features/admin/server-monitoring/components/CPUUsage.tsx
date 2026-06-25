@@ -14,7 +14,7 @@ export function CPUUsage() {
       } catch (error) {
         console.error("Failed to fetch server resources:", error);
         setResources({
-          cpu: { value: 42, unit: '%', percentage: 42, status: 'healthy' },
+          cpu: { value: 0, unit: '%', percentage: 0, status: 'unknown' },
         });
       } finally {
         setLoading(false);

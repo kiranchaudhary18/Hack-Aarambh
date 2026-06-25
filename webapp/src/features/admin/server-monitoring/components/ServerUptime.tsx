@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function ServerUptime() {
   const [serverData, setServerData] = useState<any>(null);
@@ -15,7 +14,6 @@ export function ServerUptime() {
         const data = await api.getServerUptime();
         setServerData(data);
       } catch (err) {
-        setError("Failed to load uptime data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function ServerUptime() {
   }, []);
 
   if (loading) return <LoadingState message="Loading uptime..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const serverUptime = serverData?.uptime || { current: "45d 12h 34m" };
+  const serverUptime = serverData?.uptime || { current: "0d 0h 0m" };
 
   return (
     <div className="clay p-6">

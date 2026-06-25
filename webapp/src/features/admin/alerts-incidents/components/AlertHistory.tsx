@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { AlertTriangle, CheckCircle, Clock, User } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function AlertHistory() {
   const [alertData, setAlertData] = useState<any>(null);
@@ -12,10 +11,18 @@ export function AlertHistory() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getAlerts();
-        setAlertData(data);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/alerts`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setAlertData(data);
+        } else {
+          setAlertData(null);
+        }
       } catch (err) {
-        setError("Failed to load alert history");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,13 +32,9 @@ export function AlertHistory() {
   }, []);
 
   if (loading) return <LoadingState message="Loading alert history..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const alertStats = alertData?.stats || { total: 245, active: 12, resolved: 220, critical: 8 };
-  const alertHistory = alertData?.history || [
-    { id: 1, type: "High CPU", message: "CPU usage exceeded 90%", severity: "critical", resolved: true, assignedTo: "John", timestamp: "2h ago" },
-    { id: 2, type: "Memory High", message: "Memory usage at 85%", severity: "high", resolved: false, assignedTo: "Jane", timestamp: "1h ago" },
-  ];
+  const alertStats = alertData?.stats || { total: 0, active: 0, resolved: 0, critical: 0 };
+  const alertHistory = alertData?.history || [];
 
   return (
     <div className="clay p-6">

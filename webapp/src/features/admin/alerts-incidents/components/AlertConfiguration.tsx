@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Settings, Mail, MessageSquare, Smartphone, Webhook, ToggleRight, ToggleLeft } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function AlertConfiguration() {
   const [alertData, setAlertData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function AlertConfiguration() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getAlerts();
+        const data = await api.getAdminStats();
         setAlertData(data);
       } catch (err) {
-        setError("Failed to load alert configuration");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,17 +23,10 @@ export function AlertConfiguration() {
   }, []);
 
   if (loading) return <LoadingState message="Loading alert configuration..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const alertRules = alertData?.rules || [
-    { id: 1, name: "High CPU Usage", metric: "cpu_usage", condition: ">", threshold: "80%", severity: "critical", channels: ["email", "slack"], enabled: true },
-    { id: 2, name: "Memory High", metric: "memory_usage", condition: ">", threshold: "90%", severity: "high", channels: ["email"], enabled: true },
-  ];
+  const alertRules = alertData?.rules || [];
 
-  const alertChannels = alertData?.channels || [
-    { id: 1, name: "Admin Email", type: "email", enabled: true },
-    { id: 2, name: "DevOps Slack", type: "slack", enabled: true },
-  ];
+  const alertChannels = alertData?.channels || [];
 
   return (
     <div className="space-y-6">

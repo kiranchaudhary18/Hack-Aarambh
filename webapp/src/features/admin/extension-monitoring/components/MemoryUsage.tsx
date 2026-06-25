@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { MemoryStick } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { LoadingState } from "@/shared/components/LoadingState";
-import { ErrorState } from "@/shared/components/ErrorState";
 
 export function MemoryUsage() {
   const [extensionData, setExtensionData] = useState<any>(null);
@@ -12,10 +11,9 @@ export function MemoryUsage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await api.getExtensionMetrics();
+        const data = await api.getExtensionUsage();
         setExtensionData(data);
       } catch (err) {
-        setError("Failed to load memory data");
         console.error(err);
       } finally {
         setLoading(false);
@@ -25,9 +23,8 @@ export function MemoryUsage() {
   }, []);
 
   if (loading) return <LoadingState message="Loading memory usage..." />;
-  if (error) return <ErrorState message={error} onRetry={() => window.location.reload()} />;
 
-  const memoryUsage = extensionData?.memory || { avg: 45, peak: 85, perInstance: 42, change: "-5.2%" };
+  const memoryUsage = extensionData?.memory || { avg: 0, peak: 0, perInstance: 0, change: "+0%" };
   const stats = [
     { label: "Average", value: `${memoryUsage.avg}MB` },
     { label: "Peak", value: `${memoryUsage.peak}MB` },
