@@ -21,25 +21,43 @@ const items = [
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
+let cachedUser: { name: string; email: string; avatar: string | null } | null = null;
+
 export function Sidebar() {
   const location = useLocation();
   const path = location.pathname;
 
-  const [user, setUser] = useState<{ name: string; email: string; avatar: string | null }>({
-    name: "User",
-    email: "user@example.com",
-    avatar: null,
+  const [user, setUser] = useState<{ name: string; email: string; avatar: string | null }>(() => {
+    if (cachedUser) return cachedUser;
+    try {
+      const stored = localStorage.getItem("scamsniff_user");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        cachedUser = parsed;
+        return parsed;
+      }
+    } catch (e) {}
+    return {
+      name: "User",
+      email: "user@example.com",
+      avatar: null,
+    };
   });
 
   useEffect(() => {
     async function fetchUser() {
       try {
         const data = await api.getProfile();
-        setUser({
+        const updated = {
           name: data.name || "User",
           email: data.email || "user@example.com",
           avatar: data.avatar || null,
-        });
+        };
+        cachedUser = updated;
+        try {
+          localStorage.setItem("scamsniff_user", JSON.stringify(updated));
+        } catch (e) {}
+        setUser(updated);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }

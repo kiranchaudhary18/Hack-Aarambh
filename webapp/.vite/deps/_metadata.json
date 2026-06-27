@@ -1,0 +1,79 @@
+{
+  "hash": "365e09b1",
+  "configHash": "13ef54c9",
+  "lockfileHash": "9fa84fec",
+  "browserHash": "ae8e4454",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "f417af6e",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "038ee97d",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "7847aa0b",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "aa730c9e",
+      "needsInterop": false
+    },
+    "@tanstack/react-query": {
+      "src": "../../node_modules/@tanstack/react-query/build/modern/index.js",
+      "file": "@tanstack_react-query.js",
+      "fileHash": "faef6060",
+      "needsInterop": false
+    },
+    "lucide-react": {
+      "src": "../../node_modules/lucide-react/dist/esm/lucide-react.js",
+      "file": "lucide-react.js",
+      "fileHash": "4c5ae83f",
+      "needsInterop": false
+    },
+    "recharts": {
+      "src": "../../node_modules/recharts/es6/index.js",
+      "file": "recharts.js",
+      "fileHash": "e6ca5dc2",
+      "needsInterop": false
+    },
+    "sonner": {
+      "src": "../../node_modules/sonner/dist/index.mjs",
+      "file": "sonner.js",
+      "fileHash": "23e4eabe",
+      "needsInterop": false
+    },
+    "gsap": {
+      "src": "../../node_modules/gsap/index.js",
+      "file": "gsap.js",
+      "fileHash": "68da4e7d",
+      "needsInterop": false
+    },
+    "canvas-confetti": {
+      "src": "../../node_modules/canvas-confetti/dist/confetti.module.mjs",
+      "file": "canvas-confetti.js",
+      "fileHash": "4842eb09",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-S6R6KYZF": {
+      "file": "chunk-S6R6KYZF.js"
+    },
+    "chunk-WEBDCK5Q": {
+      "file": "chunk-WEBDCK5Q.js"
+    },
+    "chunk-G3PMV62Z": {
+      "file": "chunk-G3PMV62Z.js"
+    }
+  }
+}

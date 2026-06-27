@@ -350,7 +350,7 @@ export function Dashboard() {
             </div>
           </FadeIn>
 
-          <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+          <div className="grid gap-6">
             <FadeIn delay={0.1}>
               <div className="clay p-6">
                 <div className="flex items-center justify-between">
