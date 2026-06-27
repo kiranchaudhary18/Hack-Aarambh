@@ -92,10 +92,12 @@ export const api = {
 
   // History
   getHistory: () => apiRequest("/history"),
+  getAnalytics: () => apiRequest("/history/analytics"),
 
   // Admin
   getAdminStats: () => apiRequest("/admin/stats"),
   getFlaggedCases: () => apiRequest("/admin/flagged"),
+  getAdminAnalytics: () => apiRequest("/admin/analytics"),
 
   // Password Reset
   forgotPassword: (email: string) =>
@@ -165,6 +167,78 @@ export const api = {
       method: "DELETE",
     }),
 
-  // Analytics (for admin)
-  getAnalytics: () => apiRequest("/admin/analytics"),
+  // API Tokens
+  generateToken: (name?: string, expiresAt?: string) =>
+    apiRequest("/tokens/generate", {
+      method: "POST",
+      body: JSON.stringify({ name, expiresAt }),
+    }),
+  getTokens: () => apiRequest("/tokens"),
+  deleteToken: (tokenId: string) =>
+    apiRequest(`/tokens/${tokenId}`, {
+      method: "DELETE",
+      body: JSON.stringify({ tokenId }),
+    }),
+
+  // Notifications
+  getNotifications: (unreadOnly?: boolean) =>
+    apiRequest(`/extension/notifications${unreadOnly ? "?unreadOnly=true" : ""}`),
+  markNotificationAsRead: (notificationId: string) =>
+    apiRequest(`/extension/notifications/${notificationId}/read`, {
+      method: "PUT",
+    }),
+  markAllAsRead: () =>
+    apiRequest("/extension/notifications/read-all", {
+      method: "PUT",
+    }),
+  getUnreadCount: () => apiRequest("/extension/notifications/unread-count"),
+
+  // Notification Preferences
+  getNotificationPreferences: () => apiRequest("/extension/notification-preferences"),
+  updateNotificationPreferences: (preferences: any) =>
+    apiRequest("/extension/notification-preferences", {
+      method: "PUT",
+      body: JSON.stringify({ notificationPreferences: preferences }),
+    }),
+
+  // 2FA
+  setupTwoFactor: () =>
+    apiRequest("/auth/2fa/setup", {
+      method: "POST",
+    }),
+  verifyAndEnableTwoFactor: (token: string) =>
+    apiRequest("/auth/2fa/verify", {
+      method: "POST",
+      body: JSON.stringify({ token }),
+    }),
+  disableTwoFactor: (password: string) =>
+    apiRequest("/auth/2fa/disable", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    }),
+  regenerateBackupCodes: (password: string) =>
+    apiRequest("/auth/2fa/backup-codes", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    }),
+  loginWithTwoFactor: (email: string, password: string, twoFactorToken?: string) =>
+    apiRequest("/auth/2fa/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password, twoFactorToken }),
+    }),
+
+  // Search
+  search: (query: string, filters?: any) => {
+    const filterString = filters ? `&${new URLSearchParams(filters as any).toString()}` : '';
+    return apiRequest(`/search?q=${encodeURIComponent(query)}${filterString}`);
+  },
+  
+  getSuggestions: (query: string) =>
+    apiRequest(`/search/suggestions?q=${encodeURIComponent(query)}`),
+
+  reportScam: (scamData: any) =>
+    apiRequest("/search/report", {
+      method: "POST",
+      body: JSON.stringify(scamData),
+    }),
 };

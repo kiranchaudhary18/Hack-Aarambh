@@ -7,18 +7,9 @@ import { Camera, X, Pencil, AlertTriangle, CheckCircle2 } from "lucide-react";
 import {
   User,
   Mail,
-  Bell,
-  Trash2,
-  LogOut,
   ShieldCheck,
   KeyRound,
   CreditCard,
-  Smartphone,
-  Lock,
-  Plus,
-  Copy,
-  Eye,
-  EyeOff,
 } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { toast } from "sonner";
@@ -30,21 +21,18 @@ interface ProfileData {
   plan?: string;
   scansUsed?: number;
   scansLimit?: number;
-  isEmailVerified?: boolean;
+  isVerified?: boolean;
 }
 
 export function Profile() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [editedName, setEditedName] = useState("");
   const [editedEmail, setEditedEmail] = useState("");
   const [saving, setSaving] = useState(false);
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-  const [showTwoFactorSetup, setShowTwoFactorSetup] = useState(false);
-  const [apiKeys, setApiKeys] = useState<{id: string; name: string; key: string; createdAt: string }[]>([]);
-  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -70,7 +58,7 @@ export function Profile() {
     fetchProfile();
   }, []);
 
-  async function handleSave() {
+  async function handleSaveName() {
     setSaving(true);
     try {
       const result = await api.updateProfile({ name: editedName });
@@ -79,12 +67,22 @@ export function Profile() {
         return;
       }
       setProfile(result);
-      setIsEditing(false);
+      setIsEditingName(false);
     } catch (error) {
       console.error("Failed to update profile:", error);
     } finally {
       setSaving(false);
     }
+  }
+
+  function handleCancelName() {
+    setEditedName(profile?.name || "");
+    setIsEditingName(false);
+  }
+
+  function handleEditName() {
+    setEditedName(profile?.name || "");
+    setIsEditingName(true);
   }
 
   async function handleEmailUpdate() {
@@ -101,6 +99,7 @@ export function Profile() {
       }
       toast.success("Verification email sent to your new email address");
       setEditedEmail(profile?.email || "");
+      setIsEditingEmail(false);
     } catch (error) {
       console.error("Failed to request email update:", error);
       toast.error("Failed to send verification email");
@@ -109,16 +108,14 @@ export function Profile() {
     }
   }
 
-  function handleCancel() {
-    setEditedName(profile?.name || "");
+  function handleCancelEmail() {
     setEditedEmail(profile?.email || "");
-    setIsEditing(false);
+    setIsEditingEmail(false);
   }
 
-  function handleEdit() {
-    setEditedName(profile?.name || "");
+  function handleEditEmail() {
     setEditedEmail(profile?.email || "");
-    setIsEditing(true);
+    setIsEditingEmail(true);
   }
 
   async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
@@ -266,33 +263,7 @@ export function Profile() {
             <div className="space-y-6">
               <FadeIn delay={0.1}>
                 <div className="clay p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-display text-xl font-bold">Account details</h3>
-                    {!isEditing ? (
-                      <button
-                        onClick={handleEdit}
-                        className="clay-btn flex items-center gap-2 px-3 py-1.5 text-xs font-semibold"
-                      >
-                        <Pencil className="h-3.5 w-3.5" /> Edit
-                      </button>
-                    ) : (
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleCancel}
-                          className="clay-btn px-3 py-1.5 text-xs font-semibold"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleSave}
-                          disabled={saving}
-                          className="clay-primary px-3 py-1.5 text-xs font-semibold"
-                        >
-                          {saving ? "Saving..." : "Save"}
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <h3 className="font-display text-xl font-bold">Account details</h3>
                   <div className="mt-5 space-y-4">
                     <div className="flex items-center justify-between rounded-2xl">
                       <div className="flex w-full items-center gap-3">
@@ -301,17 +272,40 @@ export function Profile() {
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="text-xs text-muted-foreground">Full name</p>
-                          {isEditing ? (
-                            <span className="clay-inset mt-1 inline-flex w-full items-center px-4 py-2.5">
-                              <input
-                                type="text"
-                                value={editedName}
-                                onChange={(e) => setEditedName(e.target.value)}
-                                className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-muted-foreground"
-                              />
-                            </span>
+                          {isEditingName ? (
+                            <div className="mt-1 flex items-center gap-2">
+                              <span className="clay-inset inline-flex w-full items-center px-4 py-2.5">
+                                <input
+                                  type="text"
+                                  value={editedName}
+                                  onChange={(e) => setEditedName(e.target.value)}
+                                  className="w-full bg-transparent text-sm font-semibold outline-none placeholder:text-muted-foreground"
+                                />
+                              </span>
+                              <button
+                                onClick={handleSaveName}
+                                disabled={saving}
+                                className="clay-primary shrink-0 px-3 py-2.5 text-xs font-semibold"
+                              >
+                                {saving ? "Saving..." : "Save"}
+                              </button>
+                              <button
+                                onClick={handleCancelName}
+                                className="clay-btn shrink-0 px-3 py-2.5 text-xs font-semibold"
+                              >
+                                Cancel
+                              </button>
+                            </div>
                           ) : (
-                            <p className="text-sm font-semibold">{profile?.name || "User"}</p>
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm font-semibold">{profile?.name || "User"}</p>
+                              <button
+                                onClick={handleEditName}
+                                className="clay-btn flex items-center gap-2 px-3 py-1.5 text-xs font-semibold"
+                              >
+                                <Pencil className="h-3.5 w-3.5" /> Edit
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -323,7 +317,7 @@ export function Profile() {
                         </span>
                         <div className="min-w-0 flex-1">
                           <p className="text-xs text-muted-foreground">Email</p>
-                          {isEditing ? (
+                          {isEditingEmail ? (
                             <div className="mt-1 flex items-center gap-2">
                               <span className="clay-inset inline-flex w-full items-center px-4 py-2.5">
                                 <input
@@ -342,23 +336,37 @@ export function Profile() {
                                   {saving ? "Sending..." : "Verify"}
                                 </button>
                               )}
+                              <button
+                                onClick={handleCancelEmail}
+                                className="clay-btn shrink-0 px-3 py-2.5 text-xs font-semibold"
+                              >
+                                Cancel
+                              </button>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2">
-                              <p className="text-sm font-semibold">{profile?.email}</p>
-                              {profile?.isEmailVerified ? (
-                                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                              ) : (
-                                <div className="flex items-center gap-1">
-                                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                                  <button
-                                    onClick={() => setIsEditing(true)}
-                                    className="text-xs font-semibold text-yellow-600 hover:text-yellow-700"
-                                  >
-                                    Verify
-                                  </button>
-                                </div>
-                              )}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-semibold">{profile?.email}</p>
+                                {profile?.isVerified ? (
+                                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                ) : (
+                                  <div className="flex items-center gap-1">
+                                    <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                                    <button
+                                      onClick={handleEditEmail}
+                                      className="text-xs font-semibold text-yellow-600 hover:text-yellow-700"
+                                    >
+                                      Verify
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                              <button
+                                onClick={handleEditEmail}
+                                className="clay-btn flex items-center gap-2 px-3 py-1.5 text-xs font-semibold"
+                              >
+                                <Pencil className="h-3.5 w-3.5" /> Edit
+                              </button>
                             </div>
                           )}
                         </div>
@@ -372,173 +380,6 @@ export function Profile() {
                       to="/forgot-password"
                     />
                     <Row icon={CreditCard} label="Billing" value="No card on file" action="Add" />
-                  </div>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.15}>
-                <div className="clay p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-display text-xl font-bold">Two-factor authentication</h3>
-                    <button
-                      onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                      className={`relative h-7 w-12 rounded-full transition ${twoFactorEnabled ? "is-on" : ""}`}
-                      style={{ boxShadow: "var(--shadow-clay-inset)" }}
-                    >
-                      <span
-                        className="absolute top-0.5 h-6 w-6 rounded-full clay-primary transition-all"
-                        style={{ left: twoFactorEnabled ? "calc(100% - 1.6rem)" : "0.15rem" }}
-                      />
-                    </button>
-                  </div>
-                  <div className="mt-5 space-y-3">
-                    {twoFactorEnabled ? (
-                      <div className="clay-inset p-4">
-                        <div className="flex items-center gap-3">
-                          <span
-                            className="grid h-10 w-10 shrink-0 place-items-center rounded-full"
-                            style={{ background: "var(--clay-green)" }}
-                          >
-                            <Smartphone className="h-5 w-5" />
-                          </span>
-                          <div>
-                            <p className="text-sm font-semibold">2FA is enabled</p>
-                            <p className="text-xs text-muted-foreground">
-                              Your account is protected with 2FA
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="clay-inset p-4">
-                        <div className="flex items-center gap-3">
-                          <span
-                            className="grid h-10 w-10 shrink-0 place-items-center rounded-full"
-                            style={{ background: "var(--clay-yellow)" }}
-                          >
-                            <Lock className="h-5 w-5" />
-                          </span>
-                          <div>
-                            <p className="text-sm font-semibold">2FA is disabled</p>
-                            <p className="text-xs text-muted-foreground">
-                              Enable 2FA for extra security
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.2}>
-                <div className="clay p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-display text-xl font-bold">API Keys</h3>
-                    <button
-                      onClick={() => setShowApiKeyModal(true)}
-                      className="clay-btn inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold"
-                    >
-                      <Plus className="h-3.5 w-3.5" /> Generate key
-                    </button>
-                  </div>
-                  <div className="mt-5 space-y-3">
-                    {apiKeys.length === 0 ? (
-                      <div className="clay-inset p-4 text-center">
-                        <KeyRound className="mx-auto h-8 w-8 text-muted-foreground" />
-                        <p className="mt-2 text-sm font-semibold">No API keys yet</p>
-                        <p className="text-xs text-muted-foreground">
-                          Generate an API key to integrate with our services
-                        </p>
-                      </div>
-                    ) : (
-                      apiKeys.map((apiKey) => (
-                        <div key={apiKey.id} className="clay-inset p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full clay-inset">
-                                <KeyRound className="h-4 w-4" />
-                              </span>
-                              <div>
-                                <p className="text-sm font-semibold">{apiKey.name}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  Created {apiKey.createdAt}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => {
-                                  navigator.clipboard.writeText(apiKey.key);
-                                  toast.success("API key copied to clipboard");
-                                }}
-                                className="clay-btn p-2"
-                              >
-                                <Copy className="h-4 w-4" />
-                              </button>
-                              <button
-                                onClick={() => {
-                                  if (confirm("Delete this API key?")) {
-                                    setApiKeys(apiKeys.filter((k) => k.id !== apiKey.id));
-                                  }
-                                }}
-                                className="clay-btn p-2 text-[color:var(--destructive)]"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </div>
-                          </div>
-                          <div className="mt-3">
-                            <code className="clay-inset block w-full px-3 py-2 text-xs font-mono">
-                              {apiKey.key.slice(0, 8)}
-                              {"•".repeat(apiKey.key.length - 8)}
-                            </code>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.25}>
-                <div className="clay p-6">
-                  <h3 className="font-display text-xl font-bold">Notifications</h3>
-                  <div className="mt-5 space-y-3">
-                    {[
-                      { t: "New scam patterns digest", on: true },
-                      { t: "Weekly summary of your scans", on: true },
-                      { t: "Product updates & tips", on: false },
-                    ].map((n) => (
-                      <label
-                        key={n.t}
-                        className="flex items-center justify-between rounded-2xl py-2"
-                      >
-                        <span className="flex items-center gap-3 text-sm">
-                          <Bell className="h-4 w-4 text-muted-foreground" /> {n.t}
-                        </span>
-                        <Toggle defaultOn={n.on} />
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </FadeIn>
-
-              <FadeIn delay={0.2}>
-                <div className="clay p-6">
-                  <h3 className="font-display text-xl font-bold text-[color:var(--destructive)]">
-                    Danger zone
-                  </h3>
-                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                    <button className="clay-btn flex flex-1 items-center justify-center gap-2 py-3 text-sm font-semibold text-[color:var(--destructive)]">
-                      <Trash2 className="h-4 w-4" /> Delete history
-                    </button>
-                    <Link
-                      to="/"
-                      className="clay-btn flex flex-1 items-center justify-center gap-2 py-3 text-sm font-semibold"
-                    >
-                      <LogOut className="h-4 w-4" /> Sign out
-                    </Link>
                   </div>
                 </div>
               </FadeIn>
@@ -582,20 +423,5 @@ function Row({
         <button className="clay-btn px-3 py-1.5 text-xs font-semibold">{action}</button>
       ) : null}
     </div>
-  );
-}
-
-function Toggle({ defaultOn = false }: { defaultOn?: boolean }) {
-  return (
-    <button
-      onClick={(e) => e.currentTarget.classList.toggle("is-on")}
-      className={`relative h-7 w-12 rounded-full transition ${defaultOn ? "is-on" : ""}`}
-      style={{ boxShadow: "var(--shadow-clay-inset)" }}
-    >
-      <span
-        className="absolute top-0.5 h-6 w-6 rounded-full clay-primary transition-all"
-        style={{ left: defaultOn ? "calc(100% - 1.6rem)" : "0.15rem" }}
-      />
-    </button>
   );
 }

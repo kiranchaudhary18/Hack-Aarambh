@@ -27,7 +27,7 @@ export class UsersService {
     return this.repo.findOne({ where: { id } });
   }
 
-  async updateProfile(id: string, data: { name?: string; avatar?: string }) {
+  async updateProfile(id: string, data: { name?: string | null; avatar?: string | null }) {
     if (!id) return null;
     const user = await this.findById(id);
     if (!user) return null;

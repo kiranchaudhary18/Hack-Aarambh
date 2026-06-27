@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShieldCheck, Github, Twitter, Linkedin } from "lucide-react";
+import { Github, Twitter, Linkedin } from "lucide-react";
 
 export function Footer() {
   return (
@@ -8,8 +8,8 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-3">
-              <span className="grid h-11 w-11 place-items-center rounded-2xl clay-primary">
-                <ShieldCheck className="h-5 w-5" strokeWidth={2.5} />
+              <span className="grid h-11 w-11 place-items-center">
+                <img src="/favicon.ico" alt="ScamSniff" className="h-12 w-12" />
               </span>
               <div>
                 <p className="font-display text-xl font-bold">ScamSniff</p>
