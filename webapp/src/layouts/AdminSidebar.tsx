@@ -1,8 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
-import { Gauge, Flag, BarChart3, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Gauge, Flag, BarChart3, ArrowLeft, Activity, Cpu, Server, Puzzle, Wifi, Users, Settings, AlertTriangle } from "lucide-react";
 
 const items = [
   { to: "/admin", label: "Overview", icon: Gauge },
+  { to: "/admin/website-monitoring", label: "Website Monitoring", icon: Activity },
+  { to: "/admin/ai-model-monitoring", label: "AI Model Monitoring", icon: Cpu },
+  { to: "/admin/server-monitoring", label: "Server Monitoring", icon: Server },
+  { to: "/admin/extension-monitoring", label: "Extension Monitoring", icon: Puzzle },
+  { to: "/admin/real-time-monitoring", label: "Real-Time Monitoring", icon: Wifi },
+  { to: "/admin/alerts-incidents", label: "Alerts & Incidents", icon: AlertTriangle },
+  { to: "/admin/user-management", label: "User Management", icon: Users },
+  { to: "/admin/system-settings", label: "System Settings", icon: Settings },
   { to: "/admin/flagged", label: "Flagged Cases", icon: Flag },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
 ];
@@ -14,8 +22,8 @@ export function AdminSidebar() {
     <aside className="hidden w-[260px] shrink-0 lg:block">
       <div className="clay flex h-full flex-col gap-2 p-5">
         <Link to="/" className="mb-4 flex items-center gap-2 px-2">
-          <span className="grid h-10 w-10 place-items-center rounded-2xl clay-primary">
-            <ShieldCheck className="h-5 w-5" strokeWidth={2.5} />
+          <span className="grid h-10 w-10 place-items-center">
+            <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
           </span>
           <div>
             <p className="font-display text-lg font-bold leading-tight">ScamSniff</p>

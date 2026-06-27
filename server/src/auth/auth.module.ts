@@ -5,6 +5,7 @@ import { UsersModule } from "../users/users.module";
 import { EmailModule } from "../email/email.module";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
+import { TwoFactorService } from "./two-factor.service";
 import { PasswordReset } from "./password-reset.entity";
 import { EmailVerification } from "../email/email-verification.entity";
 import { EmailUpdateVerification } from "./email-update-verification.entity";
@@ -20,8 +21,8 @@ import { EmailUpdateVerification } from "./email-update-verification.entity";
       signOptions: { expiresIn: "7d" },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, TwoFactorService],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

@@ -7,9 +7,11 @@ import { JobQueueService } from "../queue/job-queue.service";
 import { AIEngineService } from "./ai-engine.service";
 import { CloudinaryModule } from "../cloudinary/cloudinary.module";
 import { HistoryModule } from "../history/history.module";
+import { UsersModule } from "../users/users.module";
+import { TokensModule } from "../tokens/tokens.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([History]), CloudinaryModule, HistoryModule],
+  imports: [TypeOrmModule.forFeature([History]), CloudinaryModule, HistoryModule, UsersModule, TokensModule],
   providers: [AnalysisService, JobQueueService, AIEngineService],
   controllers: [AnalysisController],
   exports: [AnalysisService, JobQueueService],

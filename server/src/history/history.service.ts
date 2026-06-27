@@ -128,4 +128,70 @@ export class HistoryService {
     }
     return { success: true };
   }
+
+  async getAnalytics(userId?: string) {
+    let records;
+    if (userId) {
+      records = await this.repo.find({
+        where: { userId },
+        order: { createdAt: "DESC" },
+      });
+    } else {
+      records = await this.repo.find({ order: { createdAt: "DESC" } });
+    }
+
+    const scamRecords = records.filter((r) => r.result?.isFake);
+    const scamPatternMap = new Map<string, number>();
+
+    // Analyze each scam record
+    for (const record of scamRecords) {
+      const reasons = record.result?.reasons || [];
+
+      // Categorize scam patterns based on reasons
+      for (const reason of reasons) {
+        const lowerReason = reason.toLowerCase();
+        let pattern = "Other";
+
+        if (lowerReason.includes("fee") || lowerReason.includes("payment") || lowerReason.includes("pay")) {
+          pattern = "Advance-fee fraud";
+        } else if (lowerReason.includes("gmail") || lowerReason.includes("yahoo") || lowerReason.includes("hotmail")) {
+          pattern = "Brand impersonation";
+        } else if (lowerReason.includes("crypto") || lowerReason.includes("wallet") || lowerReason.includes("bitcoin")) {
+          pattern = "Crypto wallet scam";
+        } else if (lowerReason.includes("hr") || lowerReason.includes("call") || lowerReason.includes("interview")) {
+          pattern = "Fake HR call";
+        } else if (lowerReason.includes("salary") || lowerReason.includes("unrealistic")) {
+          pattern = "Fake salary offer";
+        } else if (lowerReason.includes("urgent") || lowerReason.includes("immediate")) {
+          pattern = "Urgency tactics";
+        }
+
+        scamPatternMap.set(pattern, (scamPatternMap.get(pattern) || 0) + 1);
+      }
+    }
+
+    // Convert scam pattern map to array
+    const scamPatternData = Array.from(scamPatternMap.entries()).map(([name, value]) => ({
+      name,
+      value,
+      color: this.getPatternColor(name),
+    }));
+
+    return {
+      scamPatterns: scamPatternData,
+    };
+  }
+
+  private getPatternColor(pattern: string): string {
+    const colors: Record<string, string> = {
+      "Advance-fee fraud": "oklch(0.62 0.18 295)",
+      "Brand impersonation": "oklch(0.65 0.22 15)",
+      "Crypto wallet scam": "oklch(0.74 0.16 60)",
+      "Fake HR call": "oklch(0.72 0.16 155)",
+      "Fake salary offer": "oklch(0.68 0.18 45)",
+      "Urgency tactics": "oklch(0.78 0.14 25)",
+      "Other": "oklch(0.82 0.1 230)",
+    };
+    return colors[pattern] || colors["Other"];
+  }
 }

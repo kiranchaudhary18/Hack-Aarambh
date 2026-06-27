@@ -6,6 +6,10 @@ import { AnalysisModule } from "./analysis/analysis.module";
 import { AdminModule } from "./admin/admin.module";
 import { HistoryModule } from "./history/history.module";
 import * as dotenv from "dotenv";
+import { TokensModule } from "./tokens/tokens.module";
+import { ExtensionModule } from "./extension/extension.module";
+import { SearchModule } from "./search/search.module";
+import { History } from "./history/history.entity";
 
 dotenv.config();
 
@@ -29,6 +33,9 @@ dotenv.config();
     AnalysisModule,
     AdminModule,
     HistoryModule,
+    TokensModule,
+    ExtensionModule,
+    SearchModule,
   ],
 })
 export class AppModule {}

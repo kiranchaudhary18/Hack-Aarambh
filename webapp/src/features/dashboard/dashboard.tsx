@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
 import { api } from "@/shared/lib/api";
+import { NotificationBell } from "@/shared/components/NotificationBell";
+import { NotificationDropdown } from "@/shared/components/NotificationDropdown";
 import {
   Area,
   AreaChart,
@@ -40,10 +42,34 @@ const spark = (seed: number, value: number = 0) =>
     v: value,
   }));
 
+interface AnalyticsData {
+  scamPatterns: Array<{ name: string; value: number; color: string }>;
+}
+
+interface HistoryItem {
+  id: string;
+  title: string;
+  company: string;
+  date: string;
+  verdict: "scam" | "suspicious" | "safe";
+  score: number;
+  source: "text" | "pdf" | "url";
+  snippet: string;
+  reasons: Array<{ label: string; severity: string; detail: string }>;
+}
+
+interface ProfileData {
+  name: string;
+  scansUsed: number;
+}
+
 export function Dashboard() {
-  const [recentChecks, setRecentChecks] = useState<any[]>([]);
-  const [profile, setProfile] = useState<any>(null);
+  const [recentChecks, setRecentChecks] = useState<HistoryItem[]>([]);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationBellRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     document.title = "Dashboard — ScamSniff";
@@ -52,9 +78,14 @@ export function Dashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [historyData, profileData] = await Promise.all([api.getHistory(), api.getProfile()]);
+        const [historyData, profileData, analyticsData] = await Promise.all([
+          api.getHistory(),
+          api.getProfile(),
+          api.getAnalytics(),
+        ]);
         setRecentChecks(historyData || []);
         setProfile(profileData);
+        setAnalytics(analyticsData);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -70,56 +101,43 @@ export function Dashboard() {
   const totalScans = recentChecks.length;
 
   // Calculate average risk score
-  const avgScore = totalScans > 0
-    ? Math.round(recentChecks.reduce((sum, c) => sum + (c.score || 0), 0) / totalScans)
-: 0;
+  const avgScore =
+    totalScans > 0
+      ? Math.round(recentChecks.reduce((sum, c) => sum + (c.score || 0), 0) / totalScans)
+      : 0;
 
   // Calculate money saved (assuming each scam would cost $416 on average)
   const moneySaved = scamCount * 416;
 
-  // Generate risk trend data (mock data for now)
-  const riskTrendData = Array.from({ length: 7 }, (_, i) => ({
-    day: i === 0 ? "Today" : i === 1 ? "Yesterday" : `${i} days ago`,
-    avgScore: Math.max(0, avgScore - i * 5 + Math.floor(Math.random() * 10)),
-  })).reverse();
+  // Generate risk trend data from actual history
+  const riskTrendData = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const dayName =
+      i === 0
+        ? "Today"
+        : i === 1
+          ? "Yesterday"
+          : date.toLocaleDateString("en-US", { weekday: "short" });
 
-  // Generate scam pattern breakdown data (mock data for now)
-  const scamPatternData = [
-    {
-      name: "Advance-fee fraud",
-      value: scamCount > 0 ? Math.round(scamCount * 0.35) : 0,
-      color: "oklch(0.62 0.18 295)",
-    },
-    {
-      name: "Brand impersonation",
-      value: scamCount > 0 ? Math.round(scamCount * 0.25) : 0,
-      color: "oklch(0.65 0.22 15)",
-    },
-    {
-      name: "Crypto wallet scam",
-      value: scamCount > 0 ? Math.round(scamCount * 0.20) : 0,
-      color: "oklch(0.74 0.16 60)",
-    },
-    {
-      name: "Fake HR call",
-      value: scamCount > 0 ? Math.round(scamCount * 0.12) : 0,
-      color: "oklch(0.72 0.16 155)",
-    },
-    {
-      name: "Other",
-      value: scamCount > 0 ? Math.round(scamCount * 0.08) : 0,
-      color: "oklch(0.82 0.1 230)",
-    },
-  ].filter((item) => item.value > 0);
+    // Get records for this day
+    const dayRecords = recentChecks.filter((c) => {
+      const recordDate = new Date(c.date);
+      const diffTime = Math.abs(date.getTime() - recordDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays <= 1;
+    });
 
-  // Generate geographic distribution data (mock data for now)
-  const geoDistributionData = [
-    { country: "Pakistan", count: Math.round(scamCount * 0.38), flag: "🇵🇰" },
-    { country: "India", count: Math.round(scamCount * 0.27), flag: "🇮🇳" },
-    { country: "Nigeria", count: Math.round(scamCount * 0.14), flag: "🇳🇬" },
-    { country: "Philippines", count: Math.round(scamCount * 0.11), flag: "🇵🇭" },
-    { country: "Other", count: Math.round(scamCount * 0.10), flag: "🌍" },
-  ].filter((item) => item.count > 0);
+    const dayAvgScore =
+      dayRecords.length > 0
+        ? Math.round(dayRecords.reduce((sum, c) => sum + (c.score || 0), 0) / dayRecords.length)
+        : 0;
+
+    return { day: dayName, avgScore: dayAvgScore };
+  }).reverse();
+
+  // Use real analytics data for scam patterns
+  const scamPatternData = analytics?.scamPatterns || [];
 
   if (loading) {
     return (
@@ -145,21 +163,33 @@ export function Dashboard() {
             <header className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className="clay-pill inline-block">
-                  Welcome back, {profile?.name?.split(' ')[0]}
+                  Welcome back, {profile?.name?.split(" ")[0]}
                 </p>
                 <h1 className="mt-3 font-display text-4xl font-bold sm:text-5xl">
                   Your scam dashboard
                 </h1>
                 <p className="mt-2 text-muted-foreground">
-                  {profile?.scansUsed || 0} scans this month · {scamCount} scams blocked. Nice instincts.
+                  {profile?.scansUsed || 0} scans this month · {scamCount} scams blocked. Nice
+                  instincts.
                 </p>
               </div>
-              <Link
-                to="/analyze"
-                className="clay-primary inline-flex items-center gap-2 px-6 py-3.5 font-semibold"
-              >
-                <ScanSearch className="h-5 w-5" /> Analyze New Offer
-              </Link>
+              <div className="flex items-center gap-3">
+                <NotificationBell
+                  ref={notificationBellRef}
+                  onOpenDropdown={() => setIsNotificationOpen(!isNotificationOpen)}
+                />
+                <NotificationDropdown
+                  isOpen={isNotificationOpen}
+                  onClose={() => setIsNotificationOpen(false)}
+                  triggerRef={notificationBellRef}
+                />
+                <Link
+                  to="/analyze"
+                  className="clay-primary inline-flex items-center gap-2 px-6 py-3.5 font-semibold"
+                >
+                  <ScanSearch className="h-5 w-5" /> Analyze New Offer
+                </Link>
+              </div>
             </header>
           </FadeIn>
 
@@ -167,11 +197,11 @@ export function Dashboard() {
             <StatCard
               icon={ScanSearch}
               label="Total scans"
-              value={String(profile?.scansUsed || 0)}
+              value={String(profile?.scansUsed)}
               sub="This month"
               color="var(--clay-purple)"
               line="oklch(0.62 0.18 295)"
-              data={spark(1, profile?.scansUsed || 0)}
+              data={spark(1, profile?.scansUsed)}
               trend="+18%"
             />
             <StatCard
@@ -320,46 +350,7 @@ export function Dashboard() {
             </div>
           </FadeIn>
 
-          <FadeIn delay={0.15}>
-            <div className="clay p-6">
-              <div className="flex items-center justify-between">
-                <h2 className="font-display text-2xl font-bold">Geographic distribution</h2>
-                <span className="clay-pill text-[10px]">Where scams originate</span>
-              </div>
-              <div className="mt-4 space-y-3">
-                {geoDistributionData.length > 0 ? (
-                  geoDistributionData.map((geo, index) => {
-                    const maxCount = Math.max(...geoDistributionData.map((g) => g.count));
-                    const percentage = (geo.count / maxCount) * 100;
-                    return (
-                      <div key={index} className="flex items-center gap-4">
-                        <span className="text-2xl">{geo.flag}</span>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="font-semibold">{geo.country}</span>
-                            <span className="text-muted-foreground">{geo.count}</span>
-                          </div>
-                          <div className="clay-inset mt-1.5 h-2 overflow-hidden rounded-full">
-                            <div
-                              className="h-full rounded-full transition-all"
-                              style={{
-                                width: `${percentage}%`,
-                                background: "var(--clay-purple)",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="text-sm text-muted-foreground">No geographic data available yet.</p>
-                )}
-              </div>
-            </div>
-          </FadeIn>
-
-          <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+          <div className="grid gap-6">
             <FadeIn delay={0.1}>
               <div className="clay p-6">
                 <div className="flex items-center justify-between">
@@ -429,8 +420,18 @@ export function Dashboard() {
                 <div className="clay-inset mt-auto flex items-start gap-3 p-4">
                   <AlertTriangle className="mt-1 h-5 w-5 shrink-0 text-[color:var(--warning)]" />
                   <p className="text-sm">
-                    3 of your recent offers contained the word <strong>"urgent"</strong>. Slow down
-                    before replying.
+                    {(() => {
+                      const urgentCount = recentChecks.filter((c) =>
+                        c.reasons?.some(
+                          (r) =>
+                            r.label?.toLowerCase().includes("urgent") ||
+                            r.label?.toLowerCase().includes("immediate"),
+                        ),
+                      ).length;
+                      return urgentCount > 0
+                        ? `${urgentCount} of your recent offers contained urgency tactics. Slow down before replying.`
+                        : "No urgency tactics detected in your recent offers. Keep being cautious!";
+                    })()}
                   </p>
                 </div>
                 <Link
@@ -500,28 +501,55 @@ export function Dashboard() {
                 </div>
               </div>
               <ul className="mt-4 space-y-2 text-sm">
-                {[
-                  { l: "Upfront fee", v: scamCount > 0 ? 64 : 0, c: "var(--destructive)" },
-                  {
-                    l: "Urgency pressure",
-                    v: suspiciousCount > 0 ? 42 : 0,
-                    c: "var(--clay-orange)",
-                  },
-                  { l: "Gmail recruiter", v: scamCount > 0 ? 28 : 0, c: "var(--clay-yellow)" },
-                ].map((x) => (
-                  <li key={x.l}>
-                    <div className="flex items-center justify-between text-xs">
-                      <span>{x.l}</span>
-                      <span className="text-muted-foreground">{x.v}%</span>
-                    </div>
-                    <div className="clay-inset mt-1 h-1.5 overflow-hidden rounded-full">
-                      <div
-                        className="h-full rounded-full"
-                        style={{ width: `${x.v}%`, background: x.c }}
-                      />
-                    </div>
-                  </li>
-                ))}
+                {(() => {
+                  // Calculate real red flags from history
+                  const allReasons = recentChecks.flatMap(
+                    (c) => c.reasons?.map((r) => r.label) || [],
+                  );
+                  const reasonCounts = allReasons.reduce(
+                    (acc: Record<string, number>, reason: string) => {
+                      acc[reason] = (acc[reason] || 0) + 1;
+                      return acc;
+                    },
+                    {},
+                  );
+
+                  const topReasons = Object.entries(reasonCounts)
+                    .sort(([, a], [, b]) => (b as number) - (a as number))
+                    .slice(0, 3)
+                    .map(([reason, count]) => ({
+                      l: reason,
+                      v: Math.round(((count as number) / totalScans) * 100) || 0,
+                      c:
+                        reason.toLowerCase().includes("fee") ||
+                        reason.toLowerCase().includes("payment")
+                          ? "var(--destructive)"
+                          : reason.toLowerCase().includes("urgent")
+                            ? "var(--clay-orange)"
+                            : "var(--clay-yellow)",
+                    }));
+
+                  if (topReasons.length === 0) {
+                    return (
+                      <li className="text-sm text-muted-foreground">No red flags detected yet.</li>
+                    );
+                  }
+
+                  return topReasons.map((x, i) => (
+                    <li key={i}>
+                      <div className="flex items-center justify-between text-xs">
+                        <span>{x.l}</span>
+                        <span className="text-muted-foreground">{x.v}%</span>
+                      </div>
+                      <div className="clay-inset mt-1 h-1.5 overflow-hidden rounded-full">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${x.v}%`, background: x.c }}
+                        />
+                      </div>
+                    </li>
+                  ));
+                })()}
               </ul>
             </div>
 

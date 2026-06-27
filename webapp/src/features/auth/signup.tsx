@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ShieldCheck, Mail, Lock, User, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, CheckCircle2, Loader2, Eye, EyeOff } from "lucide-react";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
-import { Field, GoogleIcon } from "./login";
+import { Field } from "./login";
 import { api } from "@/shared/lib/api";
 import { useEffect } from "react";
 
@@ -17,6 +17,7 @@ export function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSignup(e: React.FormEvent) {
@@ -48,33 +49,45 @@ export function Signup() {
         <FadeIn className="w-full">
           <div className="grid gap-8 lg:grid-cols-[1fr_1.05fr] lg:items-center">
             <div>
-              <Link to="/" className="mb-8 flex items-center gap-2">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl clay-primary">
-                  <ShieldCheck className="h-6 w-6" strokeWidth={2.5} />
+              <Link to="/" className="mb-10 flex items-center">
+                <span className="grid h-12 w-12 place-items-center">
+                  <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
                 </span>
                 <span className="font-display text-2xl font-bold">
                   Scam<span className="text-gradient">Sniff</span>
                 </span>
               </Link>
-              <h1 className="font-display text-5xl font-bold leading-tight">
+              <h1 className="font-display text-6xl font-bold leading-tight">
                 Your free
                 <br />
                 <span className="text-gradient">scam shield</span>
                 <br />
                 in 30 seconds.
               </h1>
-              <ul className="mt-8 space-y-3 text-muted-foreground">
+              <p className="mt-4 text-lg text-muted-foreground">
+                Protect yourself from job scams with AI-powered detection
+              </p>
+              <div className="mt-10 space-y-4">
                 {[
-                  "20 scans every month, free forever",
-                  "PDF + text + URL support",
-                  "Private history & exportable reports",
-                  "Weekly fraud trend digest",
-                ].map((t) => (
-                  <li key={t} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-[color:var(--success)]" /> {t}
-                  </li>
+                  { icon: CheckCircle2, text: "20 scans every month, free forever", color: "var(--clay-green)" },
+                  { icon: CheckCircle2, text: "PDF + text + URL support", color: "var(--clay-blue)" },
+                  { icon: CheckCircle2, text: "Private history & exportable reports", color: "var(--clay-purple)" },
+                  { icon: CheckCircle2, text: "Weekly fraud trend digest", color: "var(--clay-pink)" },
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="clay flex items-center gap-4 p-4 transition-transform hover:scale-[1.02]"
+                  >
+                    <div
+                      className="grid h-10 w-10 place-items-center rounded-xl"
+                      style={{ background: item.color }}
+                    >
+                      <item.icon className="h-5 w-5 text-white" />
+                    </div>
+                    <span className="font-medium text-foreground">{item.text}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div className="clay-lg p-8">
@@ -101,11 +114,20 @@ export function Signup() {
                 <Field
                   icon={<Lock className="h-4 w-4" />}
                   label="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  right={
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  }
                 />
                 <p className="text-xs text-muted-foreground">
                   We'll send a verification link to your inbox. By signing up you accept our terms.
@@ -126,13 +148,6 @@ export function Signup() {
                   )}
                 </button>
               </form>
-              <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="h-px flex-1 bg-border" /> or{" "}
-                <span className="h-px flex-1 bg-border" />
-              </div>
-              <button className="clay-btn flex w-full items-center justify-center gap-2 py-3 text-sm font-semibold">
-                <GoogleIcon /> Continue with Google
-              </button>
               <p className="mt-6 text-center text-sm text-muted-foreground">
                 Already a member?{" "}
                 <Link to="/login" className="font-semibold text-[color:var(--primary)]">

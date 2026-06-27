@@ -3,6 +3,7 @@ import { UsersService } from "../users/users.service";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { EmailService } from "../email/email.service";
+import { TwoFactorService } from "./two-factor.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { PasswordReset } from "./password-reset.entity";
@@ -15,6 +16,7 @@ export class AuthService {
     private users: UsersService,
     private jwt: JwtService,
     private email: EmailService,
+    private twoFactorService: TwoFactorService,
     @InjectRepository(PasswordReset) private passwordResetRepo: Repository<PasswordReset>,
     @InjectRepository(EmailVerification) private emailVerificationRepo: Repository<EmailVerification>,
     @InjectRepository(EmailUpdateVerification) private emailUpdateVerificationRepo: Repository<EmailUpdateVerification>,
@@ -328,5 +330,155 @@ export class AuthService {
     await this.emailUpdateVerificationRepo.save(verification);
 
     return { success: true, message: "Email updated successfully. Please verify your new email." };
+  }
+
+  // 2FA Methods
+  async setupTwoFactor(userId: string) {
+    const user = await this.users.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    // Generate secret
+    const secret = this.twoFactorService.generateSecret();
+    const qrCodeUrl = this.twoFactorService.generateQRCodeUrl(secret, user.email);
+
+    // Temporarily store secret (not enabled yet)
+    user.twoFactorSecret = secret;
+    await this.users["repo"].save(user);
+
+    return {
+      secret: secret,
+      qrCodeUrl: qrCodeUrl,
+    };
+  }
+
+  async verifyAndEnableTwoFactor(userId: string, token: string) {
+    const user = await this.users.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    if (!user.twoFactorSecret) {
+      throw new UnauthorizedException("2FA setup not initiated");
+    }
+
+    // Verify token
+    const isValid = this.twoFactorService.verifyToken(user.twoFactorSecret, token);
+    if (!isValid) {
+      throw new UnauthorizedException("Invalid 2FA token");
+    }
+
+    // Generate backup codes
+    const backupCodes = this.twoFactorService.generateBackupCodes();
+
+    // Enable 2FA
+    user.twoFactorEnabled = true;
+    user.twoFactorBackupCodes = backupCodes;
+    await this.users["repo"].save(user);
+
+    return {
+      success: true,
+      message: "2FA enabled successfully",
+      backupCodes: backupCodes,
+    };
+  }
+
+  async disableTwoFactor(userId: string, password: string) {
+    const user = await this.users.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException("Invalid password");
+    }
+
+    // Disable 2FA
+    user.twoFactorEnabled = false;
+    user.twoFactorSecret = null;
+    user.twoFactorBackupCodes = [];
+    await this.users["repo"].save(user);
+
+    return {
+      success: true,
+      message: "2FA disabled successfully",
+    };
+  }
+
+  async regenerateBackupCodes(userId: string, password: string) {
+    const user = await this.users.findById(userId);
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    if (!user.twoFactorEnabled) {
+      throw new UnauthorizedException("2FA is not enabled");
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException("Invalid password");
+    }
+
+    // Generate new backup codes
+    const backupCodes = this.twoFactorService.generateBackupCodes();
+    user.twoFactorBackupCodes = backupCodes;
+    await this.users["repo"].save(user);
+
+    return {
+      success: true,
+      message: "Backup codes regenerated successfully",
+      backupCodes: backupCodes,
+    };
+  }
+
+  async loginWithTwoFactor(email: string, password: string, twoFactorToken?: string) {
+    const user = await this.users.findByEmail(email);
+    if (!user) throw new UnauthorizedException("Invalid credentials");
+
+    // Check if email is verified
+    if (!user.isVerified) {
+      throw new UnauthorizedException("Please verify your email before logging in");
+    }
+
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) throw new UnauthorizedException("Invalid credentials");
+
+    // Check if 2FA is enabled
+    if (user.twoFactorEnabled) {
+      if (!twoFactorToken) {
+        return {
+          requiresTwoFactor: true,
+          message: "2FA token required",
+        };
+      }
+
+      // Verify 2FA token
+      const isValidToken = this.twoFactorService.verifyToken(user.twoFactorSecret!, twoFactorToken);
+      const isValidBackup = this.twoFactorService.verifyBackupCode(
+        user.twoFactorBackupCodes as string[],
+        twoFactorToken,
+      );
+
+      if (!isValidToken && !isValidBackup) {
+        throw new UnauthorizedException("Invalid 2FA token");
+      }
+
+      // If backup code was used, remove it
+      if (isValidBackup) {
+        user.twoFactorBackupCodes = this.twoFactorService.removeBackupCode(
+          user.twoFactorBackupCodes as string[],
+          twoFactorToken,
+        );
+        await this.users["repo"].save(user);
+      }
+    }
+
+    const token = this.sign(user.id, user.email, user.role);
+    return { user: { id: user.id, email: user.email, twoFactorEnabled: user.twoFactorEnabled }, token };
   }
 }

@@ -2,10 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { History } from "../history/history.entity";
+import { UsersService } from "../users/users.service";
 import * as pdfParse from "pdf-parse";
 import { PDFDocument } from "pdf-lib";
 import { AIEngineService } from "./ai-engine.service";
 import { HistoryService } from "../history/history.service";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
+import * as Tesseract from 'tesseract.js';
 
 @Injectable()
 export class AnalysisService {
@@ -13,6 +16,8 @@ export class AnalysisService {
     @InjectRepository(History) private repo: Repository<History>,
     private aiEngine: AIEngineService,
     private historyService: HistoryService,
+    private usersService: UsersService,
+    private cloudinaryService: CloudinaryService,
   ) {}
 
   async analyzeText(input: string, userId?: string) {
@@ -27,11 +32,16 @@ export class AnalysisService {
       };
     } catch (error) {
       console.warn("AI engine failed, using fallback:", error);
-      result = this.score(input);
+      result = AnalysisService.score(input);
     }
 
     const rec = this.repo.create({ input, result, userId });
     await this.repo.save(rec);
+    // Increment user's scan count
+    if (userId) {
+      await this.usersService.incrementScans(userId);
+    }
+
     return this.historyService.transformToFrontendFormat(rec);
   }
 
@@ -45,9 +55,7 @@ export class AnalysisService {
       const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
       const pdfBytes = await pdfDoc.save();
       repairedBuffer = Buffer.from(pdfBytes);
-      console.log("PDF repaired successfully using pdf-lib");
     } catch (repairError: any) {
-      console.warn("PDF repair failed, trying original:", repairError?.message || repairError);
       // Continue with original buffer if repair fails
     }
 
@@ -56,7 +64,6 @@ export class AnalysisService {
       const parsed = await pdfParse(repairedBuffer);
       text = parsed.text || "";
       parseMethod = "pdf-parse (repaired)";
-      console.log(`PDF parsed successfully, extracted ${text.length} characters`);
     } catch (pdfError: any) {
       console.error("PDF parsing failed:", pdfError?.message || pdfError);
       // Return error result if PDF cannot be parsed
@@ -79,7 +86,6 @@ export class AnalysisService {
 
     // Check if extracted text is too short (indicates parsing failure)
     if (text.length < 50) {
-      console.warn("Extracted PDF text is too short, may be corrupted");
       const errorResult = {
         isFake: false,
         score: 0,
@@ -108,7 +114,7 @@ export class AnalysisService {
       };
     } catch (error) {
       console.warn("AI engine failed, using fallback:", error);
-      result = this.score(text);
+      result = AnalysisService.score(text);
     }
 
     // create or update history record: if jobId provided, link by id
@@ -121,10 +127,15 @@ export class AnalysisService {
       pdfUrl,
     });
     await this.repo.save(rec);
+    // Increment user's scan count
+    if (userId) {
+      await this.usersService.incrementScans(userId);
+    }
+
     return this.historyService.transformToFrontendFormat(rec);
   }
 
-  score(text: string) {
+  static score(text: string) {
     const reasons: string[] = [];
     const lowered = text.toLowerCase();
 
@@ -184,12 +195,12 @@ export class AnalysisService {
 
     const score = Math.min(
       100,
-      20 * reasons.length + this.keywordScore(lowered),
+      20 * reasons.length + AnalysisService.keywordScore(lowered),
     );
     return { isFake: score >= 50, score, reasons };
   }
 
-  keywordScore(lowered: string) {
+  static keywordScore(lowered: string) {
     let s = 0;
     const suspicious = [
       "scam",
@@ -205,5 +216,82 @@ export class AnalysisService {
     ];
     for (const w of suspicious) if (lowered.includes(w)) s += 5;
     return s;
+  }
+
+  async analyzeImage(base64Image: string, userId?: string) {
+    try {
+      // Convert base64 to buffer, strip data URI prefix if present
+      const base64Data = base64Image.replace(/^data:image\/[a-zA-Z+]+;base64,/, '');
+      const imageBuffer = Buffer.from(base64Data, 'base64');
+
+      // Upload image to Cloudinary
+      const imageUrl = await this.cloudinaryService.uploadImage(imageBuffer, 'analysis');
+
+      // Extract text from image using OCR
+      const { data: { text } } = await Tesseract.recognize(
+        imageBuffer,
+        'eng',
+        {
+          logger: (m: any) => console.log(m),
+        }
+      );
+
+      if (!text || text.trim().length < 10) {
+        const errorResult = {
+          isFake: false,
+          score: 0,
+          reasons: ["Could not extract text from image. The image may be unclear or contain no readable text."],
+        };
+        
+        const rec = this.repo.create({
+          input: "[Image OCR failed]",
+          result: errorResult,
+          userId,
+          status: "failed",
+          processedAt: new Date(),
+          imageUrl,
+          analysisType: "image",
+        });
+        await this.repo.save(rec);
+        
+        return errorResult;
+      }
+
+      // Analyze the extracted text
+      let result;
+      try {
+      const aiResult = await this.aiEngine.analyzeText(text);
+      result = {
+        isFake: aiResult.is_fake,
+        score: aiResult.scam_score,
+        reasons: aiResult.reasons,
+      };
+    } catch (error) {
+      console.warn("AI engine failed for image text, using fallback:", error);
+      result = AnalysisService.score(text);
+    }
+
+      // Save to history
+      const rec = this.repo.create({
+        input: text,
+        result,
+        userId,
+        status: "processed",
+        processedAt: new Date(),
+        imageUrl,
+        analysisType: "image",
+      });
+      await this.repo.save(rec);
+
+      // Increment user's scan count
+      if (userId) {
+        await this.usersService.incrementScans(userId);
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Error analyzing image:", error);
+      throw new Error("Failed to analyze image");
+    }
   }
 }

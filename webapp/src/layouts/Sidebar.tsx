@@ -8,6 +8,7 @@ import {
   User,
   ShieldCheck,
   LogOut,
+  Settings,
 } from "lucide-react";
 import { api } from "@/shared/lib/api";
 
@@ -17,27 +18,46 @@ const items = [
   { to: "/history", label: "History", icon: History },
   { to: "/awareness", label: "Awareness", icon: BookOpen },
   { to: "/profile", label: "Profile", icon: User },
+  { to: "/settings", label: "Settings", icon: Settings },
 ];
+
+let cachedUser: { name: string; email: string; avatar: string | null } | null = null;
 
 export function Sidebar() {
   const location = useLocation();
   const path = location.pathname;
 
-  const [user, setUser] = useState<{ name: string; email: string; avatar: string | null }>({
-    name: "User",
-    email: "user@example.com",
-    avatar: null,
+  const [user, setUser] = useState<{ name: string; email: string; avatar: string | null }>(() => {
+    if (cachedUser) return cachedUser;
+    try {
+      const stored = localStorage.getItem("scamsniff_user");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        cachedUser = parsed;
+        return parsed;
+      }
+    } catch (e) {}
+    return {
+      name: "User",
+      email: "user@example.com",
+      avatar: null,
+    };
   });
 
   useEffect(() => {
     async function fetchUser() {
       try {
         const data = await api.getProfile();
-        setUser({
+        const updated = {
           name: data.name || "User",
           email: data.email || "user@example.com",
           avatar: data.avatar || null,
-        });
+        };
+        cachedUser = updated;
+        try {
+          localStorage.setItem("scamsniff_user", JSON.stringify(updated));
+        } catch (e) {}
+        setUser(updated);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -58,8 +78,8 @@ export function Sidebar() {
     <aside className="hidden w-[260px] shrink-0 lg:block">
       <div className="clay flex h-full flex-col gap-2 p-5">
         <Link to="/" className="mb-4 flex items-center gap-2 px-2">
-          <span className="grid h-10 w-10 place-items-center rounded-2xl clay-primary">
-            <ShieldCheck className="h-5 w-5" strokeWidth={2.5} />
+          <span className="grid h-10 w-10 place-items-center">
+            <img src="/favicon.ico" alt="ScamSniff" className="h-10 w-10" />
           </span>
           <span className="font-display text-xl font-bold">
             Scam<span className="text-gradient">Sniff</span>
