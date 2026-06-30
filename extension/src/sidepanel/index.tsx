@@ -60,7 +60,9 @@ export default function IndexPopup() {
   if (loading) {
     return (
       <div className="w-full h-full flex items-center justify-center p-6">
-        <div className="text-sm text-muted-foreground">{getTranslation(language, "loading")}</div>
+        <div className="text-sm text-muted-foreground">
+          {getTranslation(language, "loading")}
+        </div>
       </div>
     );
   }
@@ -68,24 +70,27 @@ export default function IndexPopup() {
   return (
     <div className="w-full h-full min-h-full overflow-x-hidden relative">
       <Style theme={theme} />
-      <div className="absolute top-4 right-4 flex gap-2 z-10">
-        <select
-          value={language}
-          onChange={(e) => changeLanguage(e.target.value as Language)}
-          className="px-2 py-1 clay-inset text-xs rounded-full border border-border"
-        >
-          <option value="en">EN</option>
-          <option value="es">ES</option>
-          <option value="fr">FR</option>
-          <option value="de">DE</option>
-          <option value="hi">HI</option>
-          <option value="zh">ZH</option>
-        </select>
-        <button
-          onClick={toggleTheme}
-          className="w-8 h-8 clay-inset rounded-full flex items-center justify-center text-sm border border-border"
-        >
-          {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+      <div className="absolute top-3 left-3 flex items-center gap-2 z-20">
+        <div className="custom-select">
+          <select
+            value={language}
+            onChange={(e) => changeLanguage(e.target.value as Language)}
+          >
+            <option value="en">EN</option>
+            <option value="es">ES</option>
+            <option value="fr">FR</option>
+            <option value="de">DE</option>
+            <option value="hi">HI</option>
+            <option value="zh">ZH</option>
+          </select>
+        </div>
+
+        <button onClick={toggleTheme} className="icon-btn">
+          {theme === "light" ? (
+            <Moon size={16} strokeWidth={2} />
+          ) : (
+            <Sun size={16} strokeWidth={2} />
+          )}
         </button>
       </div>
       {screen === "token" && (
