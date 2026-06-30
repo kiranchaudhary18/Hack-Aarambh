@@ -32,14 +32,17 @@ export default function Style({ theme }: { theme: Theme }) {
         --ring: oklch(0.62 0.18 295);
 
         --shadow-clay: ${isDark
-          ? "6px 6px 16px rgba(0, 0, 0, 0.3), -6px -6px 16px rgba(255, 255, 255, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)"
-          : "6px 6px 16px rgba(247, 246, 246, 0.04), -6px -6px 16px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(0, 0, 0, 0.02)"};
+        ? "6px 6px 16px rgba(0, 0, 0, 0.3), -6px -6px 16px rgba(255, 255, 255, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)"
+        : "6px 6px 16px rgba(247, 246, 246, 0.04), -6px -6px 16px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(0, 0, 0, 0.02)"
+      };
         --shadow-clay-sm: ${isDark
-          ? "3px 3px 8px rgba(0, 0, 0, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.05), 0 1px 1px rgba(0, 0, 0, 0.1)"
-          : "3px 3px 8px rgba(0, 0, 0, 0.03), -3px -3px 8px rgba(255, 255, 255, 0.8), 0 1px 1px rgba(0, 0, 0, 0.02)"};
+        ? "3px 3px 8px rgba(0, 0, 0, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.05), 0 1px 1px rgba(0, 0, 0, 0.1)"
+        : "3px 3px 8px rgba(0, 0, 0, 0.03), -3px -3px 8px rgba(255, 255, 255, 0.8), 0 1px 1px rgba(0, 0, 0, 0.02)"
+      };
         --shadow-clay-inset: ${isDark
-          ? "inset 3px 3px 6px rgba(0, 0, 0, 0.3), inset -3px -3px 6px rgba(255, 255, 255, 0.05)"
-          : "inset 3px 3px 6px rgba(0, 0, 0, 0.04), inset -3px -3px 6px rgba(255, 255, 255, 0.7)"};
+        ? "inset 3px 3px 6px rgba(0, 0, 0, 0.3), inset -3px -3px 6px rgba(255, 255, 255, 0.05)"
+        : "inset 3px 3px 6px rgba(0, 0, 0, 0.04), inset -3px -3px 6px rgba(255, 255, 255, 0.7)"
+      };
       }
       
       body {
@@ -140,6 +143,68 @@ export default function Style({ theme }: { theme: Theme }) {
         line-height: 1.5;
         white-space: nowrap;
         cursor: pointer;
+      }
+        
+      .custom-select{
+        position:relative;
+      }
+
+      .custom-select select{
+        appearance:none;
+        -webkit-appearance:none;
+        outline:none;
+        width:56px;
+        height:32px;
+        padding:0 22px 0 10px;
+        border-radius:999px;
+        border:1px solid rgba(0,0,0,.08);
+        background:var(--card);
+        color:var(--foreground);
+        font-size:12px;
+        font-weight:600;
+        cursor:pointer;
+        transition:.2s;
+        box-shadow:
+          inset 2px 2px 4px rgba(255,255,255,.6),
+          inset -2px -2px 4px rgba(0,0,0,.05);
+      }
+
+      .custom-select::after{
+        content:"⌄";
+        position:absolute;
+        right:9px;
+        top:50%;
+        transform:translateY(-55%);
+        font-size:10px;
+        pointer-events:none;
+        color:var(--foreground);
+      }
+
+      .custom-select select:hover{
+        border-color:var(--primary);
+      }
+
+      .icon-btn{
+        width:32px;
+        height:32px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border:none;
+        border-radius:999px;
+        cursor:pointer;
+        background:var(--card);
+        color:var(--foreground);
+        transition:.2s;
+        box-shadow:
+          inset 2px 2px 4px rgba(255,255,255,.6),
+          inset -2px -2px 4px rgba(0,0,0,.05);
+      }
+
+      .icon-btn:hover{
+        background:var(--primary);
+        color:white;
+        transform:translateY(-1px);
       }
     `}</style>
   );

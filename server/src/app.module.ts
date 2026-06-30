@@ -24,7 +24,7 @@ import { History } from "./history/history.entity";
       port: 5432,
       username: "fackjob_user",
       password: "fackjobdb21",
-      database: "fakejob",
+      database: "fakejob_db",
       entities: [__dirname + "/**/*.entity{.ts,.js}"],
       synchronize: true,
       logging: false,

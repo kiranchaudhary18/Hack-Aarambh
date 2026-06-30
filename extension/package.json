@@ -6,7 +6,11 @@
   "type": "module",
   "scripts": {
     "dev": "plasmo dev",
-    "build": "plasmo build",
+    "dev:chrome": "plasmo dev --target=chrome-mv3",
+    "dev:firefox": "plasmo dev --target=firefox-mv3",
+    "build": "plasmo build --target=chrome-mv3 && plasmo build --target=firefox-mv3",
+    "build:chrome": "plasmo build --target=chrome-mv3",
+    "build:firefox": "plasmo build --target=firefox-mv3",
     "package": "plasmo package"
   },
   "dependencies": {
@@ -37,6 +41,15 @@
       "http://localhost:3000/*",
       "http://localhost:5173/*",
       "<all_urls>"
-    ]
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "scamsniff-extension@example.com",
+        "strict_min_version": "109.0"
+      }
+    },
+    "sidebar_action": {
+      "default_panel": "sidepanel.html"
+    }
   }
 }

@@ -6,16 +6,33 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log("ScamSniff extension installed");
 });
 
-// Handle extension icon click - open side panel
+// Handle extension icon click - open side panel or sidebar/popup
 chrome.action.onClicked.addListener(async (tab: chrome.tabs.Tab) => {
   try {
-    if (tab.id) {
-      await chrome.sidePanel.open({ tabId: tab.id });
-    } else if (tab.windowId) {
-      await chrome.sidePanel.open({ windowId: tab.windowId });
+    // 1. Chrome SidePanel path
+    if (typeof chrome !== "undefined" && chrome.sidePanel && typeof chrome.sidePanel.open === "function") {
+      if (tab.id) {
+        await chrome.sidePanel.open({ tabId: tab.id });
+      } else if (tab.windowId) {
+        await chrome.sidePanel.open({ windowId: tab.windowId });
+      }
+    } else {
+      // 2. Firefox SidebarAction path
+      const firefoxSidebar = (chrome as any).sidebarAction || (typeof browser !== "undefined" && (browser as any).sidebarAction);
+      if (firefoxSidebar && typeof firefoxSidebar.open === "function") {
+        await firefoxSidebar.open();
+      } else {
+        // 3. Fallback: Open popup window
+        chrome.windows.create({
+          url: chrome.runtime.getURL("sidepanel.html"),
+          type: "popup",
+          width: 400,
+          height: 600
+        });
+      }
     }
   } catch (error) {
-    console.error("Failed to open side panel:", error);
+    console.error("Failed to open side panel or sidebar:", error);
   }
 });
 
@@ -77,10 +94,12 @@ const injectCaptureContentScript = async (tabId: number) => {
           overlay.appendChild(selectionRect);
 
           let isDrawing = false;
+          let selectionDone = false;
           let startX = 0;
           let startY = 0;
 
           overlay.onmousedown = (e: MouseEvent) => {
+            if (selectionDone) return;
             console.log("[Injected] Mouse DOWN at", e.clientX, e.clientY);
             isDrawing = true;
             startX = e.clientX;
@@ -107,6 +126,7 @@ const injectCaptureContentScript = async (tabId: number) => {
           };
 
           overlay.onmouseup = async (e: MouseEvent) => {
+            if (!isDrawing || selectionDone) return;
             console.log("[Injected] Mouse UP detected");
             isDrawing = false;
             const currentX = e.clientX;
@@ -120,55 +140,56 @@ const injectCaptureContentScript = async (tabId: number) => {
 
             if (width < 10 || height < 10) {
               console.log("[Injected] Selection too small, ignoring");
-              overlay.remove();
+              selectionRect.style.display = "none";
               return;
             }
 
+            selectionDone = true;
+            overlay.style.cursor = "default";
             console.log("[Injected] Selection valid, creating buttons");
+
+            const buttonContainer = document.createElement("div");
+            buttonContainer.style.cssText = `
+              position: fixed;
+              bottom: 25px;
+              left: 50%;
+              transform: translateX(-50%);
+              display: flex;
+              gap: 12px;
+              z-index: 2147483648;
+            `;
 
             const confirmButton = document.createElement("button");
             confirmButton.textContent = "Send to AI";
             confirmButton.style.cssText = `
-              position: absolute;
-              bottom: 20px;
-              left: 50%;
-              transform: translateX(-50%);
-              padding: 12px 24px;
-              background: linear-gradient(145deg, #8b5cf6, #7c3aed);
-              color: white;
+              padding: 12px 26px;
               border: none;
-              border-radius: 8px;
-              font-size: 14px;
+              border-radius: 10px;
+              background: #8b5cf6;
+              color: white;
               font-weight: 600;
               cursor: pointer;
-              z-index: 2147483648;
-              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             `;
 
             const cancelButton = document.createElement("button");
             cancelButton.textContent = "Cancel";
             cancelButton.style.cssText = `
-              position: absolute;
-              bottom: 20px;
-              left: calc(50% + 140px);
-              transform: translateX(-50%);
-              padding: 12px 24px;
-              background: rgba(255, 255, 255, 0.9);
-              color: #374151;
-              border: 1px solid #d1d5db;
-              border-radius: 8px;
-              font-size: 14px;
-              font-weight: 600;
+              padding: 12px 26px;
+              border-radius: 10px;
+              border: 1px solid #ccc;
+              background: white;
               cursor: pointer;
-              z-index: 2147483648;
-              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             `;
+
+            buttonContainer.append(confirmButton, cancelButton);
+            overlay.appendChild(buttonContainer);
 
             console.log("[Injected] Creating buttons for confirm/cancel");
 
             cancelButton.onclick = (e) => {
               console.log("[Injected] Cancel button clicked");
               e.stopPropagation();
+              document.removeEventListener("keydown", handleEscape);
               overlay.remove();
             };
 
@@ -201,6 +222,7 @@ const injectCaptureContentScript = async (tabId: number) => {
                   }
                 });
                 overlay.remove();
+                document.removeEventListener("keydown", handleEscape);
               } catch (error) {
                 console.error("[Injected] Capture failed:", error);
                 alert("Failed to capture region");

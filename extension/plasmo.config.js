@@ -28,6 +28,15 @@ const config = {
     },
     side_panel: {
       default_path: "sidepanel.html"
+    },
+    sidebar_action: {
+      default_panel: "sidepanel.html"
+    },
+    browser_specific_settings: {
+      gecko: {
+        id: "scamsniff-extension@example.com",
+        strict_min_version: "109.0"
+      }
     }
   }
 }
