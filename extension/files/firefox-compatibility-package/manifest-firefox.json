@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "ScamSniff Extension",
+  "version": "1.0.0",
+  "description": "Browser extension for detecting scams in images using AI",
+  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "host_permissions": ["http://localhost:3000/*", "http://localhost:5173/*", "<all_urls>"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{scamsniff-extension}",
+      "strict_min_version": "109.0"
+    }
+  },
+  "action": {
+    "default_title": "Open ScamSniff",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    }
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "type": "module"
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png",
+    "192": "assets/icon192.png"
+  }
+}
