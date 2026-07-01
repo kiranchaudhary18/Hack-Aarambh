@@ -41,6 +41,7 @@ export function Footer() {
               { l: "Dashboard", to: "/dashboard" },
               { l: "History", to: "/history" },
               { l: "Awareness", to: "/awareness" },
+              { l: "Browser Extension", to: "/settings/api-tokens" },
             ]}
           />
           <FooterCol
@@ -76,19 +77,35 @@ export function Footer() {
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: { l: string; to: string }[] }) {
+function FooterCol({
+  title,
+  links,
+}: {
+  title: string;
+  links: { l: string; to: string; download?: string }[];
+}) {
   return (
     <div>
       <p className="font-display text-sm font-bold uppercase tracking-wider">{title}</p>
       <ul className="mt-4 space-y-2.5">
         {links.map((x) => (
           <li key={x.l}>
-            <Link
-              to={x.to}
-              className="text-sm text-muted-foreground transition hover:text-foreground"
-            >
-              {x.l}
-            </Link>
+            {x.download ? (
+              <a
+                href={x.to}
+                download={x.download}
+                className="text-sm text-muted-foreground transition hover:text-foreground"
+              >
+                {x.l}
+              </a>
+            ) : (
+              <Link
+                to={x.to}
+                className="text-sm text-muted-foreground transition hover:text-foreground"
+              >
+                {x.l}
+              </Link>
+            )}
           </li>
         ))}
       </ul>
