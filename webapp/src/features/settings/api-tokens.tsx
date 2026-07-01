@@ -1,13 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
-import { KeyRound, Plus, Copy, Trash2, X, ChevronLeft, Calendar, Eye, Check } from "lucide-react";
+import { KeyRound, Plus, Copy, Trash2, X, ChevronLeft, Calendar, Eye, Check, Download, Puzzle } from "lucide-react";
 import { api } from "@/shared/lib/api";
 import { toast } from "sonner";
 
 export function ApiTokens() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const [apiTokens, setApiTokens] = useState<any[]>([]);
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const [newTokenName, setNewTokenName] = useState("");
@@ -17,9 +19,18 @@ export function ApiTokens() {
   const [copiedTokens, setCopiedTokens] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
+    if (!token) {
+      toast.error("Please login to access API tokens");
+      navigate("/login");
+      return;
+    }
     document.title = "API Tokens — ScamSniff";
     fetchTokens();
-  }, []);
+  }, [token]);
+
+  if (!token) {
+    return null;
+  }
 
   async function fetchTokens() {
     try {
@@ -225,6 +236,47 @@ export function ApiTokens() {
                     </div>
                   ))
                 )}
+              </div>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.1}>
+            <div className="clay p-6">
+              <h3 className="font-display text-xl font-bold flex items-center gap-2">
+                <Puzzle className="h-5 w-5 text-[color:var(--clay-blue)]" />
+                ScamSniff Browser Extension
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Enhance your safety by scanning LinkedIn and Indeed job offers directly from your browser.
+              </p>
+              
+              <div className="mt-5 grid gap-6 md:grid-cols-2">
+                <div className="clay-inset p-5 flex flex-col justify-between">
+                  <div>
+                    <h4 className="font-semibold text-sm">Download Extension Package</h4>
+                    <p className="mt-1 text-xs text-muted-foreground font-medium">
+                      Get the latest developer build of the ScamSniff extension to load manually into your browser.
+                    </p>
+                  </div>
+                  <a
+                    href="/scamsniff-extension.zip"
+                    download="scamsniff-extension.zip"
+                    className="clay-primary mt-6 inline-flex items-center justify-center gap-2 py-2.5 text-xs font-semibold text-center w-full"
+                  >
+                    <Download className="h-4 w-4" /> Download Extension (.zip)
+                  </a>
+                </div>
+
+                <div className="clay-inset p-5">
+                  <h4 className="font-semibold text-sm">How to Install (Chrome/Brave/Edge)</h4>
+                  <ol className="mt-3 space-y-2.5 text-xs text-muted-foreground list-decimal list-inside">
+                    <li>Download the extension and <strong>unzip</strong> (extract) the folder.</li>
+                    <li>Open your browser and navigate to <code className="px-1.5 py-0.5 rounded bg-black/10 font-mono text-[10px]">chrome://extensions/</code>.</li>
+                    <li>Enable <strong>Developer mode</strong> using the toggle button in the top-right.</li>
+                    <li>Click on the <strong>Load unpacked</strong> button in the top-left.</li>
+                    <li>Select the extracted folder (e.g., <code className="px-1.5 py-0.5 rounded bg-black/10 font-mono text-[10px]">chrome-mv3-prod</code>).</li>
+                  </ol>
+                </div>
               </div>
             </div>
           </FadeIn>

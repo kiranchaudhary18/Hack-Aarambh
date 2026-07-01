@@ -17,6 +17,7 @@ import { Navbar } from "@/layouts/Navbar";
 import { Footer } from "@/layouts/Footer";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn, StaggerChildren } from "@/shared/components/Animated";
+import { ExtensionPromo } from "./extension-promo";
 
 export function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -277,6 +278,8 @@ export function Home() {
           ))}
         </StaggerChildren>
       </section>
+
+      <ExtensionPromo />
 
       {/* TESTIMONIAL */}
       <section className="relative mx-auto w-[min(1180px,94%)] py-20">

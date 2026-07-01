@@ -35,6 +35,14 @@ const faqs = [
     q: "Do you support languages other than English?",
     a: "Currently English, Hindi, and Urdu. French, Spanish, and Tagalog launch Q3 2026.",
   },
+  {
+    q: "How do I install the ScamSniff browser extension?",
+    a: "1. Download the extension ZIP file (scamsniff-extension.zip) directly from the Home page or Footer. 2. Unzip (extract) the downloaded file on your computer. 3. Open your browser and go to 'chrome://extensions/' (for Chrome/Brave/Edge). 4. Turn on the 'Developer mode' toggle in the top-right corner. 5. Click the 'Load unpacked' button in the top-left corner. 6. Select the unzipped folder (e.g. 'chrome-mv3-prod' or 'chrome-mv3-dev'). The ScamSniff icon will appear in your extensions list!",
+  },
+  {
+    q: "How do I connect and setup the extension with my account?",
+    a: "1. Log in to your account on the ScamSniff website. 2. Go to your Dashboard, navigate to Settings, and click on 'API Tokens'. 3. Click 'Generate token', give it a name (e.g., 'My Extension'), and copy the generated key. 4. Open the ScamSniff extension side panel by clicking the extension icon in your browser. 5. Paste the API key into the input field and click 'Submit'. Your extension is now linked, and you can start scanning job offers directly from job boards!",
+  },
 ];
 
 export function Help() {

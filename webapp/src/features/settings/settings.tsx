@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/layouts/Sidebar";
 import { ClayBlobs } from "@/shared/components/ClayBlobs";
 import { FadeIn } from "@/shared/components/Animated";
@@ -37,11 +37,24 @@ const NOTIFICATION_ITEMS = [
 ] as const;
 
 export function Settings() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
   const [localPreferences, setLocalPreferences] = useState<NotificationPreferences>({});
   const [showDisableDialog, setShowDisableDialog] = useState(false);
   const [disablePassword, setDisablePassword] = useState("");
   const [showTwoFactorSetup, setShowTwoFactorSetup] = useState(false);
+
+  useEffect(() => {
+    if (!token) {
+      toast.error("Please login to access settings");
+      navigate("/login");
+    }
+  }, [token]);
+
+  if (!token) {
+    return null;
+  }
 
   const { data: preferencesData, isLoading } = useQuery({
     queryKey: ["notification-preferences"],
