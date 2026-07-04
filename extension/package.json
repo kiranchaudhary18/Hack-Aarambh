@@ -1,7 +1,7 @@
 {
   "name": "scamsniff-extension",
   "displayName": "ScamSniff Extension",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Browser extension for detecting scams in images using AI",
   "type": "module",
   "scripts": {

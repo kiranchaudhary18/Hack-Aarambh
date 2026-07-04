@@ -1,36 +1,35 @@
 import { useState, useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
-import TokenInput from "../components/Input";
 import RegionScanner from "../components/Scanner";
+import History from "../components/History";
+import Settings from "../components/Settings";
 import Style from "../components/Style";
-import { getItem, removeItem, storageKeys, setItem } from "../lib/storage";
+import { getItem, setItem, storageKeys } from "../lib/storage";
 import { Language, getTranslation } from "../lib/translations";
 
-type Screen = "token" | "scan";
+type Screen = "scan" | "history" | "settings";
 type Theme = "light" | "dark";
 
+const NAV_BUTTONS: { key: Screen; labelKey: string }[] = [
+  { key: "scan", labelKey: "scan" },
+  { key: "history", labelKey: "history" },
+  { key: "settings", labelKey: "settings" },
+];
+
 export default function IndexPopup() {
-  const [screen, setScreen] = useState<Screen>("token");
+  const [screen, setScreen] = useState<Screen>("scan");
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState<Theme>("light");
   const [language, setLanguage] = useState<Language>("en");
 
   useEffect(() => {
-    async function checkApiToken() {
-      const apiToken = await getItem(storageKeys.API_TOKEN);
+    async function loadSettings() {
       const savedTheme = await getItem(storageKeys.THEME);
       const savedLanguage = await getItem(storageKeys.LANGUAGE);
-
-      if (apiToken) {
-        setScreen("scan");
-      } else {
-        setScreen("token");
-      }
 
       if (savedTheme) {
         setTheme(savedTheme);
       }
-
       if (savedLanguage) {
         setLanguage(savedLanguage);
       }
@@ -38,7 +37,7 @@ export default function IndexPopup() {
       setLoading(false);
     }
 
-    checkApiToken();
+    loadSettings();
   }, []);
 
   const toggleTheme = async () => {
@@ -50,11 +49,6 @@ export default function IndexPopup() {
   const changeLanguage = async (newLanguage: Language) => {
     setLanguage(newLanguage);
     await setItem(storageKeys.LANGUAGE, newLanguage);
-  };
-
-  const handleLogout = async () => {
-    await removeItem(storageKeys.API_TOKEN);
-    setScreen("token");
   };
 
   if (loading) {
@@ -93,14 +87,30 @@ export default function IndexPopup() {
           )}
         </button>
       </div>
-      {screen === "token" && (
-        <TokenInput onNext={() => setScreen("scan")} language={language} />
-      )}
-      {screen === "scan" && (
-        <div className="h-full flex flex-col">
-          <RegionScanner onLogout={handleLogout} language={language} />
+
+      <div className="w-full p-4 pt-20 flex flex-col gap-4">
+        <div className="flex gap-2 justify-center">
+          {NAV_BUTTONS.map((button) => (
+            <button
+              key={button.key}
+              onClick={() => setScreen(button.key)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+                screen === button.key
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground"
+              }`}
+            >
+              {getTranslation(language, button.labelKey)}
+            </button>
+          ))}
         </div>
-      )}
+
+        <div className="flex-1 overflow-x-hidden">
+          {screen === "scan" && <RegionScanner language={language} />}
+          {screen === "history" && <History language={language} />}
+          {screen === "settings" && <Settings language={language} />}
+        </div>
+      </div>
     </div>
   );
 }
