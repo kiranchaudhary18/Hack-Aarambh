@@ -1,0 +1,124 @@
+# Mark-2 AI Model Configuration
+# Configuration for all three models in the Mark-2 system
+
+# Text Analysis Model (text_analysis.pt)
+text_model:
+  name: "distilbert-base-uncased"
+  type: "sequence_classification"
+  num_labels: 2
+  max_sequence_length: 512
+  architecture:
+    hidden_size: 768
+    num_hidden_layers: 6
+    num_attention_heads: 12
+    intermediate_size: 3072
+  training:
+    epochs: 5
+    batch_size: 8
+    learning_rate: 2e-5
+    warmup_steps: 500
+    weight_decay: 0.01
+    gradient_accumulation_steps: 1
+    fp16: true
+
+# Document Analysis Model (doc_analysis.pt)
+doc_model:
+  name: "google/vit-base-patch16-224"
+  type: "image_classification"
+  num_labels: 2
+  image_size: 224
+  patch_size: 16
+  architecture:
+    hidden_size: 768
+    num_hidden_layers: 12
+    num_attention_heads: 12
+    intermediate_size: 3072
+  training:
+    epochs: 8
+    batch_size: 4
+    learning_rate: 3e-5
+    warmup_steps: 100
+    weight_decay: 0.01
+    gradient_accumulation_steps: 2
+    fp16: true
+  data_augmentation:
+    random_horizontal_flip: 0.5
+    random_rotation: 10
+    color_jitter:
+      brightness: 0.2
+      contrast: 0.2
+      saturation: 0.2
+
+# Mark-2 Routing Model (Mark_2.pt)
+mark2_model:
+  name: "mark2_router"
+  type: "meta_classifier"
+  input_size: 4  # [text_score, text_confidence, doc_score, doc_confidence]
+  hidden_size: 128
+  num_classes: 2
+  architecture:
+    layers:
+      - type: "linear"
+        in_features: 4
+        out_features: 128
+        activation: "relu"
+        dropout: 0.3
+      - type: "linear"
+        in_features: 128
+        out_features: 64
+        activation: "relu"
+        dropout: 0.3
+      - type: "linear"
+        in_features: 64
+        out_features: 2
+  training:
+    epochs: 10
+    batch_size: 16
+    learning_rate: 1e-3
+    weight_decay: 0.01
+    scheduler: "cosine_annealing"
+
+# Routing Logic Configuration
+routing_logic:
+  text_threshold: 0.8
+  doc_threshold: 0.8
+  confidence_weight: 0.7
+  fallback_strategy: "combined_weighted"
+  strategies:
+    - name: "text_only"
+      condition: "text_confidence >= text_threshold"
+    - name: "doc_only"
+      condition: "doc_confidence >= doc_threshold"
+    - name: "mark2_neural"
+      condition: "has_mark2_model and moderate_confidence"
+    - name: "combined_weighted"
+      condition: "fallback"
+
+# Hardware Configuration
+hardware:
+  gpu:
+    enabled: true
+    device: "cuda"
+    memory_optimization: true
+    mixed_precision: true
+  cpu:
+    enabled: true
+    device: "cpu"
+    memory_optimization: true
+    batch_size_reduction: 0.5
+
+# Model Paths
+paths:
+  models_dir: "./models"
+  text_model: "text_analysis.pt"
+  doc_model: "doc_analysis.pt"
+  mark2_model: "Mark_2.pt"
+  mark2_config: "Mark_2_config.json"
+
+# Inference Configuration
+inference:
+  batch_size: 1
+  timeout: 30
+  confidence_threshold: 0.5
+  return_probabilities: false
+  device_auto_select: true

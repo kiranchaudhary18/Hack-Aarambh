@@ -24,20 +24,37 @@ export const clearAll = async () => {
 
 // Recent scans management
 export const addRecentScan = async (imageData: string) => {
-  const recentScans = await getItem(storageKeys.RECENT_SCANS) || [];
+  const recentScans = (await getItem(storageKeys.RECENT_SCANS)) || [];
   const newScan = {
     id: Date.now(),
     image: imageData,
     timestamp: new Date().toISOString(),
+    analysisResult: null,
   };
 
-  // Add new scan to beginning and keep only last 10
-  const updatedScans = [newScan, ...recentScans].slice(0, 10);
+  const updatedScans = [newScan, ...recentScans].slice(0, 20);
   await setItem(storageKeys.RECENT_SCANS, updatedScans);
+  return newScan;
+};
+
+export const updateRecentScanAnalysis = async (scanId: number, analysisResult: any) => {
+  const recentScans = (await getItem(storageKeys.RECENT_SCANS)) || [];
+  const updatedScans = recentScans.map((scan: any) => {
+    if (scan.id === scanId) {
+      return {
+        ...scan,
+        analysisResult,
+      };
+    }
+    return scan;
+  });
+
+  await setItem(storageKeys.RECENT_SCANS, updatedScans);
+  return updatedScans.find((scan: any) => scan.id === scanId) || null;
 };
 
 export const getRecentScans = async () => {
-  return await getItem(storageKeys.RECENT_SCANS) || [];
+  return (await getItem(storageKeys.RECENT_SCANS)) || [];
 };
 
 export const clearRecentScans = async () => {

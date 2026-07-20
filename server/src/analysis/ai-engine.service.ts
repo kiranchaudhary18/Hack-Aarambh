@@ -12,10 +12,25 @@ interface AIAnalysisResult {
   confidence: string;
 }
 
+interface Mark2Result {
+  success: boolean;
+  result?: {
+    is_fake: boolean;
+    score: number;
+    confidence: number;
+    routing_decision: string;
+    reason: string;
+    reasons: string[];
+    text_scam_probability: number;
+    doc_scam_probability: number;
+  };
+  error?: string;
+}
+
 @Injectable()
 export class AIEngineService {
   /**
-   * Call Python AI engine to analyze job offer text
+   * Call Mark-2 Python AI engine to analyze job offer text
    * Returns structured analysis result with scam score and reasons
    */
   async analyzeText(text: string): Promise<AIAnalysisResult> {
@@ -25,11 +40,11 @@ export class AIEngineService {
         "..",
         "ai-engine",
         "api",
-        "cli.py",
+        "predict.py",
       );
 
-      // Spawn Python process
-      const pythonProcess = spawn("python3", [pythonScriptPath]);
+      // Spawn Python process with Mark-2 API
+      const pythonProcess = spawn("python3", [pythonScriptPath, "--text", text]);
 
       let output = "";
       let error = "";
@@ -50,24 +65,69 @@ export class AIEngineService {
         }
 
         try {
-          const result = JSON.parse(output);
-          resolve(result);
+          const mark2Result: Mark2Result = JSON.parse(output);
+          
+          if (mark2Result.success && mark2Result.result) {
+            // Convert Mark-2 result to legacy format
+            resolve(this.convertMark2Result(mark2Result.result));
+          } else {
+            console.error("Mark-2 API returned error:", mark2Result.error);
+            resolve(this.fallbackAnalysis(text));
+          }
         } catch (e) {
-          console.error("Error parsing AI result:", e);
+          console.error("Error parsing Mark-2 result:", e);
           resolve(this.fallbackAnalysis(text));
         }
       });
 
-      // Send input via stdin
-      pythonProcess.stdin.write(JSON.stringify({ text }));
-      pythonProcess.stdin.end();
-
-      // Timeout after 10 seconds
+      // Timeout after 30 seconds (Mark-2 may take longer)
       setTimeout(() => {
         pythonProcess.kill();
         reject(new Error("AI analysis timeout"));
-      }, 10000);
+      }, 30000);
     });
+  }
+
+  /**
+   * Convert Mark-2 result format to legacy AIAnalysisResult format
+   */
+  private convertMark2Result(mark2Result: any): AIAnalysisResult {
+    const score = mark2Result.score || 0;
+    
+    return {
+      success: true,
+      is_fake: mark2Result.is_fake || false,
+      scam_score: score,
+      verdict: this.getVerdict(score),
+      reasons: mark2Result.reasons || [mark2Result.reason || "Analysis completed"],
+      detailed_reasons: [
+        {
+          type: "routing_decision",
+          message: mark2Result.routing_decision || "text_only",
+        },
+        {
+          type: "confidence",
+          message: `Confidence: ${mark2Result.confidence || 0}%`,
+        },
+        {
+          type: "text_probability",
+          message: `Text scam probability: ${(mark2Result.text_scam_probability * 100).toFixed(1)}%`,
+        },
+      ],
+      confidence: this.getConfidenceLevel(mark2Result.confidence || 0),
+    };
+  }
+
+  private getVerdict(score: number): string {
+    if (score >= 70) return "Likely Scam";
+    if (score >= 50) return "Suspicious";
+    return "Likely Real";
+  }
+
+  private getConfidenceLevel(confidence: number): string {
+    if (confidence >= 80) return "high";
+    if (confidence >= 60) return "medium";
+    return "low";
   }
 
   /**
