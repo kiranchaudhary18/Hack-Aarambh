@@ -1,0 +1,217 @@
+# Training Configuration for Mark-2 AI Models
+# Training-specific settings for all three models
+
+# General Training Settings
+general:
+  random_seed: 42
+  deterministic: false
+  benchmark: true
+  cudnn_enabled: true
+
+# Text Model Training
+text_training:
+  dataset:
+    train_path: "./datasets/text_data/train.csv"
+    val_path: "./datasets/text_data/val.csv"
+    test_path: "./datasets/text_data/test.csv"
+    text_column: "text"
+    label_column: "label"
+    max_samples: null  # null = use all samples
+  
+  preprocessing:
+    lowercase: true
+    remove_special_chars: false
+    remove_urls: true
+    remove_emails: true
+    max_length: 512
+    truncation: true
+  
+  training:
+    epochs: 5
+    batch_size: 8
+    learning_rate: 2e-5
+    warmup_ratio: 0.1
+    weight_decay: 0.01
+    gradient_clip_val: 1.0
+    accumulation_steps: 1
+    fp16: true
+  
+  validation:
+    validation_split: 0.2
+    validation_steps: 100
+    early_stopping_patience: 3
+    metric_for_best_model: "accuracy"
+  
+  checkpointing:
+    save_total_limit: 3
+    save_strategy: "epoch"
+    load_best_model_at_end: true
+  
+  logging:
+    logging_steps: 10
+    log_level: "info"
+    report_to: ["tensorboard"]
+    run_name: "text_analysis_training"
+
+# Document Model Training
+doc_training:
+  dataset:
+    train_dir: "./datasets/doc_data/images/train"
+    val_dir: "./datasets/doc_data/images/val"
+    test_dir: "./datasets/doc_data/images/test"
+    image_extensions: [".png", ".jpg", ".jpeg", ".bmp", ".gif"]
+  
+  preprocessing:
+    image_size: 224
+    normalize: true
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+  
+  augmentation:
+    enabled: true
+    random_horizontal_flip: 0.5
+    random_rotation: 10
+    color_jitter:
+      brightness: 0.2
+      contrast: 0.2
+      saturation: 0.2
+    random_resized_crop: false
+  
+  training:
+    epochs: 8
+    batch_size: 4
+    learning_rate: 3e-5
+    warmup_ratio: 0.1
+    weight_decay: 0.01
+    gradient_clip_val: 1.0
+    accumulation_steps: 2
+    fp16: true
+  
+  validation:
+    validation_split: 0.2
+    validation_steps: 50
+    early_stopping_patience: 3
+    metric_for_best_model: "accuracy"
+  
+  checkpointing:
+    save_total_limit: 3
+    save_strategy: "epoch"
+    load_best_model_at_end: true
+  
+  logging:
+    logging_steps: 5
+    log_level: "info"
+    report_to: ["tensorboard"]
+    run_name: "doc_analysis_training"
+
+# Mark-2 Router Training
+mark2_training:
+  dataset:
+    num_samples: 200
+    scam_ratio: 0.5
+    feature_size: 4  # [text_score, text_conf, doc_score, doc_conf]
+  
+  synthetic_data:
+    enabled: true
+    scam_score_range: [0.7, 1.0]
+    legit_score_range: [0.0, 0.3]
+    confidence_range: [0.6, 0.95]
+  
+  training:
+    epochs: 10
+    batch_size: 16
+    learning_rate: 1e-3
+    weight_decay: 0.01
+    gradient_clip_val: 1.0
+    scheduler: "cosine_annealing"
+    scheduler_t_max: 10
+  
+  validation:
+    validation_split: 0.2
+    early_stopping_patience: 5
+    metric_for_best_model: "accuracy"
+  
+  architecture:
+    input_size: 4
+    hidden_size: 128
+    num_classes: 2
+    dropout: 0.3
+  
+  checkpointing:
+    save_best_only: true
+    monitor: "val_accuracy"
+    mode: "max"
+  
+  logging:
+    log_level: "info"
+    run_name: "mark2_router_training"
+
+# CPU-specific Training Overrides
+cpu_training:
+  text_model:
+    batch_size: 4
+    fp16: false
+    gradient_accumulation_steps: 2
+    dataloader_num_workers: 0
+  
+  doc_model:
+    batch_size: 2
+    fp16: false
+    gradient_accumulation_steps: 4
+    dataloader_num_workers: 0
+  
+  mark2_model:
+    batch_size: 8
+    fp16: false
+    dataloader_num_workers: 0
+
+# GPU-specific Training Overrides
+gpu_training:
+  text_model:
+    batch_size: 8
+    fp16: true
+    gradient_accumulation_steps: 1
+    dataloader_num_workers: 2
+  
+  doc_model:
+    batch_size: 4
+    fp16: true
+    gradient_accumulation_steps: 2
+    dataloader_num_workers: 2
+  
+  mark2_model:
+    batch_size: 16
+    fp16: true
+    dataloader_num_workers: 2
+
+# Evaluation Settings
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1"
+  
+  test_batch_size: 32
+  generate_classification_report: true
+  save_predictions: true
+  
+  thresholds:
+    default: 0.5
+    high_precision: 0.7
+    high_recall: 0.3
+
+# Output Settings
+output:
+  models_dir: "./models"
+  logs_dir: "./logs"
+  checkpoints_dir: "./checkpoints"
+  results_dir: "./results"
+  
+  save_format: "pt"
+  compression: false
+  
+  model_names:
+    text: "text_analysis.pt"
+    doc: "doc_analysis.pt"
+    mark2: "Mark_2.pt"
